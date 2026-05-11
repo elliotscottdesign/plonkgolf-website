@@ -2,22 +2,19 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
-import Gallery from "@/components/Gallery";
+import EventsScroller from "@/components/EventsScroller";
 import Reveal from "@/components/Reveal";
 
-const HACKNEY_GALLERY = [
-  { src: "/hackney/course/Course_2.jpg", alt: "Hackney Polynesian course" },
-  { src: "/hackney/venue/Interior_2.jpg", alt: "Hackney tiki bar" },
-  { src: "/hackney/garden/Garden_1.jpg", alt: "Hackney beer garden" },
-  { src: "/hackney/pool/Pool_1.jpg", alt: "Hackney pool tables" },
-  { src: "/hackney/games/Games_1.jpg", alt: "Hackney arcade" },
-  { src: "/hackney/drinks/Drinks_1.jpg", alt: "Hackney cocktails" },
-  { src: "/hackney/course/Course_5.jpg", alt: "Hackney course detail" },
-  { src: "/hackney/venue/Interior_7.jpg", alt: "Hackney interior" },
-  { src: "/hackney/garden/Garden_3.jpg", alt: "Hackney garden evening" },
-  { src: "/hackney/games/Games_4.jpg", alt: "Hackney arcade cabinets" },
-  { src: "/hackney/drinks/Drinks_6.jpg", alt: "Hackney drinks" },
-  { src: "/hackney/course/Course_8.jpg", alt: "Hackney course" },
+// PLACEHOLDER POSTERS — swap each src for the real event posters once
+// /public/hackney/events/Event_*.jpg is populated. Aspect ratio 2:3 works
+// best (e.g. 1000x1500). Add as many as you like; the scroller is endless.
+const EVENT_POSTERS = [
+  { src: "/hackney/garden/Garden_2.jpg", alt: "Event poster 1" },
+  { src: "/hackney/games/Games_1.jpg", alt: "Event poster 2" },
+  { src: "/hackney/venue/Interior_5.jpg", alt: "Event poster 3" },
+  { src: "/hackney/drinks/Drinks_1.jpg", alt: "Event poster 4" },
+  { src: "/hackney/garden/Garden_4.jpg", alt: "Event poster 5" },
+  { src: "/hackney/games/Games_4.jpg", alt: "Event poster 6" },
 ];
 
 export const metadata: Metadata = {
@@ -132,10 +129,10 @@ export default function HackneyPage() {
         </div>
       </section>
 
-      <Gallery
-        heading="Inside Plonk Hackney"
-        intro="A look around — Polynesian course, beer garden, pool, arcade and No Dice Bar."
-        images={HACKNEY_GALLERY}
+      <EventsScroller
+        heading="Events at No Dice"
+        intro="DJs, pool tournaments, parties, pop-ups — what's on at the games bar."
+        posters={EVENT_POSTERS}
         tint="tint-plum-island-ember"
       />
 
