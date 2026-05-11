@@ -112,6 +112,37 @@ html {
 .tint-forest-to-forestDeep { background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 100%); }
 .tint-forestDeep-to-forest { background: linear-gradient(180deg, var(--forest-deep) 0%, var(--forest) 100%); }
 
+/* Island gradients: section opens AND closes in the same colour, dipping
+   into a second colour in the middle. Use these when an accent band
+   needs to be contained without bleeding into adjacent sections. */
+.tint-plum-island-ember {
+  background: linear-gradient(
+    180deg,
+    var(--plum) 0%,
+    var(--ember) 35%,
+    var(--ember) 65%,
+    var(--plum) 100%
+  );
+}
+.tint-forest-island-plum {
+  background: linear-gradient(
+    180deg,
+    var(--forest) 0%,
+    var(--plum) 35%,
+    var(--plum) 65%,
+    var(--forest) 100%
+  );
+}
+.tint-forest-island-ember {
+  background: linear-gradient(
+    180deg,
+    var(--forest) 0%,
+    var(--ember) 35%,
+    var(--ember) 65%,
+    var(--forest) 100%
+  );
+}
+
 /* Long-scroll page beds (FAQs etc.) — one slow tonal pour for a whole page */
 .bed-hackney { background: linear-gradient(180deg, var(--forest) 0%, var(--plum) 35%, var(--plum-deep) 70%, var(--forest) 100%); }
 .bed-borough { background: linear-gradient(180deg, var(--forest) 0%, var(--ember) 35%, var(--ember-deep) 70%, var(--forest) 100%); }

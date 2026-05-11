@@ -13,7 +13,7 @@ export default function Gallery({
 }) {
   if (images.length === 0) return null;
   return (
-    <section className={`${tint} border-t border-cream/10`}>
+    <section className={tint}>
       <div className="mx-auto max-w-6xl px-6 py-16">
         {heading && (
           <h2 className="text-center font-display text-3xl sm:text-4xl">
