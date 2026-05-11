@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import CookieConsent from "@/components/CookieConsent";
+import NewsletterPopup from "@/components/NewsletterPopup";
 
 export const metadata: Metadata = {
   title: "Plonk Golf — Crazy Golf Creations Across the Capital",
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body>
         {children}
         <CookieConsent />
+        <NewsletterPopup />
       </body>
     </html>
   );
