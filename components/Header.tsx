@@ -9,6 +9,7 @@ const NAV: { label: string; href: string }[] = [
   { label: "Borough", href: "/venue/borough-market" },
   { label: "Private hire", href: "/private-hire" },
   { label: "Vouchers", href: "/vouchers" },
+  { label: "FAQs", href: "/faqs" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];

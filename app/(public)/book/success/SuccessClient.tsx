@@ -82,9 +82,12 @@ function SuccessInner() {
 
           {slotGroups.length > 1 && (
             <p className="mt-4 rounded-lg border border-plonkTeal/30 bg-plonkTeal/5 p-3 text-xs leading-relaxed text-cream/80">
-              Your group has been split across {slotGroups.length} start times
-              so everyone fits in — please arrive together for the first start
-              time. Our team will get each group on the course in turn.
+              One booking, one payment. Although your slots are apart, you can
+              all play together at the later start time —{" "}
+              <span className="font-mono text-plonkTeal">
+                {slotGroups[slotGroups.length - 1].time}
+              </span>
+              .
             </p>
           )}
 

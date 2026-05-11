@@ -54,35 +54,36 @@ const SECTIONS: Section[] = [
         q: "What if my group is bigger than 6?",
         a: (
           <>
-            No problem — pick the start time you want, then add everyone in
-            your party. We'll automatically split you across consecutive
-            10-minute slots so everyone fits in. <strong>One booking, one
-            payment, one reference</strong> — your group just tees off
-            10 minutes apart and plays together.
+            For groups of 7–12, pick a start time and add everyone — we'll
+            split you across <strong>two consecutive 10-minute slots</strong>{" "}
+            so everyone fits in. One booking, one payment, one reference.
+            Although your two slots are 10 minutes apart, you can all play
+            together at the later start time.
           </>
         ),
       },
       {
         q: "What if only 2 spots are left in my preferred slot but I have 4 people?",
-        a: "You can still book all 4. The system fills the rest from the next available 10-minute slot. You'll see exactly how your party splits before you pay — for example: '17:30 — 2 players, 17:40 — 2 players'.",
+        a: "You can still book all 4. The system fills the rest from the very next 10-minute slot. You'll see exactly how your party splits before you pay — for example: '17:30 — 2 players, 17:40 — 2 players'. Everyone in your group can meet up and play together at 17:40.",
       },
       {
         q: "Why is my preferred time greyed out?",
         a: "It's sold out — all 6 tickets in that slot have already been booked. Try a slot earlier or later, or pick a different date.",
       },
       {
-        q: "I want to book for 12 or more people",
+        q: "I want to book for 13 or more people",
         a: (
           <>
-            For groups of 12+ we recommend a private hire — email{" "}
+            Online bookings cap at 12 across two consecutive slots — for
+            anything bigger, please email{" "}
             <a href="mailto:info@plonkgolf.co.uk" className="underline-offset-4 hover:underline">
               info@plonkgolf.co.uk
             </a>{" "}
-            or see our{" "}
+            and our team will arrange it directly, or see our{" "}
             <Link href="/private-hire" className="underline-offset-4 hover:underline">
               private hire page
-            </Link>
-            . We'll tailor a package to your group, food and drinks needs.
+            </Link>{" "}
+            for full venue takeovers.
           </>
         ),
       },

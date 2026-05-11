@@ -248,10 +248,12 @@ export default function BookingFlow({
     0,
   );
 
-  // Allocate the party across consecutive slots starting at slotTime — this
-  // is the feature that solves the "we have 2 left at 18:10 and 6 at 18:20,
-  // but customer wants 8" problem. One booking, multiple slot reservations,
-  // 10 minutes apart at most.
+  // Multi-slot bookings cap out at 2 consecutive 10-minute slots (so max
+  // 12 players across two back-to-back slots). Groups bigger than that go
+  // through the office so we don't end up with a 3-slot tee-off train.
+  const MAX_SPLIT_SLOTS = 2;
+  const MAX_PARTY_SELF_SERVICE = 12;
+
   const slotAllocation = useMemo(() => {
     if (!slotTime || partyTotal === 0) {
       return { groups: [] as { time: string; count: number }[], shortfall: 0 };
@@ -262,7 +264,8 @@ export default function BookingFlow({
     }
     let remaining = partyTotal;
     const groups: { time: string; count: number }[] = [];
-    for (let i = startIdx; i < slots.length && remaining > 0; i++) {
+    const endIdx = Math.min(startIdx + MAX_SPLIT_SLOTS, slots.length);
+    for (let i = startIdx; i < endIdx && remaining > 0; i++) {
       const slot = slots[i];
       const take = Math.min(slot.left, remaining);
       if (take > 0) {
@@ -273,25 +276,32 @@ export default function BookingFlow({
     return { groups, shortfall: remaining };
   }, [slotTime, partyTotal, slots]);
 
-  // Max we could possibly fit starting from the chosen slot — used to cap
-  // the + button on ticket steppers.
+  // Cap the + button at the max we could fit across 2 consecutive slots
+  // from the chosen start time.
   const maxCumulativeCapacity = useMemo(() => {
     if (!slotTime) return 6;
     const startIdx = slots.findIndex((s) => s.time === slotTime);
     if (startIdx === -1) return 6;
-    return slots.slice(startIdx).reduce((s, x) => s + x.left, 0);
+    return slots
+      .slice(startIdx, startIdx + MAX_SPLIT_SLOTS)
+      .reduce((s, x) => s + x.left, 0);
   }, [slotTime, slots]);
+
+  // Anything bigger than 12 must go through the office.
+  const tooBigForSelfService = partyTotal > MAX_PARTY_SELF_SERVICE;
 
   const cannotFitParty = !!slotTime && slotAllocation.shortfall > 0;
   const isSplitBooking = slotAllocation.groups.length > 1;
-  const canAddMoreTickets = partyTotal < maxCumulativeCapacity;
+  const canAddMoreTickets =
+    partyTotal < maxCumulativeCapacity && partyTotal < MAX_PARTY_SELF_SERVICE;
 
   const canContinue =
     !!slotTime &&
     totalTickets > 0 &&
     !childRuleViolated &&
     !childCutoffViolated &&
-    !cannotFitParty;
+    !cannotFitParty &&
+    !tooBigForSelfService;
 
   function applyPromo() {
     const code = promoCode.trim().toUpperCase();
@@ -563,11 +573,10 @@ export default function BookingFlow({
                 );
               })}
             </ul>
-            {isSplitBooking && !cannotFitParty && (
+            {isSplitBooking && !cannotFitParty && !tooBigForSelfService && (
               <div className="mt-4 rounded-xl border border-plonkTeal/40 bg-plonkTeal/10 px-4 py-3 text-sm text-plonkTeal">
                 <p className="font-semibold">
-                  Your group of {partyTotal} will be split across{" "}
-                  {slotAllocation.groups.length} start times
+                  Your group of {partyTotal} will be split across 2 start times
                 </p>
                 <ul className="mt-2 space-y-0.5 text-cream/85">
                   {slotAllocation.groups.map((g) => (
@@ -578,18 +587,36 @@ export default function BookingFlow({
                   ))}
                 </ul>
                 <p className="mt-2 text-xs text-cream/70">
-                  One booking, one payment. Your groups arrive 10 minutes
-                  apart and play together.
+                  One booking, one payment. Although your slots are apart you
+                  can play together at the later time.
                 </p>
               </div>
             )}
-            {cannotFitParty && (
+            {tooBigForSelfService && (
+              <div className="mt-4 rounded-xl border border-plonkYellow/40 bg-plonkYellow/10 px-4 py-3 text-sm text-cream/90">
+                <p className="font-semibold text-plonkYellow">
+                  Groups of 12+ — please book via the office
+                </p>
+                <p className="mt-1.5 text-xs leading-relaxed text-cream/80">
+                  For parties bigger than 12, email{" "}
+                  <a
+                    href="mailto:info@plonkgolf.co.uk"
+                    className="underline-offset-4 hover:underline"
+                  >
+                    info@plonkgolf.co.uk
+                  </a>{" "}
+                  and our bookings team will arrange it — we keep online
+                  bookings to a 2-slot maximum so things don't get confusing
+                  on the day.
+                </p>
+              </div>
+            )}
+            {cannotFitParty && !tooBigForSelfService && (
               <div className="mt-4 rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
                 We can't fit {partyTotal}{" "}
-                {partyTotal === 1 ? "person" : "people"} starting at{" "}
-                {slotTime}. {slotAllocation.shortfall}{" "}
-                {slotAllocation.shortfall === 1 ? "ticket" : "tickets"} short
-                — try an earlier start time or reduce your party.
+                {partyTotal === 1 ? "person" : "people"} in the next two slots
+                starting at {slotTime} — try an earlier start time, a different
+                date, or reduce your party.
               </div>
             )}
             {childRuleViolated && !childCutoffViolated && (
@@ -755,13 +782,15 @@ export default function BookingFlow({
             >
               {canContinue
                 ? "Continue to checkout"
-                : cannotFitParty
-                  ? "Pick an earlier time"
-                  : childCutoffViolated
-                    ? "Children only before 6pm"
-                    : childRuleViolated
-                      ? "Adult ticket required"
-                      : "Pick a time + tickets first"}
+                : tooBigForSelfService
+                  ? "Email us for 12+ groups"
+                  : cannotFitParty
+                    ? "Pick an earlier time"
+                    : childCutoffViolated
+                      ? "Children only before 6pm"
+                      : childRuleViolated
+                        ? "Adult ticket required"
+                        : "Pick a time + tickets first"}
             </button>
 
             {canContinue && (
