@@ -10,7 +10,11 @@ const nextConfig = {
   reactStrictMode: true,
   trailingSlash: true,
   images: {
-    unoptimized: true,
+    // Custom loader prepends basePath — next/image's default behaviour
+    // doesn't apply basePath in static export, which broke image URLs
+    // when served from /plonkgolf-website/.
+    loader: "custom",
+    loaderFile: "./image-loader.js",
   },
   basePath: isGitHubPages ? `/${repo}` : "",
   assetPrefix: isGitHubPages ? `/${repo}/` : undefined,
