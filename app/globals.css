@@ -124,6 +124,15 @@ html {
     var(--plum) 100%
   );
 }
+.tint-ember-island-plum {
+  background: linear-gradient(
+    180deg,
+    var(--ember) 0%,
+    var(--plum) 35%,
+    var(--plum) 65%,
+    var(--ember) 100%
+  );
+}
 .tint-forest-island-plum {
   background: linear-gradient(
     180deg,
