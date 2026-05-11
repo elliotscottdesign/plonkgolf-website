@@ -1,9 +1,19 @@
+// GitHub Pages serves this site at https://elliotscottdesign.github.io/plonkgolf-website/
+// so when building for Pages we set basePath + assetPrefix to that subpath.
+// Local builds (no env var) skip the prefix so links still work in dev.
+const isGitHubPages = process.env.GITHUB_PAGES === "true";
+const repo = "plonkgolf-website";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "export",
   reactStrictMode: true,
+  trailingSlash: true,
   images: {
-    formats: ["image/avif", "image/webp"],
+    unoptimized: true,
   },
+  basePath: isGitHubPages ? `/${repo}` : "",
+  assetPrefix: isGitHubPages ? `/${repo}/` : undefined,
 };
 
 export default nextConfig;
