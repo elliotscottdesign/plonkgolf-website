@@ -60,7 +60,6 @@ Deno.serve(async (req) => {
   }
 
   const pi = event.data.object as Stripe.PaymentIntent;
-  const bookingId = pi.metadata?.booking_id;
   const reference = pi.metadata?.reference;
 
   // We always update by PaymentIntent ID (which we wrote when creating the
@@ -106,13 +105,9 @@ Deno.serve(async (req) => {
     .eq("id", existing.id);
   if (updateErr) return new Response(`DB update error: ${updateErr.message}`, { status: 500 });
 
-  // (booking_id/reference are read above mainly for logs; Edge Function
-  // logs in the Supabase dashboard will show these when something goes
-  // sideways.)
   console.log(
     `webhook ${event.type}: booking ${existing.id} (${reference ?? "no-ref"}) → ${newStatus}`,
   );
-  void bookingId;
 
   return new Response("ok", { status: 200 });
 });

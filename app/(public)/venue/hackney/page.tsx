@@ -9,11 +9,11 @@ const EVENT_POSTERS = [
   { src: "/hackney/events/Happy_Hour.jpg", alt: "Happy Hour at No Dice" },
   { src: "/hackney/events/No_Dice_Mondays.jpg", alt: "No Dice Mondays" },
   { src: "/hackney/events/Burger_Deal.jpg", alt: "Burger deal at Snack Bar" },
+  { src: "/hackney/events/Fun_of_the_Fair.jpg", alt: "Fun of the Fair" },
   { src: "/hackney/events/Cue.jpg", alt: "Cue — pool night" },
-  { src: "/hackney/events/Pingers.jpg", alt: "Pingers — ping pong night" },
   { src: "/hackney/events/Rolling_Bones.jpg", alt: "Rolling Bones" },
   { src: "/hackney/events/Fun_Club.jpg", alt: "Fun Club" },
-  { src: "/hackney/events/Fun_of_the_Fair.jpg", alt: "Fun of the Fair" },
+  { src: "/hackney/events/Pingers.jpg", alt: "Pingers — ping pong night" },
 ];
 
 export const metadata: Metadata = {
