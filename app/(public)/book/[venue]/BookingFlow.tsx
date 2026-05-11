@@ -146,7 +146,7 @@ export default function BookingFlow({
   const [promoApplied, setPromoApplied] = useState<{ code: string; pctOff: number } | null>(null);
   const [promoError, setPromoError] = useState("");
 
-  const dates = useMemo(() => getNextDates(60), []);
+  const dates = useMemo(() => getNextDates(365), []);
   const slots = useMemo(() => generateSlots(dateIso), [dateIso]);
   const dow = useMemo(() => dayOfWeekFromIso(dateIso), [dateIso]);
 
@@ -156,9 +156,20 @@ export default function BookingFlow({
   const visibleDates = dates.slice(dateOffset, dateOffset + DATE_PAGE_SIZE);
   const monthLabel = visibleDates[0]?.monthLabel || "";
 
+  // Calendar popup state
+  const [calendarOpen, setCalendarOpen] = useState(false);
+
   // Time slots — show 12 by default, expand to all on demand.
   const [showAllSlots, setShowAllSlots] = useState(false);
   const visibleSlots = showAllSlots ? slots : slots.slice(0, 12);
+
+  function pickDate(iso: string) {
+    setDateIso(iso);
+    setSlotTime(null);
+    setCalendarOpen(false);
+    const idx = dates.findIndex((d) => d.iso === iso);
+    if (idx >= 0) setDateOffset(Math.max(0, idx - 2));
+  }
 
   // Filter tickets to those available on the chosen day of the week.
   const availableTickets = useMemo(
@@ -286,30 +297,15 @@ export default function BookingFlow({
           <section>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="font-display text-2xl sm:text-3xl">Select a date</h2>
-              <label
-                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-cream/15 text-cream/70 transition hover:border-cream/30 hover:text-cream"
+              <button
+                type="button"
+                onClick={() => setCalendarOpen(true)}
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-cream/15 text-cream/70 transition hover:border-cream/30 hover:text-cream"
+                aria-label="Open calendar"
                 title="Pick any date"
               >
                 <CalendarIcon />
-                <input
-                  type="date"
-                  min={todayIso()}
-                  max={maxBookableDateIso()}
-                  value={dateIso}
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      setDateIso(e.target.value);
-                      setSlotTime(null);
-                      // Scroll date strip to show the picked date if within window
-                      const idx = dates.findIndex((d) => d.iso === e.target.value);
-                      if (idx >= 0) {
-                        setDateOffset(Math.max(0, idx - 2));
-                      }
-                    }
-                  }}
-                  className="sr-only"
-                />
-              </label>
+              </button>
             </div>
 
             <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-cream/55">
@@ -691,6 +687,16 @@ export default function BookingFlow({
           </div>
         </aside>
       </div>
+
+      {calendarOpen && (
+        <CalendarModal
+          value={dateIso}
+          minIso={todayIso()}
+          maxIso={maxBookableDateIso()}
+          onSelect={pickDate}
+          onClose={() => setCalendarOpen(false)}
+        />
+      )}
     </main>
   );
 }
@@ -727,6 +733,161 @@ function QtyStepper({
       </button>
     </div>
   );
+}
+
+function CalendarModal({
+  value,
+  minIso,
+  maxIso,
+  onSelect,
+  onClose,
+}: {
+  value: string;
+  minIso: string;
+  maxIso: string;
+  onSelect: (iso: string) => void;
+  onClose: () => void;
+}) {
+  const initial = new Date(value + "T00:00:00");
+  const [shown, setShown] = useState<{ year: number; month: number }>(() => ({
+    year: initial.getFullYear(),
+    month: initial.getMonth(),
+  }));
+
+  const monthFirst = new Date(shown.year, shown.month, 1);
+  const daysInMonth = new Date(shown.year, shown.month + 1, 0).getDate();
+  // Week starts Monday — UK convention. getDay() returns 0=Sun, so shift.
+  const firstWeekday = (monthFirst.getDay() + 6) % 7;
+
+  const minDate = new Date(minIso + "T00:00:00");
+  const maxDate = new Date(maxIso + "T00:00:00");
+  const todayIsoNow = new Date().toISOString().slice(0, 10);
+
+  function isDisabled(iso: string) {
+    const d = new Date(iso + "T00:00:00");
+    return d < minDate || d > maxDate;
+  }
+
+  const cells: ({ iso: string; day: number } | null)[] = [];
+  for (let i = 0; i < firstWeekday; i++) cells.push(null);
+  for (let d = 1; d <= daysInMonth; d++) {
+    const iso = `${shown.year}-${String(shown.month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+    cells.push({ iso, day: d });
+  }
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  const monthLabel = monthFirst.toLocaleDateString("en-GB", {
+    month: "long",
+    year: "numeric",
+  });
+
+  function prevMonth() {
+    setShown((s) => {
+      const m = s.month - 1;
+      return m < 0 ? { year: s.year - 1, month: 11 } : { ...s, month: m };
+    });
+  }
+  function nextMonth() {
+    setShown((s) => {
+      const m = s.month + 1;
+      return m > 11 ? { year: s.year + 1, month: 0 } : { ...s, month: m };
+    });
+  }
+
+  // Are prev / next allowed? Constrain to min..max.
+  const prevAllowed = new Date(shown.year, shown.month, 1) > monthFirstFrom(minDate);
+  const nextAllowed = new Date(shown.year, shown.month + 1, 1) <= monthFirstFrom(maxDate);
+
+  return (
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Pick a date"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/80 p-3 sm:items-center sm:p-6"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-sm rounded-2xl border border-cream/15 bg-ink p-5 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="font-display text-xl">{monthLabel}</h3>
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={prevMonth}
+              disabled={!prevAllowed}
+              aria-label="Previous month"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-cream/15 text-cream/80 hover:border-cream/30 disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={nextMonth}
+              disabled={!nextAllowed}
+              aria-label="Next month"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-cream/15 text-cream/80 hover:border-cream/30 disabled:cursor-not-allowed disabled:opacity-30"
+            >
+              ›
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Close"
+              className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg text-cream/70 hover:text-cream"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <div className="mb-2 grid grid-cols-7 text-center text-[10px] font-bold uppercase tracking-widest text-cream/40">
+          {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => (
+            <span key={i}>{d}</span>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-7 gap-1">
+          {cells.map((c, i) => {
+            if (!c) return <span key={`empty-${i}`} className="aspect-square" />;
+            const disabled = isDisabled(c.iso);
+            const selected = c.iso === value;
+            const isToday = c.iso === todayIsoNow;
+            return (
+              <button
+                key={c.iso}
+                type="button"
+                disabled={disabled}
+                onClick={() => onSelect(c.iso)}
+                className={`flex aspect-square flex-col items-center justify-center rounded-lg text-sm transition ${
+                  selected
+                    ? "bg-plonkPink font-bold text-white"
+                    : disabled
+                      ? "cursor-not-allowed text-cream/20"
+                      : "text-cream hover:bg-cream/10"
+                } ${isToday && !selected ? "ring-1 ring-inset ring-plonkYellow/60" : ""}`}
+              >
+                {c.day}
+              </button>
+            );
+          })}
+        </div>
+
+        <button
+          type="button"
+          onClick={onClose}
+          className="mt-5 w-full rounded-full border border-cream/15 py-2.5 text-xs font-bold uppercase tracking-widest text-cream/80 hover:bg-cream/5"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function monthFirstFrom(d: Date): Date {
+  return new Date(d.getFullYear(), d.getMonth(), 1);
 }
 
 function CalendarIcon() {
