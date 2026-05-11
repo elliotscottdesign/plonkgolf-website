@@ -10,7 +10,8 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import type { StripeElementsOptions } from "@stripe/stripe-js";
-import { TICKETS, ADDONS, VENUES, fmtMoney } from "@/lib/mockData";
+import { fmtMoney } from "@/lib/mockData";
+import { loadCatalogue, type Catalogue } from "@/lib/db/catalogue";
 import {
   getStripe,
   CREATE_PAYMENT_INTENT_URL,
@@ -73,7 +74,27 @@ function CheckoutInner() {
     }
   })();
 
-  const venue = VENUES.find((v) => v.id === venueId);
+  // Load the venue's live catalogue from Supabase so we display the same
+  // prices/names the create-payment-intent function will charge.
+  const [catalogue, setCatalogue] = useState<Catalogue | null>(null);
+  const [catalogueError, setCatalogueError] = useState<string | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    loadCatalogue(venueId)
+      .then((c) => {
+        if (cancelled) return;
+        setCatalogue(c);
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setCatalogueError(e instanceof Error ? e.message : String(e));
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [venueId]);
+
+  const venue = catalogue?.venue ?? null;
   const ticketQty: Record<string, number> = (() => {
     try {
       return JSON.parse(ticketsParam);
@@ -98,8 +119,10 @@ function CheckoutInner() {
 
   const { msLeft, expired } = useHoldTimer();
 
-  const tickets = TICKETS.filter((t) => (ticketQty[t.id] || 0) > 0);
-  const addons = ADDONS.filter((a) => (addonQty[a.id] || 0) > 0);
+  const tickets =
+    catalogue?.tickets.filter((t) => (ticketQty[t.id] || 0) > 0) ?? [];
+  const addons =
+    catalogue?.addons.filter((a) => (addonQty[a.id] || 0) > 0) ?? [];
 
   // Client-side preview total — what we *show* in the summary. The real
   // amount charged is calculated server-side inside the Edge Function from
@@ -185,6 +208,24 @@ function CheckoutInner() {
       setIntentError(e instanceof Error ? e.message : "Network error");
       setIntentLoading(false);
     }
+  }
+
+  if (catalogueError) {
+    return (
+      <main className="min-h-screen px-6 py-20 text-center">
+        <h1 className="font-display text-3xl">Could not load checkout</h1>
+        <p className="mt-3 text-sm text-cream/70">{catalogueError}</p>
+      </main>
+    );
+  }
+
+  if (!catalogue) {
+    return (
+      <main className="min-h-screen px-6 py-20 text-center">
+        <div className="mx-auto h-12 w-12 animate-spin rounded-full border-2 border-cream/20 border-t-plonkYellow" />
+        <p className="mt-6 text-sm text-cream/70">Loading checkout…</p>
+      </main>
+    );
   }
 
   if (!venue || tickets.length === 0) {
