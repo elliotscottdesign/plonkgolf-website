@@ -19,7 +19,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-black">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div className="flex w-full items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center" aria-label="Plonk Golf — home">
           <Image
             src="/images/plonk-logo.png"
