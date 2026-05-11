@@ -30,7 +30,7 @@ export default function VouchersPage() {
         eyebrow="Gifts & vouchers"
         title="The Gift of Golf"
         intro="Looking for an unusual gift for a friend or loved one? Forgot someone's birthday? We've got you covered."
-        image="/images/gallery02.jpg"
+        image="/borough/drinks/Cocktail_1.jpg"
       />
 
       <section className="tint-forest-to-forestDeep mx-auto max-w-none px-6 py-20 text-center">

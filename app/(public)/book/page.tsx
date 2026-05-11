@@ -12,7 +12,7 @@ const VENUES = [
     id: "hackney",
     name: "Plonk Hackney",
     tagline: "Outdoor · 9 holes · London Fields",
-    image: "/images/hackney-hero.jpg",
+    image: "/hackney/course/Course_1.jpg",
     blurb:
       "Polynesian-themed course, retro arcade, pool, tacos and craft cocktails.",
     href: "/book/hackney",
@@ -21,7 +21,7 @@ const VENUES = [
     id: "borough",
     name: "Plonk Borough Market",
     tagline: "Indoor · 9 holes · London Bridge",
-    image: "/images/borough-hero.jpg",
+    image: "/borough/course/Course_1.jpg",
     blurb:
       "London-themed course under the arches with street-art murals and full bar.",
     href: "/book/borough",

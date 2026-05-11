@@ -13,7 +13,7 @@ export default function ContactPage() {
       <PageHero
         eyebrow="Get in touch"
         title="Say Hello"
-        image="/images/gallery07.jpg"
+        image="/hackney/venue/Interior_2.jpg"
       />
 
       <section className="tint-forest-to-forestDeep">

@@ -270,7 +270,7 @@ export default function FAQsPage() {
         eyebrow="Help & info"
         title="Booking FAQs"
         intro="Everything you need to know about how Plonk bookings work — slots, splits, prices, refunds, and what happens on the day."
-        image="/images/gallery03.jpg"
+        image="/hackney/games/Games_2.jpg"
       />
 
       <section className="bed-info">

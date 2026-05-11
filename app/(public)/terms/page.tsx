@@ -11,7 +11,7 @@ export default function TermsPage() {
       <PageHero
         eyebrow="Legal"
         title="Terms & Conditions"
-        image="/images/gallery09.jpg"
+        image="/hackney/course/Course_3.jpg"
       />
       <article className="mx-auto max-w-3xl px-6 py-16 text-sm leading-relaxed text-cream/80">
         <p>

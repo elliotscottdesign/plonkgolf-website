@@ -70,7 +70,7 @@ export default function EventsPage() {
         eyebrow="What's on"
         title="Plonk Events"
         intro="Events run by our partner venues — Plonk Hackney at No Dice Bar, and Plonk Borough."
-        image="/images/gallery08.jpg"
+        image="/hackney/games/Games_4.jpg"
       />
 
       <section className="tint-forest-to-forestDeep">

@@ -11,7 +11,7 @@ export default function PrivacyPage() {
       <PageHero
         eyebrow="Legal"
         title="Privacy Policy"
-        image="/images/gallery06.jpg"
+        image="/hackney/garden/Garden_3.jpg"
       />
       <article className="mx-auto max-w-3xl px-6 py-16 text-sm leading-relaxed text-cream/80">
         <p>

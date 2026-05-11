@@ -4,18 +4,18 @@ import PageHero from "@/components/PageHero";
 import Gallery from "@/components/Gallery";
 
 const ABOUT_GALLERY = [
-  { src: "/images/gallery02.jpg", alt: "Plonk course" },
-  { src: "/images/gallery03.jpg", alt: "Plonk crazy golf" },
-  { src: "/images/gallery06.jpg", alt: "Plonk course" },
-  { src: "/images/gallery07.jpg", alt: "Plonk course" },
-  { src: "/images/gallery09.jpg", alt: "Plonk crazy golf" },
-  { src: "/images/gallery11.jpg", alt: "Plonk course detail" },
-  { src: "/images/gallery12.jpg", alt: "Plonk crazy golf" },
-  { src: "/images/gallery13.jpg", alt: "Plonk course detail" },
-  { src: "/images/gallery14.jpg", alt: "Plonk crazy golf" },
-  { src: "/images/gallery15.jpg", alt: "Plonk course detail" },
-  { src: "/images/gallery16.jpg", alt: "Plonk crazy golf" },
-  { src: "/images/1SOCIAL_2017-1.jpg", alt: "Plonk crowd" },
+  { src: "/hackney/course/Course_1.jpg", alt: "Hackney Polynesian course" },
+  { src: "/borough/course/Course_1.jpg", alt: "Borough course" },
+  { src: "/hackney/garden/Garden_1.jpg", alt: "Hackney beer garden" },
+  { src: "/borough/venue/Venue_1.jpg", alt: "Borough arch interior" },
+  { src: "/hackney/course/Course_5.jpg", alt: "Hackney course detail" },
+  { src: "/borough/course/Course_3.jpg", alt: "Borough London-themed course" },
+  { src: "/hackney/pool/Pool_1.jpg", alt: "Hackney pool tables" },
+  { src: "/borough/games/Games_1.jpg", alt: "Borough arcade" },
+  { src: "/hackney/games/Games_2.jpg", alt: "Hackney arcade" },
+  { src: "/borough/drinks/Cocktail_1.jpg", alt: "Borough cocktail" },
+  { src: "/hackney/drinks/Drinks_3.jpg", alt: "Hackney drinks" },
+  { src: "/borough/course/Course_5.jpg", alt: "Borough course" },
 ];
 
 export const metadata: Metadata = {
@@ -31,7 +31,7 @@ export default function AboutPage() {
         eyebrow="About Plonk"
         title="All About Plonk Golf"
         intro="Founded by a troop of set designers from the film industry, banded together to create the greatest crazy golf courses imaginable and plonk them down around the Capital."
-        image="/images/about_header.jpg"
+        image="/hackney/garden/Garden_2.jpg"
       />
 
       <section className="tint-forest-to-forestDeep">
@@ -51,10 +51,10 @@ export default function AboutPage() {
 
         <div className="my-12 grid gap-6 sm:grid-cols-2">
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-            <Image src="/images/about_img01.jpg" alt="" fill sizes="(min-width:640px) 50vw, 100vw" className="object-cover" />
+            <Image src="/hackney/course/Course_3.jpg" alt="" fill sizes="(min-width:640px) 50vw, 100vw" className="object-cover" />
           </div>
           <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-            <Image src="/images/about_img02.jpg" alt="" fill sizes="(min-width:640px) 50vw, 100vw" className="object-cover" />
+            <Image src="/borough/course/Course_4.jpg" alt="" fill sizes="(min-width:640px) 50vw, 100vw" className="object-cover" />
           </div>
         </div>
 

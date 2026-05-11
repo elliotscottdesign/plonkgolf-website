@@ -44,7 +44,7 @@ export default function DealsPage() {
         eyebrow="Save on midweek"
         title="Plonk Deals"
         intro="Off-peak deals on games, drinks and food across our venues. Some offers vary by site and opening times — you're always in for a treat."
-        image="/images/gallery07.jpg"
+        image="/hackney/drinks/Drinks_3.jpg"
       />
 
       <section className="tint-forest-to-forestDeep">
