@@ -232,6 +232,46 @@ html {
   z-index: 0;
 }
 
+/* Native checkboxes — browsers paint these themselves and ignore our
+   bg-color, so an unchecked checkbox appears as a bright white square
+   on the dark form. Stripping `appearance` lets us own the look. The
+   ::before pseudo-element draws a pink tick using clip-path so we get
+   a crisp shape without bundling an SVG. */
+input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  border: 1px solid rgba(242, 235, 217, 0.3);
+  border-radius: 4px;
+  background-color: rgba(15, 23, 21, 0.6);
+  cursor: pointer;
+  display: inline-grid;
+  place-content: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+input[type="checkbox"]::before {
+  content: "";
+  width: 0.65rem;
+  height: 0.65rem;
+  background-color: #ff3d8a;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transition: transform 80ms ease-in-out;
+}
+input[type="checkbox"]:checked {
+  border-color: rgba(255, 61, 138, 0.6);
+}
+input[type="checkbox"]:checked::before {
+  transform: scale(1);
+}
+input[type="checkbox"]:focus-visible {
+  outline: 2px solid rgba(255, 61, 138, 0.5);
+  outline-offset: 2px;
+}
+
 /* Chrome / Safari autofill — by default repaints the input white with
    black text, overriding our dark form styles. The inset box-shadow
    trick is the only way around it (Chrome refuses to honour bg-color
