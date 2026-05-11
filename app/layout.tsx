@@ -17,6 +17,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Force browsers to re-validate HTML on every visit so they always
+            pick up the latest cache-busted image URLs on a fresh deploy.    */}
+        <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta httpEquiv="Pragma" content="no-cache" />
+        <meta httpEquiv="Expires" content="0" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
