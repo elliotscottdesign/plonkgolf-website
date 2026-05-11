@@ -39,10 +39,11 @@ export type Addon = {
 };
 
 export const ADDONS: Addon[] = [
-  { id: "a1", venueId: "all", name: "Round of cocktails (4)", pricePence: 2400, active: true },
-  { id: "a2", venueId: "hackney", name: "Two tacos — Taco Mates", pricePence: 800, active: true },
-  { id: "a3", venueId: "all", name: "Bottle of prosecco", pricePence: 2500, active: true },
-  { id: "a4", venueId: "borough", name: "Bottle of house red", pricePence: 2200, active: true },
+  { id: "a1", venueId: "all", name: "Arcade tokens (5)", pricePence: 300, active: true },
+  { id: "a2", venueId: "all", name: "Plonk medal", pricePence: 600, active: true },
+  { id: "a3", venueId: "all", name: "Bucket of 6 beers", pricePence: 2500, active: true },
+  { id: "a4", venueId: "all", name: "Tray of 6 shots", pricePence: 1800, active: true },
+  { id: "a5", venueId: "all", name: "Jug of rum punch", pricePence: 2500, active: true },
 ];
 
 export type Booking = {
