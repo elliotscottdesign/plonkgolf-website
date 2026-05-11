@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { Addon, Ticket, Venue } from "@/lib/db/catalogue";
 import { fmtMoney } from "@/lib/format";
+import { lookupActivePromo, type PromoKind } from "@/lib/db/promos";
 import { localIso } from "@/lib/dateIso";
 import CalendarPopup from "@/components/CalendarPopup";
 
@@ -167,8 +168,13 @@ export default function BookingFlow({
     Object.fromEntries(addons.map((a) => [a.id, 0])),
   );
   const [promoCode, setPromoCode] = useState("");
-  const [promoApplied, setPromoApplied] = useState<{ code: string; pctOff: number } | null>(null);
+  const [promoApplied, setPromoApplied] = useState<{
+    code: string;
+    kind: PromoKind;
+    value: number;
+  } | null>(null);
   const [promoError, setPromoError] = useState("");
+  const [promoBusy, setPromoBusy] = useState(false);
 
   const dates = useMemo(() => getNextDates(365), []);
   const slots = useMemo(() => generateSlots(dateIso), [dateIso]);
@@ -229,7 +235,9 @@ export default function BookingFlow({
   const subtotalPence = ticketSubtotal + addonSubtotal;
 
   const discountPence = promoApplied
-    ? Math.round((subtotalPence * promoApplied.pctOff) / 100)
+    ? promoApplied.kind === "percent"
+      ? Math.round((subtotalPence * promoApplied.value) / 100)
+      : Math.min(promoApplied.value, subtotalPence)
     : 0;
   const totalPence = Math.max(0, subtotalPence - discountPence);
   const totalTickets = Object.values(ticketQty).reduce((s, n) => s + n, 0);
@@ -308,17 +316,29 @@ export default function BookingFlow({
     !cannotFitParty &&
     !tooBigForSelfService;
 
-  function applyPromo() {
-    const code = promoCode.trim().toUpperCase();
-    if (code === "FRIDAY20") {
-      setPromoApplied({ code, pctOff: 20 });
-      setPromoError("");
-    } else if (code === "STUDENT10") {
-      setPromoApplied({ code, pctOff: 10 });
-      setPromoError("");
-    } else {
-      setPromoError("That code isn't recognised.");
+  async function applyPromo() {
+    const code = promoCode.trim();
+    if (!code) return;
+    setPromoBusy(true);
+    setPromoError("");
+    try {
+      const row = await lookupActivePromo(code);
+      if (!row) {
+        setPromoApplied(null);
+        setPromoError("That code isn't recognised.");
+        return;
+      }
+      if (row.max_uses != null && row.uses >= row.max_uses) {
+        setPromoApplied(null);
+        setPromoError("This code has reached its usage limit.");
+        return;
+      }
+      setPromoApplied({ code: row.code, kind: row.kind, value: row.value });
+    } catch {
       setPromoApplied(null);
+      setPromoError("Couldn't check that code, please try again.");
+    } finally {
+      setPromoBusy(false);
     }
   }
 
@@ -700,15 +720,18 @@ export default function BookingFlow({
               />
               <button
                 onClick={applyPromo}
-                disabled={!promoCode.trim()}
+                disabled={!promoCode.trim() || promoBusy}
                 className="rounded-lg bg-cream/10 px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-cream disabled:opacity-50"
               >
-                Apply
+                {promoBusy ? "Checking…" : "Apply"}
               </button>
             </div>
             {promoApplied && (
               <p className="mt-2 text-sm text-plonkTeal">
-                ✓ {promoApplied.code} applied — {promoApplied.pctOff}% off
+                ✓ {promoApplied.code} applied —{" "}
+                {promoApplied.kind === "percent"
+                  ? `${promoApplied.value}% off`
+                  : `${fmtMoney(promoApplied.value)} off`}
               </p>
             )}
             {promoError && <p className="mt-2 text-sm text-red-400">{promoError}</p>}

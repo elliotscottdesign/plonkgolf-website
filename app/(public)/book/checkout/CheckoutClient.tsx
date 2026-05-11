@@ -12,6 +12,7 @@ import {
 import type { StripeElementsOptions } from "@stripe/stripe-js";
 import { fmtMoney } from "@/lib/format";
 import { loadCatalogue, type Catalogue } from "@/lib/db/catalogue";
+import { lookupActivePromo, type DbPromoCode } from "@/lib/db/promos";
 import {
   getStripe,
   CREATE_PAYMENT_INTENT_URL,
@@ -131,8 +132,33 @@ function CheckoutInner() {
   let subtotal = 0;
   for (const t of tickets) subtotal += ticketQty[t.id] * t.pricePence;
   for (const a of addons) subtotal += addonQty[a.id] * a.pricePence;
-  const pct = promoCode === "FRIDAY20" ? 20 : promoCode === "STUDENT10" ? 10 : 0;
-  const discount = Math.round((subtotal * pct) / 100);
+
+  // Live promo lookup — the booking flow already verified this code, but
+  // we look it up again here so the preview total matches what the Edge
+  // Function will actually charge (the server is still the source of truth).
+  const [promo, setPromo] = useState<DbPromoCode | null>(null);
+  useEffect(() => {
+    if (!promoCode) {
+      setPromo(null);
+      return;
+    }
+    let cancelled = false;
+    lookupActivePromo(promoCode)
+      .then((row) => {
+        if (!cancelled) setPromo(row);
+      })
+      .catch(() => {
+        if (!cancelled) setPromo(null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [promoCode]);
+  const discount = promo
+    ? promo.kind === "percent"
+      ? Math.round((subtotal * promo.value) / 100)
+      : Math.min(promo.value, subtotal)
+    : 0;
   const previewTotal = Math.max(0, subtotal - discount);
 
   const fmtDate = (iso: string) => {
