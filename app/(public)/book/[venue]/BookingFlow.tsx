@@ -434,13 +434,8 @@ export default function BookingFlow({
           <section>
             <h2 className="font-display text-2xl sm:text-3xl">Select a time</h2>
             {venue.id === "hackney" && (
-              <div className="mb-4 mt-2 inline-flex flex-wrap items-center gap-x-2 gap-y-0.5 rounded-full border border-plonkYellow/40 bg-plonkYellow/10 px-4 py-2 text-xs font-semibold text-plonkYellow">
-                <span className="font-bold uppercase tracking-widest">
-                  Happy Hour
-                </span>
-                <span className="text-cream/90">
-                  Til 7pm Mon–Fri · £5 tickets &amp; drink deals
-                </span>
+              <div className="mb-4 mt-2 inline-flex items-center rounded-full border border-plonkYellow/40 bg-plonkYellow/10 px-4 py-2 text-xs font-semibold text-cream/90">
+                Happy Hour Mon – Fri, Drinks Deals til 7pm
               </div>
             )}
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
