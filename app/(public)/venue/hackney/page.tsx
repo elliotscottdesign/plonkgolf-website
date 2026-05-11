@@ -36,8 +36,8 @@ export default function HackneyPage() {
         image="/hackney/course/Course_1.jpg"
       />
 
-      {/* Polynesian intro (forest → plum) */}
-      <section className="tint-forest-to-plum relative overflow-hidden border-t border-forestLine/40 px-6 py-20 md:py-28">
+      {/* Polynesian intro (forest → deeper plum) */}
+      <section className="tint-forest-to-plumDeep relative overflow-hidden border-t border-forestLine/40 px-6 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16">
           <Reveal>
             <div>
@@ -83,8 +83,8 @@ export default function HackneyPage() {
         </div>
       </section>
 
-      {/* More than golf (plum → ember) */}
-      <section className="tint-plum-to-ember relative overflow-hidden border-t border-plumLine/40 px-6 py-24">
+      {/* More than golf (stays in plum) */}
+      <section className="tint-plumDeep-to-plum relative overflow-hidden border-t border-plumLine/40 px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -133,17 +133,18 @@ export default function HackneyPage() {
         heading="Inside Plonk Hackney"
         intro="A look around — Polynesian course, beer garden, pool, arcade and tiki bar."
         images={HACKNEY_GALLERY}
+        tint="tint-plum"
       />
 
-      {/* Find us (ember → forest) */}
-      <section className="tint-ember-to-forest border-t border-emberLine/40 px-6 py-24">
+      {/* Find us (plum → forest) */}
+      <section className="tint-plum-to-forest-deep border-t border-plumLine/40 px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-4xl sm:text-5xl">Find us</h2>
           </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <Reveal>
-              <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
+              <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   Address
                 </p>
@@ -155,7 +156,7 @@ export default function HackneyPage() {
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
+              <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   Getting here
                 </p>

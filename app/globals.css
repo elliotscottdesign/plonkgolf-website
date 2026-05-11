@@ -99,6 +99,24 @@ html {
 .tint-forest-to-ember    { background: linear-gradient(180deg, var(--forest) 0%, var(--ember-deep) 100%); }
 .tint-hero               { background: linear-gradient(180deg, var(--forest-deep) 0%, var(--forest) 100%); }
 
+/* Per-page tonal beds — keep within one half of the palette so each page
+   reads with its own identity (Hackney purple, Borough ember, info pages green). */
+.tint-forest-to-plumDeep   { background: linear-gradient(180deg, var(--forest) 0%, var(--plum) 50%, var(--plum-deep) 100%); }
+.tint-plumDeep-to-plum     { background: linear-gradient(180deg, var(--plum-deep) 0%, var(--plum) 100%); }
+.tint-plum-to-forest-deep  { background: linear-gradient(180deg, var(--plum) 0%, var(--forest) 100%); }
+
+.tint-forest-to-emberDeep  { background: linear-gradient(180deg, var(--forest) 0%, var(--ember) 50%, var(--ember-deep) 100%); }
+.tint-emberDeep-to-ember   { background: linear-gradient(180deg, var(--ember-deep) 0%, var(--ember) 100%); }
+.tint-ember-to-forest-deep { background: linear-gradient(180deg, var(--ember) 0%, var(--forest) 100%); }
+
+.tint-forest-to-forestDeep { background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 100%); }
+.tint-forestDeep-to-forest { background: linear-gradient(180deg, var(--forest-deep) 0%, var(--forest) 100%); }
+
+/* Long-scroll page beds (FAQs etc.) — one slow tonal pour for a whole page */
+.bed-hackney { background: linear-gradient(180deg, var(--forest) 0%, var(--plum) 35%, var(--plum-deep) 70%, var(--forest) 100%); }
+.bed-borough { background: linear-gradient(180deg, var(--forest) 0%, var(--ember) 35%, var(--ember-deep) 70%, var(--forest) 100%); }
+.bed-info    { background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 50%, var(--forest) 100%); }
+
 /* Glowing accent blobs that sit behind big serif headlines for warmth */
 .glow-blob::before {
   content: "";

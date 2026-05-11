@@ -41,13 +41,13 @@ export default function PrivateHirePage() {
         image="/images/1SOCIAL_2017-1.jpg"
       />
 
-      <section className="tint-forest-to-plum border-t border-forestLine/40">
+      <section className="tint-forest-to-forestDeep border-t border-forestLine/40">
       <div className="mx-auto max-w-6xl px-6 py-20">
         <div className="space-y-12">
           {VENUES.map((v) => (
             <article
               key={v.name}
-              className="grid gap-8 overflow-hidden rounded-3xl border border-plumLine/60 bg-plumRaised md:grid-cols-2"
+              className="grid gap-8 overflow-hidden rounded-3xl border border-forestLine/60 bg-forestRaised md:grid-cols-2"
             >
               <div className="relative aspect-[4/3] md:aspect-auto">
                 <Image
@@ -89,7 +89,7 @@ export default function PrivateHirePage() {
           ))}
         </div>
 
-        <div className="mt-16 rounded-2xl border border-plumLine/60 bg-plumRaised p-8 text-center">
+        <div className="mt-16 rounded-2xl border border-forestLine/60 bg-forestRaised p-8 text-center">
           <p className="text-sm text-cream/70">
             Ready to chat? Drop our bookings team a line at{" "}
             <a

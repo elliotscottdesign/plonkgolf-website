@@ -16,14 +16,14 @@ export default function ContactPage() {
         image="/images/gallery07.jpg"
       />
 
-      <section className="tint-forest-to-plum border-t border-forestLine/40">
+      <section className="tint-forest-to-forestDeep border-t border-forestLine/40">
       <div className="mx-auto max-w-3xl px-6 py-20">
         <p className="text-base leading-relaxed text-cream/85">
           For group bookings, partnership enquiries or anything else, drop us
           a line — we read every message.
         </p>
 
-        <div className="mt-10 rounded-2xl border border-plumLine/60 bg-plumRaised p-8">
+        <div className="mt-10 rounded-2xl border border-forestLine/60 bg-forestRaised p-8">
           <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
             Email
           </p>

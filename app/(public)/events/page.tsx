@@ -73,7 +73,7 @@ export default function EventsPage() {
         image="/images/gallery08.jpg"
       />
 
-      <section className="tint-forest-to-plum border-t border-forestLine/40">
+      <section className="tint-forest-to-forestDeep border-t border-forestLine/40">
       <div className="mx-auto max-w-6xl px-6 py-20">
         <div className="grid gap-10 md:grid-cols-2">
           <VenueColumn
@@ -100,7 +100,7 @@ export default function EventsPage() {
 function VenueColumn({ name, events }: { name: string; events: Event[] }) {
   return (
     <div>
-      <div className="border-b border-plumLine/60 pb-3">
+      <div className="border-b border-forestLine/60 pb-3">
         <p className="text-xs font-bold uppercase tracking-[0.25em] text-plonkYellow">
           Venue
         </p>
@@ -113,8 +113,8 @@ function VenueColumn({ name, events }: { name: string; events: Event[] }) {
             key={e.title}
             className={`rounded-2xl p-6 ${
               e.featured
-                ? "border border-plonkPink/40 bg-gradient-to-br from-plonkPink/15 to-plumDeep"
-                : "border border-plumLine/60 bg-plumRaised"
+                ? "border border-plonkPink/40 bg-gradient-to-br from-plonkPink/15 to-forestDeep"
+                : "border border-forestLine/60 bg-forestRaised"
             }`}
           >
             {e.featured && (

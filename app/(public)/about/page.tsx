@@ -34,7 +34,7 @@ export default function AboutPage() {
         image="/images/about_header.jpg"
       />
 
-      <section className="tint-forest-to-plum border-t border-forestLine/40">
+      <section className="tint-forest-to-forestDeep border-t border-forestLine/40">
       <article className="mx-auto max-w-3xl px-6 py-20 text-base leading-relaxed text-cream/85">
         <p>
           Plonk Crazy Golf was founded by a troop of set designers from the
@@ -90,6 +90,7 @@ export default function AboutPage() {
         heading="A decade of Plonking"
         intro="Highlights from courses past and present."
         images={ABOUT_GALLERY}
+        tint="tint-forest-deep"
       />
     </main>
   );

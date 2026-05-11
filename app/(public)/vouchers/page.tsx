@@ -33,7 +33,7 @@ export default function VouchersPage() {
         image="/images/gallery02.jpg"
       />
 
-      <section className="tint-forest-to-plum border-t border-forestLine/40 mx-auto max-w-none px-6 py-20 text-center">
+      <section className="tint-forest-to-forestDeep border-t border-forestLine/40 mx-auto max-w-none px-6 py-20 text-center">
       <div className="mx-auto max-w-3xl">
         <p className="text-base leading-relaxed text-cream/80 sm:text-lg">
           All of our vouchers are valid for twelve months from the date of
@@ -58,13 +58,13 @@ export default function VouchersPage() {
       </div>
       </section>
 
-      <section className="tint-plum-to-ember border-t border-plumLine/40">
+      <section className="tint-forestDeep-to-forest border-t border-forestLine/40">
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="grid gap-8 md:grid-cols-3">
             {PERKS.map((p) => (
               <div
                 key={p.title}
-                className="rounded-2xl border border-emberLine/60 bg-emberRaised p-6"
+                className="rounded-2xl border border-forestLine/60 bg-forestRaised p-6"
               >
                 <h3 className="font-display text-xl">{p.title}</h3>
                 <p className="mt-3 text-sm leading-relaxed text-cream/75">

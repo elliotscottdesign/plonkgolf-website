@@ -36,11 +36,11 @@ export default function BoroughMarketPage() {
         image="/borough/course/Course_1.jpg"
       />
 
-      {/* London course intro (forest → plum) */}
-      <section className="tint-forest-to-plum relative overflow-hidden border-t border-forestLine/40 px-6 py-20 md:py-28">
+      {/* London course intro (forest → deeper ember) */}
+      <section className="tint-forest-to-emberDeep relative overflow-hidden border-t border-forestLine/40 px-6 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16">
           <Reveal>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumRaised md:order-2">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-emberRaised md:order-2">
               <Image
                 src="/borough/course/Course_2.jpg"
                 alt="Borough London-themed course"
@@ -83,8 +83,8 @@ export default function BoroughMarketPage() {
         </div>
       </section>
 
-      {/* What's under the arches (plum → ember) */}
-      <section className="tint-plum-to-ember relative overflow-hidden border-t border-plumLine/40 px-6 py-24">
+      {/* What's under the arches (stays in ember) */}
+      <section className="tint-emberDeep-to-ember relative overflow-hidden border-t border-emberLine/40 px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -133,10 +133,11 @@ export default function BoroughMarketPage() {
         heading="Inside Plonk Borough"
         intro="The London-themed course, the arcade, the bar — all under London Bridge."
         images={BOROUGH_GALLERY}
+        tint="tint-ember"
       />
 
       {/* Find us (ember → forest) */}
-      <section className="tint-ember-to-forest border-t border-emberLine/40 px-6 py-24">
+      <section className="tint-ember-to-forest-deep border-t border-emberLine/40 px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-4xl sm:text-5xl">Find us</h2>
@@ -205,7 +206,7 @@ function FeatureCard({
 }) {
   return (
     <Reveal>
-      <article className="group h-full overflow-hidden rounded-2xl border border-plumLine/50 bg-plum transition hover:border-plonkYellow/40">
+      <article className="group h-full overflow-hidden rounded-2xl border border-emberLine/50 bg-ember transition hover:border-plonkYellow/40">
         <div className="relative aspect-[5/3] overflow-hidden">
           <Image
             src={image}

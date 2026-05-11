@@ -4,14 +4,16 @@ export default function Gallery({
   heading,
   intro,
   images,
+  tint = "tint-forest",
 }: {
   heading?: string;
   intro?: string;
   images: { src: string; alt: string }[];
+  tint?: string;
 }) {
   if (images.length === 0) return null;
   return (
-    <section className="tint-ember border-t border-emberLine/40">
+    <section className={`${tint} border-t border-cream/10`}>
       <div className="mx-auto max-w-6xl px-6 py-16">
         {heading && (
           <h2 className="text-center font-display text-3xl sm:text-4xl">
