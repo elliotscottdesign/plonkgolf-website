@@ -3,104 +3,127 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Gallery from "@/components/Gallery";
+import Reveal from "@/components/Reveal";
 
 const HACKNEY_GALLERY = [
-  { src: "/images/Plonk_Hackeny_1976_web.jpg", alt: "Plonk Hackney" },
-  { src: "/images/Plonk_Hackeny_2788_web.jpg", alt: "Plonk Hackney course" },
-  { src: "/images/PLONK-HACKNEY-NOV-220190_web.jpg", alt: "Plonk Hackney evening" },
-  { src: "/images/PLONK-HACKNEY-NOV-220217_Web.jpg", alt: "Plonk Hackney bar" },
-  { src: "/images/PLONK_LF_AW_OCt_20_web.jpg", alt: "Plonk Hackney autumn" },
-  { src: "/images/Plonk_LF_2020_web-145.jpg", alt: "Plonk Hackney games" },
-  { src: "/images/Plonk_Hackney_Pool_1_web.jpg", alt: "Hackney pool table" },
-  { src: "/images/MPL_294A9392_Web.jpg", alt: "Hackney detail" },
-  { src: "/images/MPL_294A9492_Web.jpg", alt: "Hackney detail" },
-  { src: "/images/PAH-V2-1-1.jpg", alt: "Plonk Hackney venue" },
-  { src: "/images/PAH-V2-3.jpg", alt: "Plonk Hackney venue" },
-  { src: "/images/HACKNEY_0R1A9980_web1.jpg", alt: "Hackney scene" },
+  { src: "/hackney/course/Course_2.jpg", alt: "Hackney Polynesian course" },
+  { src: "/hackney/venue/Interior_2.jpg", alt: "Hackney tiki bar" },
+  { src: "/hackney/garden/Garden_1.jpg", alt: "Hackney beer garden" },
+  { src: "/hackney/pool/Pool_1.jpg", alt: "Hackney pool tables" },
+  { src: "/hackney/games/Games_1.jpg", alt: "Hackney arcade" },
+  { src: "/hackney/drinks/Drinks_1.jpg", alt: "Hackney cocktails" },
+  { src: "/hackney/course/Course_5.jpg", alt: "Hackney course detail" },
+  { src: "/hackney/venue/Interior_7.jpg", alt: "Hackney interior" },
+  { src: "/hackney/garden/Garden_3.jpg", alt: "Hackney garden evening" },
+  { src: "/hackney/games/Games_4.jpg", alt: "Hackney arcade cabinets" },
+  { src: "/hackney/drinks/Drinks_6.jpg", alt: "Hackney drinks" },
+  { src: "/hackney/course/Course_8.jpg", alt: "Hackney course" },
 ];
 
 export const metadata: Metadata = {
   title: "Plonk Hackney — Crazy Golf in East London",
   description:
-    "Polynesian-themed outdoor crazy golf in Hackney, a short walk from Broadway Market. Retro arcade, pool tables, craft cocktails and tacos.",
+    "Polynesian-themed crazy golf in Hackney, a short walk from Broadway Market. Retro arcade, pool tables, craft cocktails, tacos and a beer garden.",
 };
 
 export default function HackneyPage() {
   return (
-    <main>
+    <main className="bg-forest">
       <PageHero
         eyebrow="Hackney · Outdoor · 9 holes"
         title="Crazy Golf in Hackney"
         intro="Our perfectly positioned games bar and golf spot is just a short walk from Broadway Market and looks across London Fields."
-        image="/images/hackney-hero.jpg"
+        image="/hackney/course/Course_1.jpg"
       />
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <div className="grid items-center gap-10 md:grid-cols-2">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
-              We've glown up!
-            </p>
-            <h2 className="mt-2 font-display text-3xl sm:text-4xl">
-              A Polynesian putt paradise
-            </h2>
-            <p className="mt-5 text-base leading-relaxed text-cream/80">
-              Our Hackney course has been rebuilt and it's bigger and better
-              than ever. With new holes set inside a Polynesian-themed putt
-              paradise, this new course is the jewel in our mini golf crown.
-              Take on volcano canyon, traverse the tiki forest, make an
-              offering to our golf gods, whip around stone circle and dive
-              under the sea with octopuses — all now covered and out of the
-              rain.
-            </p>
-            <Link
-              href="/book/hackney"
-              className="mt-8 inline-block rounded-full bg-plonkPink px-8 py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
-            >
-              Book Hackney
-            </Link>
-          </div>
-          <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-            <Image
-              src="/images/gallery01.jpg"
-              alt="Plonk Hackney course"
-              fill
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
-            />
-          </div>
+      {/* Polynesian intro */}
+      <section className="border-t border-forestLine/40 px-6 py-20 md:py-28">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16">
+          <Reveal>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
+                We've glown up
+              </p>
+              <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
+                A Polynesian putt paradise
+              </h2>
+              <p className="mt-6 text-base leading-relaxed text-cream/80 sm:text-lg">
+                Our Hackney course has been rebuilt — bigger, brighter and
+                bolder than ever. Volcano canyons, a tiki forest, golf gods to
+                appease, a stone circle to navigate and octopuses to dodge
+                under the sea — all now fully covered and out of the rain.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link
+                  href="/book/hackney"
+                  className="inline-block rounded-full bg-plonkPink px-8 py-3 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-plonkPink/20 transition hover:bg-plonkPink/90"
+                >
+                  Book Hackney
+                </Link>
+                <Link
+                  href="/private-hire"
+                  className="inline-flex items-center text-sm font-semibold uppercase tracking-wider text-cream/80 transition hover:text-cream"
+                >
+                  Private hire →
+                </Link>
+              </div>
+            </div>
+          </Reveal>
+          <Reveal delay={120}>
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-forestRaised">
+              <Image
+                src="/hackney/course/Course_3.jpg"
+                alt="Polynesian course detail"
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover"
+              />
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      <section className="border-t border-cream/10 bg-ink/60">
-        <div className="mx-auto max-w-6xl px-6 py-16">
-          <h2 className="text-center font-display text-3xl sm:text-4xl">
-            More than just golf
-          </h2>
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
+      {/* More than golf */}
+      <section className="border-t border-forestLine/40 bg-forestDeep px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <Reveal>
+            <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
+              The full Plonk
+            </p>
+            <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
+              More than just golf
+            </h2>
+          </Reveal>
+          <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <FeatureCard
-              title="Pool Tables"
-              body="Two 7ft American pool tables at £5 for 30 minutes. Perfect for a rematch if you don't fare so well on the golf course. Under 16s are not permitted to play."
+              image="/hackney/pool/Pool_2.jpg"
+              title="Pool tables"
+              body="Two 7ft American pool tables, £5 for 30 minutes. Perfect rematch if you don't fare so well on the course. Over-16s only."
             />
             <FeatureCard
-              title="Retro Arcade"
-              body="Pinball machines, retro multi-game cabinets, shoot-'em-ups, skeeball and foosball. Hit 270 on our vintage skeeball machine and we'll get you a free cocktail."
+              image="/hackney/games/Games_2.jpg"
+              title="Retro arcade"
+              body="Pinball, retro multi-game cabinets, shoot-'em-ups, skee-ball and foosball. Hit 270 on the skee-ball and the cocktail's on us."
             />
             <FeatureCard
-              title="Cocktail Bar"
-              body="Our tiki-styled bar has a rotating menu of seasonal cocktails. Two cocktails for £12 every weekday until 7pm. Local craft draughts, wines and mocktails too."
+              image="/hackney/drinks/Drinks_3.jpg"
+              title="Tiki cocktail bar"
+              body="Rotating seasonal cocktails, local craft on draught, wines and mocktails. Two cocktails for £12, weekdays till 7pm."
             />
             <FeatureCard
-              title="El Caravana Tacos"
-              body="Our taco caravan in the beer garden, Tuesday–Saturday. Taco Tuesday: £5 for two tacos all day. Paired perfectly with our cassava fries."
+              image="/hackney/garden/Garden_2.jpg"
+              title="Beer garden"
+              body="When the sun's out — kick back with top-of-the-line ping pong tables to keep the competition going outside."
             />
             <FeatureCard
-              title="Beer Garden"
-              body="When the sun is out, kick back in our beer garden — complete with top-of-the-line ping pong tables to keep the competition going."
+              image="/hackney/venue/Interior_4.jpg"
+              title="El Caravana tacos"
+              body="Our taco caravan, Tuesday–Saturday. Taco Tuesday: £5 for two, all day. Pair with our cassava fries."
             />
             <FeatureCard
-              title="Doubles Pool Tournament"
-              body="2nd and 4th Wednesday of every month. Over £200 in bar tabs, medals, cases of beer and Tees up for grabs. Only 8 slots — always sells out."
+              image="/hackney/games/Games_6.jpg"
+              title="Doubles pool tournament"
+              body="2nd and 4th Wednesday of the month. £200+ in bar tabs, medals, beer and Tees. Eight slots — always sells out."
             />
           </div>
         </div>
@@ -112,28 +135,46 @@ export default function HackneyPage() {
         images={HACKNEY_GALLERY}
       />
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className="font-display text-3xl sm:text-4xl">Find us</h2>
-        <div className="mt-6 grid gap-8 md:grid-cols-2">
-          <div className="rounded-2xl border border-cream/10 bg-ink/40 p-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
-              Address
-            </p>
-            <address className="mt-3 not-italic text-base leading-relaxed text-cream/85">
-              Arch 407, Mentmore Terrace<br />
-              London E8 3PP<br />
-              <span className="text-cream/60">Main entrance on Parkside</span>
-            </address>
-          </div>
-          <div className="rounded-2xl border border-cream/10 bg-ink/40 p-6">
-            <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
-              Getting here
-            </p>
-            <ul className="mt-3 space-y-1 text-sm text-cream/80">
-              <li>· 2 mins from London Fields Overground</li>
-              <li>· 5 mins from Broadway Market</li>
-              <li>· 10 mins from Hackney Central Overground</li>
-            </ul>
+      {/* Find us */}
+      <section className="border-t border-forestLine/40 px-6 py-24">
+        <div className="mx-auto max-w-6xl">
+          <Reveal>
+            <h2 className="font-display text-4xl sm:text-5xl">Find us</h2>
+          </Reveal>
+          <div className="mt-10 grid gap-6 md:grid-cols-2">
+            <Reveal>
+              <div className="h-full rounded-2xl border border-forestLine/60 bg-forestRaised p-7">
+                <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
+                  Address
+                </p>
+                <address className="mt-3 not-italic text-base leading-relaxed text-cream/90">
+                  Arch 407, Mentmore Terrace<br />
+                  London E8 3PP<br />
+                  <span className="text-cream/60">Main entrance on Parkside</span>
+                </address>
+              </div>
+            </Reveal>
+            <Reveal delay={100}>
+              <div className="h-full rounded-2xl border border-forestLine/60 bg-forestRaised p-7">
+                <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
+                  Getting here
+                </p>
+                <ul className="mt-3 space-y-2 text-sm text-cream/80">
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-plonkYellow" />
+                    2 mins from London Fields Overground
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-plonkYellow" />
+                    5 mins from Broadway Market
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-plonkYellow" />
+                    10 mins from Hackney Central Overground
+                  </li>
+                </ul>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -141,11 +182,32 @@ export default function HackneyPage() {
   );
 }
 
-function FeatureCard({ title, body }: { title: string; body: string }) {
+function FeatureCard({
+  image,
+  title,
+  body,
+}: {
+  image: string;
+  title: string;
+  body: string;
+}) {
   return (
-    <div className="rounded-2xl border border-cream/10 bg-ink/40 p-6">
-      <h3 className="font-display text-xl">{title}</h3>
-      <p className="mt-3 text-sm leading-relaxed text-cream/75">{body}</p>
-    </div>
+    <Reveal>
+      <article className="group h-full overflow-hidden rounded-2xl border border-forestLine/50 bg-forest transition hover:border-plonkYellow/40">
+        <div className="relative aspect-[5/3] overflow-hidden">
+          <Image
+            src={image}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="object-cover transition duration-700 group-hover:scale-105"
+          />
+        </div>
+        <div className="p-6">
+          <h3 className="font-display text-2xl">{title}</h3>
+          <p className="mt-3 text-sm leading-relaxed text-cream/75">{body}</p>
+        </div>
+      </article>
+    </Reveal>
   );
 }
