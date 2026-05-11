@@ -6,6 +6,7 @@
 // Stripe pings us when a PaymentIntent transitions to a terminal state.
 // We verify the signature against STRIPE_WEBHOOK_SECRET and then:
 //   - payment_intent.succeeded  → booking.status = 'confirmed'
+//                                 + fire the booking-confirmation email
 //   - payment_intent.canceled   → booking.status = 'cancelled'
 //   - payment_intent.payment_failed → booking.status = 'expired'
 //     (releases capacity; customer can retry from scratch)
@@ -30,6 +31,36 @@ const stripe = new Stripe(STRIPE_SECRET_KEY, {
 const db = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
   auth: { persistSession: false },
 });
+
+// Fire the confirmation email. Failures here MUST NOT fail the webhook —
+// Stripe would just keep retrying and we'd re-send the same email. The
+// booking is already confirmed in the DB at this point; the email is a
+// nice-to-have on top.
+async function sendConfirmationEmail(bookingId: string): Promise<void> {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/functions/v1/send-booking-confirmation`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Service-role key counts as a valid JWT to Supabase Edge Functions,
+          // so the email function can keep JWT verification on.
+          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+        },
+        body: JSON.stringify({ booking_id: bookingId }),
+      },
+    );
+    if (!res.ok) {
+      const txt = await res.text().catch(() => "");
+      console.error(
+        `Email send failed for booking ${bookingId}: ${res.status} ${txt}`,
+      );
+    }
+  } catch (e) {
+    console.error(`Email send threw for booking ${bookingId}:`, e);
+  }
+}
 
 Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("POST only", { status: 405 });
@@ -99,6 +130,8 @@ Deno.serve(async (req) => {
     return new Response("already confirmed", { status: 200 });
   }
 
+  const wasAlreadyConfirmed = existing.status === "confirmed";
+
   const { error: updateErr } = await db
     .from("bookings")
     .update({ status: newStatus, expires_at: null })
@@ -108,6 +141,13 @@ Deno.serve(async (req) => {
   console.log(
     `webhook ${event.type}: booking ${existing.id} (${reference ?? "no-ref"}) → ${newStatus}`,
   );
+
+  // Only send the confirmation email on a fresh confirmation. If Stripe
+  // re-sends payment_intent.succeeded later (their retry schedule), the
+  // booking is already confirmed and we don't want to spam the customer.
+  if (newStatus === "confirmed" && !wasAlreadyConfirmed) {
+    await sendConfirmationEmail(existing.id);
+  }
 
   return new Response("ok", { status: 200 });
 });
