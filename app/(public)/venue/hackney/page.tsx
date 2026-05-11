@@ -83,8 +83,8 @@ export default function HackneyPage() {
         </div>
       </section>
 
-      {/* More than golf (stays in plum) */}
-      <section className="tint-plumDeep-to-plum relative overflow-hidden border-t border-plumLine/40 px-6 py-24">
+      {/* More than golf (plum → ember) */}
+      <section className="tint-plum-to-ember relative overflow-hidden border-t border-plumLine/40 px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -134,20 +134,20 @@ export default function HackneyPage() {
 
       <Gallery
         heading="Inside Plonk Hackney"
-        intro="A look around — Polynesian course, beer garden, pool, arcade and tiki bar."
+        intro="A look around — Polynesian course, beer garden, pool, arcade and No Dice Bar."
         images={HACKNEY_GALLERY}
-        tint="tint-plum"
+        tint="tint-ember"
       />
 
-      {/* Find us (plum → forest) */}
-      <section className="tint-plum-to-forest-deep border-t border-plumLine/40 px-6 py-24">
+      {/* Find us (ember → plum) */}
+      <section className="tint-ember-to-plum border-t border-emberLine/40 px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-4xl sm:text-5xl">Find us</h2>
           </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <Reveal>
-              <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
+              <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   Address
                 </p>
@@ -159,7 +159,7 @@ export default function HackneyPage() {
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
+              <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   Getting here
                 </p>
@@ -202,7 +202,7 @@ function FeatureCard({
   external?: boolean;
 }) {
   const inner = (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-plum transition hover:border-plonkYellow/40">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-emberLine/50 bg-emberRaised transition hover:border-plonkYellow/40">
       <div className="relative aspect-[5/3] overflow-hidden">
         <Image
           src={image}
