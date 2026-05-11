@@ -33,9 +33,9 @@ const FEATURES = [
 
 export default function HomePage() {
   return (
-    <main className="bg-forest">
-      {/* ───────────── HERO ───────────── */}
-      <section className="relative isolate flex min-h-[92vh] flex-col items-center justify-center px-6 text-center">
+    <main>
+      {/* ───────────── HERO (forest) ───────────── */}
+      <section className="tint-hero relative isolate flex min-h-[92vh] flex-col items-center justify-center px-6 text-center">
         <div className="absolute inset-0 -z-10">
           <Image
             src="/borough/course/Course_1.jpg"
@@ -85,16 +85,16 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────────── MISSION ───────────── */}
-      <section className="border-t border-forestLine/40 px-6 py-28 md:py-40">
-        <div className="mx-auto max-w-4xl text-center">
+      {/* ───────────── MISSION (forest → plum) ───────────── */}
+      <section className="tint-forest-to-plum relative overflow-hidden px-6 py-28 md:py-40">
+        <div className="glow-blob relative mx-auto max-w-4xl text-center">
           <Reveal>
-            <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
+            <p className="relative z-10 text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
               Original. Independent. London-made.
             </p>
           </Reveal>
           <Reveal delay={120}>
-            <h2 className="mt-8 font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
+            <h2 className="relative z-10 mt-8 font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
               We don't do off-the-shelf.
               <br />
               <span className="text-cream/60">
@@ -105,7 +105,7 @@ export default function HomePage() {
             </h2>
           </Reveal>
           <Reveal delay={240}>
-            <p className="mx-auto mt-10 max-w-2xl text-base leading-relaxed text-cream/70 sm:text-lg">
+            <p className="relative z-10 mx-auto mt-10 max-w-2xl text-base leading-relaxed text-cream/70 sm:text-lg">
               Plonk has been London's original crazy golf bar since 2014.
               Independent, family-run, and still designing every course
               ourselves. No franchises. No imitators.
@@ -114,8 +114,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────────── VENUES ───────────── */}
-      <section id="venues" className="relative">
+      {/* ───────────── VENUES (plum) ───────────── */}
+      <section id="venues" className="tint-plum relative overflow-hidden">
+        <div className="glow-blob-plum pointer-events-none absolute inset-x-0 top-0 h-[40vh]" />
         <VenueSpotlight
           name="Hackney"
           bookHref="/book/hackney"
@@ -150,9 +151,10 @@ export default function HomePage() {
         />
       </section>
 
-      {/* ───────────── FEATURES ───────────── */}
-      <section className="border-t border-forestLine/40 bg-forestDeep px-6 py-28">
-        <div className="mx-auto max-w-6xl">
+      {/* ───────────── FEATURES (plum → ember) ───────────── */}
+      <section className="tint-plum-to-ember relative overflow-hidden border-t border-plumLine/40 px-6 py-28">
+        <div className="glow-blob-ember pointer-events-none absolute inset-x-0 bottom-0 h-[50vh]" />
+        <div className="relative mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
               Inside every Plonk
@@ -162,10 +164,10 @@ export default function HomePage() {
             </h2>
           </Reveal>
 
-          <div className="mt-16 grid gap-px overflow-hidden rounded-2xl bg-forestLine/50 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-16 grid gap-px overflow-hidden rounded-2xl bg-plumLine/50 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map((f, i) => (
               <Reveal key={f.title} delay={i * 80}>
-                <div className="h-full bg-forest p-8">
+                <div className="h-full bg-plum p-8">
                   <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                     0{i + 1}
                   </p>
@@ -180,8 +182,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────────── PRESS MARQUEE ───────────── */}
-      <section className="overflow-hidden border-y border-forestLine/40 bg-forest py-12">
+      {/* ───────────── PRESS MARQUEE (ember) ───────────── */}
+      <section className="tint-ember-deep overflow-hidden border-y border-emberLine/40 py-12">
         <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-cream/40">
           As featured in
         </p>
@@ -205,8 +207,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────────── PRIVATE HIRE + VOUCHERS ───────────── */}
-      <section className="px-6 py-28">
+      {/* ───────────── PRIVATE HIRE + VOUCHERS (ember → forest) ───────────── */}
+      <section className="tint-ember-to-forest px-6 py-28">
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
           <CtaCard
             eyebrow="Bring your people"
@@ -225,14 +227,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────────── BIG CTA FOOTER ───────────── */}
-      <section className="relative overflow-hidden border-t border-forestLine/40">
+      {/* ───────────── BIG CTA FOOTER (forest) ───────────── */}
+      <section className="tint-forest relative overflow-hidden border-t border-forestLine/40">
         <div className="absolute inset-0 -z-10">
           <Image
             src="/hackney/pool/Pool_1.jpg"
             alt=""
             fill
-            className="object-cover opacity-30"
+            className="object-cover opacity-25"
             sizes="100vw"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-forest/80 via-forest/90 to-forest" />
@@ -289,14 +291,14 @@ function VenueSpotlight({
 }) {
   const imageFirst = align === "left";
   return (
-    <div className="border-t border-forestLine/40 px-6 py-20 md:py-32">
+    <div className="relative border-t border-plumLine/40 px-6 py-20 md:py-32">
       <div
-        className={`mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16 ${
+        className={`relative mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16 ${
           imageFirst ? "" : "md:[&>div:first-child]:order-2"
         }`}
       >
         <Reveal>
-          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-forestRaised">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumRaised">
             <Image
               src={image}
               alt={imageAlt}
@@ -365,7 +367,7 @@ function CtaCard({
   return (
     <Link
       href={href}
-      className="group relative overflow-hidden rounded-2xl border border-forestLine/60 bg-forestRaised transition hover:border-plonkYellow/60"
+      className="group relative overflow-hidden rounded-2xl border border-emberLine/60 bg-emberRaised transition hover:border-plonkYellow/60"
     >
       <div className="relative aspect-[16/10]">
         <Image
@@ -375,7 +377,7 @@ function CtaCard({
           sizes="(min-width: 768px) 50vw, 100vw"
           className="object-cover transition duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-forestDeep via-forestDeep/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-emberDeep via-emberDeep/40 to-transparent" />
       </div>
       <div className="p-8">
         <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">

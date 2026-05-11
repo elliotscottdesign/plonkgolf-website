@@ -56,6 +56,16 @@ create table if not exists public.tickets (
 
 create index if not exists tickets_venue_active_sort on public.tickets (venue_id, active, sort_order);
 
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'tickets_venue_id_name_key'
+  ) then
+    alter table public.tickets
+      add constraint tickets_venue_id_name_key unique (venue_id, name);
+  end if;
+end$$;
+
 drop trigger if exists tickets_updated_at on public.tickets;
 create trigger tickets_updated_at
   before update on public.tickets
@@ -82,6 +92,16 @@ create trigger addons_updated_at
   before update on public.addons
   for each row execute function public.set_updated_at();
 
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'addons_venue_id_name_key'
+  ) then
+    alter table public.addons
+      add constraint addons_venue_id_name_key unique (venue_id, name);
+  end if;
+end$$;
+
 -- =============================================================
 -- OPENING HOURS (per venue per day of week)
 -- =============================================================
@@ -106,6 +126,16 @@ create table if not exists public.closed_dates (
 );
 
 create index if not exists closed_dates_date on public.closed_dates (date);
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint where conname = 'closed_dates_venue_id_date_key'
+  ) then
+    alter table public.closed_dates
+      add constraint closed_dates_venue_id_date_key unique (venue_id, date);
+  end if;
+end$$;
 
 -- =============================================================
 -- SLOT CAPACITY OVERRIDES

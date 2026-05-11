@@ -12,14 +12,14 @@ export default function PageHero({
   image: string;
 }) {
   return (
-    <section className="relative isolate flex min-h-[45vh] flex-col items-center justify-center px-6 py-20 text-center">
+    <section className="tint-hero relative isolate flex min-h-[55vh] flex-col items-center justify-center px-6 py-24 text-center">
       <div className="absolute inset-0 -z-10">
         <Image
           src={image}
           alt=""
           fill
           priority
-          className="object-cover opacity-40"
+          className="object-cover opacity-45"
           sizes="100vw"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-forestDeep/60 via-forestDeep/70 to-forest" />

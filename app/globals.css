@@ -9,6 +9,14 @@
   --forest-deep: #081A14;
   --forest-raised: #163A2E;
   --forest-line: #2A4D3F;
+  --plum: #1F1233;
+  --plum-deep: #110820;
+  --plum-raised: #2C1846;
+  --plum-line: #3F2266;
+  --ember: #2C140E;
+  --ember-deep: #190805;
+  --ember-raised: #3E1C12;
+  --ember-line: #4F2818;
   --cream: #F2EBD9;
   --cream-dim: #C7BFA9;
   --pink: #ff3d8a;
@@ -69,4 +77,56 @@ html {
 }
 .marquee {
   animation: marquee 40s linear infinite;
+}
+
+/* ───────── Section gradient wash ─────────
+   Each section uses one of these classes to flow through the
+   forest → plum → ember → forest palette. Adjacent sections
+   share their edge colour for seamless transitions.
+*/
+.tint-forest         { background: var(--forest); }
+.tint-forest-deep    { background: var(--forest-deep); }
+.tint-plum           { background: var(--plum); }
+.tint-plum-deep      { background: var(--plum-deep); }
+.tint-ember          { background: var(--ember); }
+.tint-ember-deep     { background: var(--ember-deep); }
+
+.tint-forest-to-plum     { background: linear-gradient(180deg, var(--forest) 0%, var(--plum-deep) 100%); }
+.tint-plum-to-forest     { background: linear-gradient(180deg, var(--plum-deep) 0%, var(--forest) 100%); }
+.tint-plum-to-ember      { background: linear-gradient(180deg, var(--plum) 0%, var(--ember-deep) 100%); }
+.tint-ember-to-plum      { background: linear-gradient(180deg, var(--ember) 0%, var(--plum-deep) 100%); }
+.tint-ember-to-forest    { background: linear-gradient(180deg, var(--ember) 0%, var(--forest) 100%); }
+.tint-forest-to-ember    { background: linear-gradient(180deg, var(--forest) 0%, var(--ember-deep) 100%); }
+.tint-hero               { background: linear-gradient(180deg, var(--forest-deep) 0%, var(--forest) 100%); }
+
+/* Glowing accent blobs that sit behind big serif headlines for warmth */
+.glow-blob::before {
+  content: "";
+  position: absolute;
+  inset: -20% 10% auto 10%;
+  height: 60%;
+  background: radial-gradient(closest-side, rgba(232, 197, 71, 0.18), transparent 70%);
+  pointer-events: none;
+  filter: blur(40px);
+  z-index: 0;
+}
+.glow-blob-plum::before {
+  content: "";
+  position: absolute;
+  inset: -20% 10% auto 10%;
+  height: 70%;
+  background: radial-gradient(closest-side, rgba(118, 60, 200, 0.22), transparent 70%);
+  pointer-events: none;
+  filter: blur(60px);
+  z-index: 0;
+}
+.glow-blob-ember::before {
+  content: "";
+  position: absolute;
+  inset: -20% 10% auto 10%;
+  height: 70%;
+  background: radial-gradient(closest-side, rgba(232, 110, 60, 0.18), transparent 70%);
+  pointer-events: none;
+  filter: blur(60px);
+  z-index: 0;
 }

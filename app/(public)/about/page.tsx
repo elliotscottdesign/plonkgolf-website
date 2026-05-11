@@ -34,7 +34,8 @@ export default function AboutPage() {
         image="/images/about_header.jpg"
       />
 
-      <article className="mx-auto max-w-3xl px-6 py-16 text-base leading-relaxed text-cream/85">
+      <section className="tint-forest-to-plum border-t border-forestLine/40">
+      <article className="mx-auto max-w-3xl px-6 py-20 text-base leading-relaxed text-cream/85">
         <p>
           Plonk Crazy Golf was founded by a troop of set designers from the
           film industry who banded together for a common cause — using their
@@ -83,6 +84,7 @@ export default function AboutPage() {
           plonking good time!
         </p>
       </article>
+      </section>
 
       <Gallery
         heading="A decade of Plonking"

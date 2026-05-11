@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 
 export default function HackneyPage() {
   return (
-    <main className="bg-forest">
+    <main>
       <PageHero
         eyebrow="Hackney · Outdoor · 9 holes"
         title="Crazy Golf in Hackney"
@@ -36,8 +36,8 @@ export default function HackneyPage() {
         image="/hackney/course/Course_1.jpg"
       />
 
-      {/* Polynesian intro */}
-      <section className="border-t border-forestLine/40 px-6 py-20 md:py-28">
+      {/* Polynesian intro (forest → plum) */}
+      <section className="tint-forest-to-plum relative overflow-hidden border-t border-forestLine/40 px-6 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16">
           <Reveal>
             <div>
@@ -70,7 +70,7 @@ export default function HackneyPage() {
             </div>
           </Reveal>
           <Reveal delay={120}>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-forestRaised">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumRaised">
               <Image
                 src="/hackney/course/Course_3.jpg"
                 alt="Polynesian course detail"
@@ -83,8 +83,8 @@ export default function HackneyPage() {
         </div>
       </section>
 
-      {/* More than golf */}
-      <section className="border-t border-forestLine/40 bg-forestDeep px-6 py-24">
+      {/* More than golf (plum → ember) */}
+      <section className="tint-plum-to-ember relative overflow-hidden border-t border-plumLine/40 px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -135,15 +135,15 @@ export default function HackneyPage() {
         images={HACKNEY_GALLERY}
       />
 
-      {/* Find us */}
-      <section className="border-t border-forestLine/40 px-6 py-24">
+      {/* Find us (ember → forest) */}
+      <section className="tint-ember-to-forest border-t border-emberLine/40 px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-4xl sm:text-5xl">Find us</h2>
           </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <Reveal>
-              <div className="h-full rounded-2xl border border-forestLine/60 bg-forestRaised p-7">
+              <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   Address
                 </p>
@@ -155,7 +155,7 @@ export default function HackneyPage() {
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <div className="h-full rounded-2xl border border-forestLine/60 bg-forestRaised p-7">
+              <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   Getting here
                 </p>
@@ -193,7 +193,7 @@ function FeatureCard({
 }) {
   return (
     <Reveal>
-      <article className="group h-full overflow-hidden rounded-2xl border border-forestLine/50 bg-forest transition hover:border-plonkYellow/40">
+      <article className="group h-full overflow-hidden rounded-2xl border border-plumLine/50 bg-plum transition hover:border-plonkYellow/40">
         <div className="relative aspect-[5/3] overflow-hidden">
           <Image
             src={image}

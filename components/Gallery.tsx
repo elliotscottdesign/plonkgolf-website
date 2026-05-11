@@ -11,7 +11,7 @@ export default function Gallery({
 }) {
   if (images.length === 0) return null;
   return (
-    <section className="border-t border-forestLine/40 bg-forestDeep">
+    <section className="tint-ember border-t border-emberLine/40">
       <div className="mx-auto max-w-6xl px-6 py-16">
         {heading && (
           <h2 className="text-center font-display text-3xl sm:text-4xl">
