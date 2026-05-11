@@ -77,6 +77,7 @@ function KindBadge({ kind }: { kind: TicketKind }) {
   const styles: Record<TicketKind, string> = {
     adult: "bg-plonkPink/15 text-plonkPink",
     child: "bg-plonkYellow/15 text-plonkYellow",
+    bundle: "bg-plonkTeal/15 text-plonkTeal",
     other: "bg-cream/10 text-cream/70",
   };
   return (
