@@ -14,20 +14,24 @@ const PRESS = [
 
 const FEATURES = [
   {
-    title: "Crazy golf",
-    body: "Two original 9-hole courses designed and built in-house. Outdoor in Hackney, indoor under the arches in Borough.",
+    image: "/hackney/drinks/Drinks_3.jpg",
+    title: "Bar",
+    body: "Draught beers, craft cans, speciality ciders, house and classic cocktails, natural wines and a wide range of soft drinks.",
   },
   {
-    title: "Cocktails & craft beer",
-    body: "Properly mixed cocktails, rotating local kegs, and a wine list that goes beyond the obvious.",
+    image: "/hackney/pool/Pool_2.jpg",
+    title: "Pool",
+    body: "American 7ft pool tables in Hackney, brand-new British 7ft tables in Borough. £5 for 30 minutes. Over-16s only.",
   },
   {
-    title: "Stone-baked food",
-    body: "Pizzas, tacos and small plates made for sharing between rounds. Vegan and gluten-free always on.",
+    image: "/hackney/games/Games_8.jpg",
+    title: "Board games",
+    body: "A wall of board games at Hackney. Borrow whatever you fancy from the bar and settle the score between rounds.",
   },
   {
-    title: "Arcade & games",
-    body: "Pool, ping pong, retro arcade cabinets and pinball — the round doesn't have to end on the 9th hole.",
+    image: "/hackney/games/Games_2.jpg",
+    title: "Arcade",
+    body: "Pinball machines, retro multi-game cabinets, shoot-'em-ups, foosball and skee-ball. Buy tokens at the bar.",
   },
 ];
 
@@ -165,18 +169,10 @@ export default function HomePage() {
             </h2>
           </Reveal>
 
-          <div className="mt-16 grid gap-px overflow-hidden rounded-2xl bg-plumLine/50 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {FEATURES.map((f, i) => (
               <Reveal key={f.title} delay={i * 80}>
-                <div className="h-full bg-plum p-8">
-                  <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                    0{i + 1}
-                  </p>
-                  <h3 className="mt-4 font-display text-2xl">{f.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-cream/70">
-                    {f.body}
-                  </p>
-                </div>
+                <FeatureCard image={f.image} title={f.title} body={f.body} />
               </Reveal>
             ))}
           </div>
@@ -391,5 +387,33 @@ function CtaCard({
         </span>
       </div>
     </Link>
+  );
+}
+
+function FeatureCard({
+  image,
+  title,
+  body,
+}: {
+  image: string;
+  title: string;
+  body: string;
+}) {
+  return (
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-plumRaised transition hover:border-plonkYellow/40">
+      <div className="relative aspect-[5/3] overflow-hidden">
+        <Image
+          src={image}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+          className="object-cover transition duration-700 group-hover:scale-105"
+        />
+      </div>
+      <div className="flex flex-1 flex-col p-6">
+        <h3 className="font-display text-2xl">{title}</h3>
+        <p className="mt-3 text-sm leading-relaxed text-cream/75">{body}</p>
+      </div>
+    </article>
   );
 }
