@@ -116,9 +116,12 @@ export default function HackneyPage() {
               body="When the sun's out — kick back with top-of-the-line ping pong tables to keep the competition going outside."
             />
             <FeatureCard
-              image="/hackney/venue/Interior_4.jpg"
-              title="El Caravana tacos"
-              body="Our taco caravan, Tuesday–Saturday. Taco Tuesday: £5 for two, all day. Pair with our cassava fries."
+              image="/hackney/snack_bar/Snack_bar_1.jpg"
+              title="Snack Bar"
+              body="Smash burgers, BBQ chicken, loaded chips. BBQ meat supplied by Smokoloko of Spitalfields."
+              href="/snack-bar"
+              hrefLabel="See the menu"
+              external
             />
             <FeatureCard
               image="/hackney/games/Games_6.jpg"
@@ -187,28 +190,52 @@ function FeatureCard({
   image,
   title,
   body,
+  href,
+  hrefLabel,
+  external,
 }: {
   image: string;
   title: string;
   body: string;
+  href?: string;
+  hrefLabel?: string;
+  external?: boolean;
 }) {
+  const inner = (
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-plum transition hover:border-plonkYellow/40">
+      <div className="relative aspect-[5/3] overflow-hidden">
+        <Image
+          src={image}
+          alt=""
+          fill
+          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+          className="object-cover transition duration-700 group-hover:scale-105"
+        />
+      </div>
+      <div className="flex flex-1 flex-col p-6">
+        <h3 className="font-display text-2xl">{title}</h3>
+        <p className="mt-3 text-sm leading-relaxed text-cream/75">{body}</p>
+        {href && (
+          <span className="mt-4 inline-block text-xs font-bold uppercase tracking-wider text-plonkYellow transition group-hover:text-cream">
+            {hrefLabel ?? "Find out more"} →
+          </span>
+        )}
+      </div>
+    </article>
+  );
+
+  if (!href) return <Reveal>{inner}</Reveal>;
+
   return (
     <Reveal>
-      <article className="group h-full overflow-hidden rounded-2xl border border-plumLine/50 bg-plum transition hover:border-plonkYellow/40">
-        <div className="relative aspect-[5/3] overflow-hidden">
-          <Image
-            src={image}
-            alt=""
-            fill
-            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-            className="object-cover transition duration-700 group-hover:scale-105"
-          />
-        </div>
-        <div className="p-6">
-          <h3 className="font-display text-2xl">{title}</h3>
-          <p className="mt-3 text-sm leading-relaxed text-cream/75">{body}</p>
-        </div>
-      </article>
+      <a
+        href={href}
+        target={external ? "_blank" : undefined}
+        rel={external ? "noopener noreferrer" : undefined}
+        className="block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-plonkYellow/60"
+      >
+        {inner}
+      </a>
     </Reveal>
   );
 }
