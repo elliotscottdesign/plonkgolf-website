@@ -16,7 +16,7 @@ export default function ContactPage() {
         image="/images/gallery07.jpg"
       />
 
-      <section className="tint-forest-to-forestDeep border-t border-forestLine/40">
+      <section className="tint-forest-to-forestDeep">
       <div className="mx-auto max-w-3xl px-6 py-20">
         <p className="text-base leading-relaxed text-cream/85">
           For group bookings, partnership enquiries or anything else, drop us

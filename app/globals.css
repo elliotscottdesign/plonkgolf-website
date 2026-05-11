@@ -91,23 +91,26 @@ html {
 .tint-ember          { background: var(--ember); }
 .tint-ember-deep     { background: var(--ember-deep); }
 
-.tint-forest-to-plum     { background: linear-gradient(180deg, var(--forest) 0%, var(--plum-deep) 100%); }
-.tint-plum-to-forest     { background: linear-gradient(180deg, var(--plum-deep) 0%, var(--forest) 100%); }
-.tint-plum-to-ember      { background: linear-gradient(180deg, var(--plum) 0%, var(--ember-deep) 100%); }
-.tint-ember-to-plum      { background: linear-gradient(180deg, var(--ember) 0%, var(--plum-deep) 100%); }
+/* Every tint-X-to-Y starts at X (0%) and ends EXACTLY at Y (100%) so
+   adjacent sections that name the same colour at their boundary line
+   up pixel-perfect — no visible seams.                                */
+.tint-forest-to-plum     { background: linear-gradient(180deg, var(--forest) 0%, var(--plum) 100%); }
+.tint-plum-to-forest     { background: linear-gradient(180deg, var(--plum) 0%, var(--forest) 100%); }
+.tint-plum-to-ember      { background: linear-gradient(180deg, var(--plum) 0%, var(--ember) 100%); }
+.tint-ember-to-plum      { background: linear-gradient(180deg, var(--ember) 0%, var(--plum) 100%); }
 .tint-ember-to-forest    { background: linear-gradient(180deg, var(--ember) 0%, var(--forest) 100%); }
-.tint-forest-to-ember    { background: linear-gradient(180deg, var(--forest) 0%, var(--ember-deep) 100%); }
+.tint-forest-to-ember    { background: linear-gradient(180deg, var(--forest) 0%, var(--ember) 100%); }
 .tint-hero               { background: linear-gradient(180deg, var(--forest-deep) 0%, var(--forest) 100%); }
 
-/* Per-page tonal beds — keep within one half of the palette so each page
-   reads with its own identity (Hackney purple, Borough ember, info pages green). */
+/* 3-stop "deep dive" gradients — keep page identity within one tonal
+   half by easing into a deeper version of the same colour mid-section. */
 .tint-forest-to-plumDeep   { background: linear-gradient(180deg, var(--forest) 0%, var(--plum) 50%, var(--plum-deep) 100%); }
 .tint-plumDeep-to-plum     { background: linear-gradient(180deg, var(--plum-deep) 0%, var(--plum) 100%); }
-.tint-plum-to-forest-deep  { background: linear-gradient(180deg, var(--plum) 0%, var(--forest) 100%); }
+.tint-plum-to-forest-deep  { background: linear-gradient(180deg, var(--plum) 0%, var(--forest-deep) 100%); }
 
 .tint-forest-to-emberDeep  { background: linear-gradient(180deg, var(--forest) 0%, var(--ember) 50%, var(--ember-deep) 100%); }
 .tint-emberDeep-to-ember   { background: linear-gradient(180deg, var(--ember-deep) 0%, var(--ember) 100%); }
-.tint-ember-to-forest-deep { background: linear-gradient(180deg, var(--ember) 0%, var(--forest) 100%); }
+.tint-ember-to-forest-deep { background: linear-gradient(180deg, var(--ember) 0%, var(--forest-deep) 100%); }
 
 .tint-forest-to-forestDeep { background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 100%); }
 .tint-forestDeep-to-forest { background: linear-gradient(180deg, var(--forest-deep) 0%, var(--forest) 100%); }

@@ -47,7 +47,7 @@ export default function DealsPage() {
         image="/images/gallery07.jpg"
       />
 
-      <section className="tint-forest-to-forestDeep border-t border-forestLine/40">
+      <section className="tint-forest-to-forestDeep">
       <div className="mx-auto max-w-5xl px-6 py-20">
         <div className="grid gap-6 md:grid-cols-2">
           {DEALS.map((d) => (

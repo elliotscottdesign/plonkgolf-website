@@ -11,7 +11,7 @@ const SOCIALS: { label: string; href: string }[] = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-forestLine/40 bg-forestDeep">
+    <footer className="bg-forestDeep">
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-4">
         <div>
           <h3 className="font-display text-2xl">Plonk Golf</h3>

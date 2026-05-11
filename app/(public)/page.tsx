@@ -153,7 +153,7 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── FEATURES (plum → ember) ───────────── */}
-      <section className="tint-plum-to-ember relative overflow-hidden border-t border-plumLine/40 px-6 py-28">
+      <section className="tint-plum-to-ember relative overflow-hidden px-6 py-28">
         <div className="glow-blob-ember pointer-events-none absolute inset-x-0 bottom-0 h-[50vh]" />
         <div className="relative mx-auto max-w-6xl">
           <Reveal>
@@ -184,7 +184,7 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── PRESS MARQUEE (ember) ───────────── */}
-      <section className="tint-ember-deep overflow-hidden border-y border-emberLine/40 py-12">
+      <section className="tint-ember overflow-hidden py-12">
         <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-cream/40">
           As featured in
         </p>
@@ -228,8 +228,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────────── BIG CTA FOOTER (forest) ───────────── */}
-      <section className="tint-forest relative overflow-hidden border-t border-forestLine/40">
+      {/* ───────────── BIG CTA FOOTER (forest → forestDeep) ───────────── */}
+      <section className="tint-forest-to-forestDeep relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <Image
             src="/hackney/pool/Pool_1.jpg"
@@ -238,7 +238,7 @@ export default function HomePage() {
             className="object-cover opacity-25"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-forest/80 via-forest/90 to-forest" />
+          <div className="absolute inset-0 bg-gradient-to-b from-forest/80 via-forest/90 to-forestDeep" />
         </div>
         <div className="mx-auto max-w-3xl px-6 py-32 text-center">
           <Reveal>
@@ -292,7 +292,7 @@ function VenueSpotlight({
 }) {
   const imageFirst = align === "left";
   return (
-    <div className="relative border-t border-plumLine/40 px-6 py-20 md:py-32">
+    <div className="relative px-6 py-20 md:py-32">
       <div
         className={`relative mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16 ${
           imageFirst ? "" : "md:[&>div:first-child]:order-2"

@@ -273,7 +273,7 @@ export default function FAQsPage() {
         image="/images/gallery03.jpg"
       />
 
-      <section className="bed-info border-t border-forestLine/40">
+      <section className="bed-info">
       <div className="mx-auto max-w-3xl px-6 py-20">
         {SECTIONS.map((section) => (
           <div key={section.heading} className="mb-10 last:mb-0">

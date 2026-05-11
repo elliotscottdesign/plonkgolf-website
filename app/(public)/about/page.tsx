@@ -34,7 +34,7 @@ export default function AboutPage() {
         image="/images/about_header.jpg"
       />
 
-      <section className="tint-forest-to-forestDeep border-t border-forestLine/40">
+      <section className="tint-forest-to-forestDeep">
       <article className="mx-auto max-w-3xl px-6 py-20 text-base leading-relaxed text-cream/85">
         <p>
           Plonk Crazy Golf was founded by a troop of set designers from the

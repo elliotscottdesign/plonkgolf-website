@@ -64,7 +64,7 @@ export default function PrivateHirePage() {
       />
 
       {/* Reasons (forest → ember) */}
-      <section className="tint-forest-to-emberDeep border-t border-forestLine/40 px-6 py-24">
+      <section className="tint-forest-to-emberDeep px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -93,7 +93,7 @@ export default function PrivateHirePage() {
       </section>
 
       {/* Choose a venue (ember) */}
-      <section className="tint-emberDeep-to-ember border-t border-emberLine/40 px-6 py-24">
+      <section className="tint-emberDeep-to-ember px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">

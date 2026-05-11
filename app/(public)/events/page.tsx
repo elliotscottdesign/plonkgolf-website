@@ -73,7 +73,7 @@ export default function EventsPage() {
         image="/images/gallery08.jpg"
       />
 
-      <section className="tint-forest-to-forestDeep border-t border-forestLine/40">
+      <section className="tint-forest-to-forestDeep">
       <div className="mx-auto max-w-6xl px-6 py-20">
         <div className="grid gap-10 md:grid-cols-2">
           <VenueColumn
