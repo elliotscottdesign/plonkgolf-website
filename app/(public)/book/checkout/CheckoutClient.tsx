@@ -203,7 +203,6 @@ function CheckoutInner() {
                       { value: "word_of_mouth", label: "Word of Mouth" },
                       { value: "google", label: "Google" },
                       { value: "social_media", label: "Social Media" },
-                      { value: "from_a_mate", label: "From a Mate" },
                     ]}
                   />
                 </div>
