@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminCard } from "@/components/admin/AdminCard";
-import { fmtMoney, type TicketKind } from "@/lib/mockData";
+import { fmtMoney } from "@/lib/format";
 import {
   loadVenues,
   loadTickets,
@@ -12,6 +12,7 @@ import {
   createTicket,
   type DbTicket,
   type DbVenue,
+  type TicketKind,
 } from "@/lib/db/tickets";
 
 type TicketKindOpt = TicketKind;

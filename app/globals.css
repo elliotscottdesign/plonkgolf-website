@@ -13,6 +13,10 @@
   --plum-deep: #110820;
   --plum-raised: #2C1846;
   --plum-line: #3F2266;
+  --lilac: #5A3F86;
+  --lilac-deep: #3E2A5C;
+  --lilac-raised: #6B4D9C;
+  --lilac-line: #7D5FB0;
   --ember: #2C140E;
   --ember-deep: #190805;
   --ember-raised: #3E1C12;
@@ -159,6 +163,20 @@ html {
 .bed-hackney { background: linear-gradient(180deg, var(--forest) 0%, var(--plum) 35%, var(--plum-deep) 70%, var(--forest) 100%); }
 .bed-borough { background: linear-gradient(180deg, var(--forest) 0%, var(--ember) 35%, var(--ember-deep) 70%, var(--forest) 100%); }
 .bed-info    { background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 50%, var(--forest) 100%); }
+
+/* Booking-flow bed — purple > green > lilac. Used on the venue picker,
+   the booking + basket page, checkout, and the success confirmation. */
+.bed-booking {
+  background: linear-gradient(
+    180deg,
+    var(--plum-deep) 0%,
+    var(--plum) 18%,
+    var(--forest) 50%,
+    var(--lilac-deep) 80%,
+    var(--lilac) 100%
+  );
+  min-height: 100vh;
+}
 
 /* Hero overlay — lets the image breathe in the middle, only darkens at
    top (so nav stays legible) and bottom (so the section hands off to

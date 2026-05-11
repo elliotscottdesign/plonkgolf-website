@@ -1,7 +1,9 @@
 "use client";
 
 import { supabase } from "@/lib/supabase";
-import type { TicketKind, TicketCategory } from "@/lib/mockData";
+
+export type TicketKind = "adult" | "child" | "bundle" | "other";
+export type TicketCategory = "golf" | "pool";
 
 export type DbTicket = {
   id: string;

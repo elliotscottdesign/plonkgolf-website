@@ -212,7 +212,7 @@ function CheckoutInner() {
 
   if (catalogueError) {
     return (
-      <main className="min-h-screen px-6 py-20 text-center">
+      <main className="bed-booking px-6 py-20 text-center">
         <h1 className="font-display text-3xl">Could not load checkout</h1>
         <p className="mt-3 text-sm text-cream/70">{catalogueError}</p>
       </main>
@@ -221,7 +221,7 @@ function CheckoutInner() {
 
   if (!catalogue) {
     return (
-      <main className="min-h-screen px-6 py-20 text-center">
+      <main className="bed-booking px-6 py-20 text-center">
         <div className="mx-auto h-12 w-12 animate-spin rounded-full border-2 border-cream/20 border-t-plonkYellow" />
         <p className="mt-6 text-sm text-cream/70">Loading checkout…</p>
       </main>
@@ -230,7 +230,7 @@ function CheckoutInner() {
 
   if (!venue || tickets.length === 0) {
     return (
-      <main className="min-h-screen px-6 py-20 text-center">
+      <main className="bed-booking px-6 py-20 text-center">
         <h1 className="font-display text-3xl">Your basket is empty</h1>
         <Link
           href="/book"
@@ -260,7 +260,7 @@ function CheckoutInner() {
     : null;
 
   return (
-    <main className="min-h-screen px-6 py-12">
+    <main className="bed-booking px-6 py-12">
       <div className="mx-auto max-w-4xl">
         <Link
           href={`/book/${venueId}`}

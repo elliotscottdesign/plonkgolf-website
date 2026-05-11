@@ -30,7 +30,7 @@ const VENUES = [
 
 export default function BookingPickerPage() {
   return (
-    <main className="min-h-screen px-6 py-16">
+    <main className="bed-booking px-6 py-16">
       <div className="mx-auto max-w-5xl text-center">
         <p className="text-xs font-bold uppercase tracking-[0.3em] text-plonkYellow">
           Book Plonk

@@ -110,7 +110,7 @@ function SuccessInner() {
   // ---------- Failure / fall-back states ----------
   if (redirectStatus && redirectStatus !== "succeeded" && redirectStatus !== "processing") {
     return (
-      <main className="min-h-screen px-6 py-20">
+      <main className="bed-booking px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="font-display text-4xl">Payment didn't go through</h1>
           <p className="mt-4 text-cream/80">
@@ -130,7 +130,7 @@ function SuccessInner() {
 
   if (error) {
     return (
-      <main className="min-h-screen px-6 py-20">
+      <main className="bed-booking px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="font-display text-4xl">Hmm, something's odd</h1>
           <p className="mt-4 text-cream/80">{error}</p>
@@ -144,7 +144,7 @@ function SuccessInner() {
 
   if (!booking) {
     return (
-      <main className="min-h-screen px-6 py-20">
+      <main className="bed-booking px-6 py-20">
         <div className="mx-auto max-w-2xl text-center">
           <div className="mx-auto h-12 w-12 animate-spin rounded-full border-2 border-cream/20 border-t-plonkYellow" />
           <h1 className="mt-6 font-display text-3xl">Confirming your booking…</h1>
@@ -160,7 +160,7 @@ function SuccessInner() {
   const showPendingNote = !confirmed && (stillPending || booking.status === "pending");
 
   return (
-    <main className="min-h-screen px-6 py-20">
+    <main className="bed-booking px-6 py-20">
       <div className="mx-auto max-w-2xl text-center">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-plonkTeal/20 text-3xl text-plonkTeal">
           ✓
