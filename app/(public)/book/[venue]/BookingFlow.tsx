@@ -212,11 +212,24 @@ export default function BookingFlow({
   // or after 18:00 and any child tickets are in the basket, force them to 0.
   const childCutoffViolated = ctx.childCutoff && childCount > 0;
 
+  // Rule: total party size (all golf ticket types combined) cannot exceed
+  // the chosen slot's remaining capacity.
+  const partyTotal = availableTickets.reduce(
+    (s, t) => s + (ticketQty[t.id] || 0),
+    0,
+  );
+  const slotCapacity = slotTime
+    ? (slots.find((s) => s.time === slotTime)?.left ?? 6)
+    : 6;
+  const overCapacity = partyTotal > slotCapacity;
+  const canAddMoreTickets = partyTotal < slotCapacity;
+
   const canContinue =
     !!slotTime &&
     totalTickets > 0 &&
     !childRuleViolated &&
-    !childCutoffViolated;
+    !childCutoffViolated &&
+    !overCapacity;
 
   function applyPromo() {
     const code = promoCode.trim().toUpperCase();
@@ -495,12 +508,20 @@ export default function BookingFlow({
                         value={ticketQty[t.id] || 0}
                         onChange={(v) => setTicketQty({ ...ticketQty, [t.id]: v })}
                         disabled={disabled}
+                        canIncrement={canAddMoreTickets}
                       />
                     </div>
                   </li>
                 );
               })}
             </ul>
+            {overCapacity && (
+              <div className="mt-4 rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
+                Only {slotCapacity}{" "}
+                {slotCapacity === 1 ? "ticket" : "tickets"} left for{" "}
+                {slotTime}. Reduce your tickets or pick another time.
+              </div>
+            )}
             {childRuleViolated && !childCutoffViolated && (
               <div className="mt-4 rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
                 Add at least one adult ticket — children can't be booked on
@@ -648,11 +669,13 @@ export default function BookingFlow({
             >
               {canContinue
                 ? "Continue to checkout"
-                : childCutoffViolated
-                  ? "Children only before 6pm"
-                  : childRuleViolated
-                    ? "Adult ticket required"
-                    : "Pick a time + tickets first"}
+                : overCapacity
+                  ? `Only ${slotCapacity} left in this slot`
+                  : childCutoffViolated
+                    ? "Children only before 6pm"
+                    : childRuleViolated
+                      ? "Adult ticket required"
+                      : "Pick a time + tickets first"}
             </button>
 
             {canContinue && (
@@ -676,17 +699,19 @@ function QtyStepper({
   value,
   onChange,
   disabled,
+  canIncrement = true,
 }: {
   value: number;
   onChange: (v: number) => void;
   disabled?: boolean;
+  canIncrement?: boolean;
 }) {
   return (
     <div className="flex items-center gap-3">
       <button
         onClick={() => onChange(Math.max(0, value - 1))}
         disabled={disabled || value === 0}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/20 text-lg disabled:opacity-30"
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/20 text-lg disabled:cursor-not-allowed disabled:opacity-30"
         aria-label="Decrease"
       >
         −
@@ -694,8 +719,8 @@ function QtyStepper({
       <span className="w-6 text-center font-medium">{value}</span>
       <button
         onClick={() => onChange(value + 1)}
-        disabled={disabled}
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/20 text-lg disabled:opacity-30"
+        disabled={disabled || !canIncrement}
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/20 text-lg disabled:cursor-not-allowed disabled:opacity-30"
         aria-label="Increase"
       >
         +
