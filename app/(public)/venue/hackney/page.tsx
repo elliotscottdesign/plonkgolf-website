@@ -42,7 +42,7 @@ export default function HackneyPage() {
                 We've glown up
               </p>
               <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-                A Polynesian putt paradise
+                A Polynesian putting paradise
               </h2>
               <p className="mt-6 text-base leading-relaxed text-cream/80 sm:text-lg">
                 Our Hackney course has been rebuilt — bigger, brighter and
