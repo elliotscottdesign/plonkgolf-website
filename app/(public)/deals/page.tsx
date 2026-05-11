@@ -47,12 +47,13 @@ export default function DealsPage() {
         image="/images/gallery07.jpg"
       />
 
-      <section className="mx-auto max-w-5xl px-6 py-16">
+      <section className="tint-forest-to-plum border-t border-forestLine/40">
+      <div className="mx-auto max-w-5xl px-6 py-20">
         <div className="grid gap-6 md:grid-cols-2">
           {DEALS.map((d) => (
             <article
               key={d.title}
-              className="rounded-2xl border border-cream/10 bg-ink/40 p-6"
+              className="rounded-2xl border border-plumLine/60 bg-plumRaised p-6"
             >
               <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
                 {d.day}
@@ -66,7 +67,7 @@ export default function DealsPage() {
           ))}
         </div>
 
-        <div className="mt-16 rounded-2xl border border-cream/10 bg-ink/40 p-8 text-center">
+        <div className="mt-16 rounded-2xl border border-plumLine/60 bg-plumRaised p-8 text-center">
           <p className="text-base text-cream/80">
             Looking for tournaments, brunches, chess & jazz, ping pong nights?
           </p>
@@ -77,6 +78,7 @@ export default function DealsPage() {
             See what's on →
           </a>
         </div>
+      </div>
       </section>
     </main>
   );

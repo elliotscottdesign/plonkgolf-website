@@ -273,7 +273,8 @@ export default function FAQsPage() {
         image="/images/gallery03.jpg"
       />
 
-      <section className="mx-auto max-w-3xl px-6 py-16">
+      <section className="border-t border-forestLine/40 bg-gradient-to-b from-forest via-plum to-ember">
+      <div className="mx-auto max-w-3xl px-6 py-20">
         {SECTIONS.map((section) => (
           <div key={section.heading} className="mb-10 last:mb-0">
             <h2 className="mb-4 font-display text-2xl text-plonkYellow">
@@ -283,7 +284,7 @@ export default function FAQsPage() {
               {section.faqs.map((item) => (
                 <li
                   key={item.q}
-                  className="rounded-2xl border border-forestLine/40 bg-forestRaised/30"
+                  className="rounded-2xl border border-cream/10 bg-black/20 backdrop-blur"
                 >
                   <details className="group p-5">
                     <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
@@ -317,6 +318,7 @@ export default function FAQsPage() {
           </a>{" "}
           — we read every message.
         </p>
+      </div>
       </section>
     </main>
   );

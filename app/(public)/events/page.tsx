@@ -73,7 +73,8 @@ export default function EventsPage() {
         image="/images/gallery08.jpg"
       />
 
-      <section className="mx-auto max-w-6xl px-6 py-16">
+      <section className="tint-forest-to-plum border-t border-forestLine/40">
+      <div className="mx-auto max-w-6xl px-6 py-20">
         <div className="grid gap-10 md:grid-cols-2">
           <VenueColumn
             name="Plonk Hackney at No Dice Bar"
@@ -90,6 +91,7 @@ export default function EventsPage() {
           </a>{" "}
           to reserve a slot.
         </p>
+      </div>
       </section>
     </main>
   );
@@ -98,7 +100,7 @@ export default function EventsPage() {
 function VenueColumn({ name, events }: { name: string; events: Event[] }) {
   return (
     <div>
-      <div className="border-b border-cream/15 pb-3">
+      <div className="border-b border-plumLine/60 pb-3">
         <p className="text-xs font-bold uppercase tracking-[0.25em] text-plonkYellow">
           Venue
         </p>
@@ -111,8 +113,8 @@ function VenueColumn({ name, events }: { name: string; events: Event[] }) {
             key={e.title}
             className={`rounded-2xl p-6 ${
               e.featured
-                ? "border border-plonkPink/40 bg-gradient-to-br from-plonkPink/15 to-ink"
-                : "border border-cream/10 bg-ink/40"
+                ? "border border-plonkPink/40 bg-gradient-to-br from-plonkPink/15 to-plumDeep"
+                : "border border-plumLine/60 bg-plumRaised"
             }`}
           >
             {e.featured && (
