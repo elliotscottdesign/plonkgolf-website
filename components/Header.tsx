@@ -43,7 +43,7 @@ export default function Header() {
             </Link>
           ))}
           <Link
-            href="/#venues"
+            href="/book"
             className="rounded-full bg-plonkPink px-5 py-2 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
           >
             Book Now
@@ -90,7 +90,7 @@ export default function Header() {
             ))}
             <li>
               <Link
-                href="/#venues"
+                href="/book"
                 onClick={() => setOpen(false)}
                 className="mt-2 inline-block rounded-full bg-plonkPink px-5 py-2 text-sm font-bold uppercase tracking-wider text-white"
               >

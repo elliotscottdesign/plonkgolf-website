@@ -62,7 +62,7 @@ export default function BoroughMarketPage() {
               underneath London Bridge.
             </p>
             <Link
-              href="/#venues"
+              href="/book/borough"
               className="mt-8 inline-block rounded-full bg-plonkPink px-8 py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
             >
               Book Borough Market

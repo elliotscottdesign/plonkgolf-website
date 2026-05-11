@@ -54,7 +54,7 @@ export default function HackneyPage() {
               rain.
             </p>
             <Link
-              href="/#venues"
+              href="/book/hackney"
               className="mt-8 inline-block rounded-full bg-plonkPink px-8 py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
             >
               Book Hackney
