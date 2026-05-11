@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { localIso } from "@/lib/dateIso";
 
 export default function CalendarPopup({
   value,
@@ -27,7 +28,7 @@ export default function CalendarPopup({
 
   const minDate = new Date(minIso + "T00:00:00");
   const maxDate = new Date(maxIso + "T00:00:00");
-  const todayIsoNow = new Date().toISOString().slice(0, 10);
+  const todayIsoNow = localIso(new Date());
 
   function isDisabled(iso: string) {
     const d = new Date(iso + "T00:00:00");

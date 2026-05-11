@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import CalendarPopup from "./CalendarPopup";
+import { localIso } from "@/lib/dateIso";
 
 const VENUES = [
   { id: "hackney", label: "Plonk Hackney" },
@@ -10,13 +11,13 @@ const VENUES = [
 ] as const;
 
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return localIso(new Date());
 }
 
 function maxIso(): string {
   const d = new Date();
   d.setFullYear(d.getFullYear() + 1);
-  return d.toISOString().slice(0, 10);
+  return localIso(d);
 }
 
 function prettyDate(iso: string): string {

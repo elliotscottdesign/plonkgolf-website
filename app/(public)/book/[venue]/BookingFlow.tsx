@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { Addon, Ticket, Venue } from "@/lib/mockData";
 import { fmtMoney } from "@/lib/mockData";
+import { localIso } from "@/lib/dateIso";
 import CalendarPopup from "@/components/CalendarPopup";
 
 // Mock available slots for a date — every 10 min between 17:00 and 22:00,
@@ -42,7 +43,7 @@ function getNextDates(n: number): { iso: string; weekday: string; dayNumber: str
     const d = new Date(today);
     d.setDate(today.getDate() + i);
     out.push({
-      iso: d.toISOString().slice(0, 10),
+      iso: localIso(d),
       weekday: d.toLocaleDateString("en-GB", { weekday: "short" }),
       dayNumber: String(d.getDate()),
       monthLabel: d.toLocaleDateString("en-GB", { month: "long", year: "numeric" }).toUpperCase(),
@@ -55,11 +56,11 @@ function maxBookableDateIso(): string {
   // Allow booking up to 1 year ahead.
   const d = new Date();
   d.setFullYear(d.getFullYear() + 1);
-  return d.toISOString().slice(0, 10);
+  return localIso(d);
 }
 
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return localIso(new Date());
 }
 
 function dayOfWeekFromIso(iso: string): number {
