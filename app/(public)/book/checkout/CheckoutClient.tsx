@@ -643,7 +643,14 @@ function SelectField({
                     key={o.value}
                     role="option"
                     aria-selected={active}
-                    onClick={() => {
+                    onMouseDown={(e) => {
+                      // mousedown (not click) closes immediately, before
+                      // the doc-level mousedown listener can re-evaluate.
+                      // stopPropagation keeps the bubble out of the
+                      // wrapper button's toggler. preventDefault stops the
+                      // follow-on click from re-firing this handler.
+                      e.preventDefault();
+                      e.stopPropagation();
                       onChange(o.value);
                       setOpen(false);
                     }}
