@@ -159,10 +159,40 @@ html {
   );
 }
 
-/* Long-scroll page beds (FAQs etc.) — one slow tonal pour for a whole page */
-.bed-hackney { background: linear-gradient(180deg, var(--forest) 0%, var(--plum) 35%, var(--plum-deep) 70%, var(--forest) 100%); }
-.bed-borough { background: linear-gradient(180deg, var(--forest) 0%, var(--ember) 35%, var(--ember-deep) 70%, var(--forest) 100%); }
-.bed-info    { background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 50%, var(--forest) 100%); }
+/* Long-scroll page beds (FAQs etc.) — one slow tonal pour for a whole
+   page. Each bed keeps its venue tonal identity (plum for Hackney,
+   ember for Borough, forest for everything else) but lands on the
+   same lilac wash at the bottom that .bed-booking uses, so the whole
+   site feels like one continuous palette as you scroll. */
+.bed-hackney {
+  background: linear-gradient(
+    180deg,
+    var(--forest) 0%,
+    var(--plum) 30%,
+    var(--plum-deep) 55%,
+    var(--lilac-deep) 80%,
+    var(--lilac) 100%
+  );
+}
+.bed-borough {
+  background: linear-gradient(
+    180deg,
+    var(--forest) 0%,
+    var(--ember) 30%,
+    var(--ember-deep) 55%,
+    var(--lilac-deep) 80%,
+    var(--lilac) 100%
+  );
+}
+.bed-info {
+  background: linear-gradient(
+    180deg,
+    var(--forest) 0%,
+    var(--forest-deep) 40%,
+    var(--lilac-deep) 80%,
+    var(--lilac) 100%
+  );
+}
 
 /* Booking-flow bed — purple > green > lilac. Used on the venue picker,
    the booking + basket page, checkout, and the success confirmation. */
