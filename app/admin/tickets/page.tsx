@@ -1,6 +1,6 @@
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminCard, PreviewBanner } from "@/components/admin/AdminCard";
-import { TICKETS, VENUES, fmtMoney } from "@/lib/mockData";
+import { TICKETS, VENUES, fmtMoney, type TicketKind } from "@/lib/mockData";
 
 export default function TicketsPage() {
   return (
@@ -26,6 +26,7 @@ export default function TicketsPage() {
                   <thead>
                     <tr className="border-b border-cream/10 text-left text-xs uppercase tracking-widest text-cream/50">
                       <th className="px-5 py-3 font-bold">Name</th>
+                      <th className="px-5 py-3 font-bold">Kind</th>
                       <th className="px-5 py-3 font-bold">Price inc. VAT</th>
                       <th className="px-5 py-3 font-bold">VAT</th>
                       <th className="px-5 py-3 font-bold">Active</th>
@@ -36,6 +37,9 @@ export default function TicketsPage() {
                     {items.map((t) => (
                       <tr key={t.id} className="border-b border-cream/5 last:border-b-0">
                         <td className="px-5 py-3">{t.name}</td>
+                        <td className="px-5 py-3">
+                          <KindBadge kind={t.kind} />
+                        </td>
                         <td className="px-5 py-3 font-medium">{fmtMoney(t.pricePence)}</td>
                         <td className="px-5 py-3 text-cream/65">{t.vatRatePct}%</td>
                         <td className="px-5 py-3">
@@ -60,9 +64,27 @@ export default function TicketsPage() {
       </div>
 
       <p className="mt-8 text-xs text-cream/50">
-        Changing a price here updates the public booking page within ~10 seconds (no deploy needed) — once the database is wired in.
+        <strong>Kind</strong> drives booking rules — child tickets can't be
+        bought without at least one adult ticket in the same basket. Changing
+        a price here updates the public booking page within ~10 seconds once
+        the database is wired in.
       </p>
     </>
+  );
+}
+
+function KindBadge({ kind }: { kind: TicketKind }) {
+  const styles: Record<TicketKind, string> = {
+    adult: "bg-plonkPink/15 text-plonkPink",
+    child: "bg-plonkYellow/15 text-plonkYellow",
+    other: "bg-cream/10 text-cream/70",
+  };
+  return (
+    <span
+      className={`inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ${styles[kind]}`}
+    >
+      {kind}
+    </span>
   );
 }
 

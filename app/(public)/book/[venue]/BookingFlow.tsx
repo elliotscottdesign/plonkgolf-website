@@ -89,7 +89,18 @@ export default function BookingFlow({
     : 0;
   const totalPence = Math.max(0, subtotalPence - discountPence);
   const totalTickets = Object.values(ticketQty).reduce((s, n) => s + n, 0);
-  const canContinue = !!slotTime && totalTickets > 0;
+
+  // Rule: child tickets must always be accompanied by at least one adult ticket.
+  const adultCount = tickets
+    .filter((t) => t.kind === "adult")
+    .reduce((s, t) => s + (ticketQty[t.id] || 0), 0);
+  const childCount = tickets
+    .filter((t) => t.kind === "child")
+    .reduce((s, t) => s + (ticketQty[t.id] || 0), 0);
+  const childRuleViolated = childCount > 0 && adultCount === 0;
+
+  const canContinue =
+    !!slotTime && totalTickets > 0 && !childRuleViolated;
 
   function applyPromo() {
     const code = promoCode.trim().toUpperCase();
@@ -203,7 +214,11 @@ export default function BookingFlow({
           </Step>
 
           {/* Step 3: Tickets */}
-          <Step number={3} title="How many tickets?">
+          <Step
+            number={3}
+            title="How many tickets?"
+            subtitle="Under-16s must be accompanied by at least one adult."
+          >
             <ul className="space-y-3">
               {tickets.map((t) => (
                 <li
@@ -221,6 +236,12 @@ export default function BookingFlow({
                 </li>
               ))}
             </ul>
+            {childRuleViolated && (
+              <div className="mt-4 rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
+                Add at least one adult ticket — children can't be booked on
+                their own.
+              </div>
+            )}
           </Step>
 
           {/* Step 4: Add-ons */}
@@ -326,7 +347,11 @@ export default function BookingFlow({
               onClick={continueToCheckout}
               className="mt-6 w-full rounded-full bg-plonkPink py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {canContinue ? "Continue to checkout" : "Pick a time + tickets first"}
+              {canContinue
+                ? "Continue to checkout"
+                : childRuleViolated
+                  ? "Adult ticket required"
+                  : "Pick a time + tickets first"}
             </button>
 
             <p className="mt-3 text-center text-[10px] uppercase tracking-widest text-cream/40">

@@ -8,6 +8,8 @@ export const VENUES: Venue[] = [
   { id: "borough", name: "Plonk Borough Market" },
 ];
 
+export type TicketKind = "adult" | "child" | "other";
+
 export type Ticket = {
   id: string;
   venueId: Venue["id"];
@@ -16,15 +18,16 @@ export type Ticket = {
   vatRatePct: number;
   active: boolean;
   sortOrder: number;
+  kind: TicketKind;
 };
 
 export const TICKETS: Ticket[] = [
-  { id: "t1", venueId: "hackney", name: "Adult — 1 round", pricePence: 1100, vatRatePct: 20, active: true, sortOrder: 1 },
-  { id: "t2", venueId: "hackney", name: "Child (under 16) — 1 round", pricePence: 800, vatRatePct: 20, active: true, sortOrder: 2 },
-  { id: "t3", venueId: "hackney", name: "Pool — 30 mins", pricePence: 500, vatRatePct: 20, active: true, sortOrder: 3 },
-  { id: "t4", venueId: "borough", name: "Adult — 1 round", pricePence: 1300, vatRatePct: 20, active: true, sortOrder: 1 },
-  { id: "t5", venueId: "borough", name: "Child (under 16) — 1 round", pricePence: 1000, vatRatePct: 20, active: true, sortOrder: 2 },
-  { id: "t6", venueId: "borough", name: "Pool — 30 mins", pricePence: 500, vatRatePct: 20, active: true, sortOrder: 3 },
+  { id: "t1", venueId: "hackney", name: "Adult — 1 round", pricePence: 1100, vatRatePct: 20, active: true, sortOrder: 1, kind: "adult" },
+  { id: "t2", venueId: "hackney", name: "Child (under 16) — 1 round", pricePence: 800, vatRatePct: 20, active: true, sortOrder: 2, kind: "child" },
+  { id: "t3", venueId: "hackney", name: "Pool — 30 mins", pricePence: 500, vatRatePct: 20, active: true, sortOrder: 3, kind: "other" },
+  { id: "t4", venueId: "borough", name: "Adult — 1 round", pricePence: 1300, vatRatePct: 20, active: true, sortOrder: 1, kind: "adult" },
+  { id: "t5", venueId: "borough", name: "Child (under 16) — 1 round", pricePence: 1000, vatRatePct: 20, active: true, sortOrder: 2, kind: "child" },
+  { id: "t6", venueId: "borough", name: "Pool — 30 mins", pricePence: 500, vatRatePct: 20, active: true, sortOrder: 3, kind: "other" },
 ];
 
 export type Addon = {
