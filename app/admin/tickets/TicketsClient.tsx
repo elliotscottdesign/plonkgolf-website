@@ -1,0 +1,488 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { AdminCard } from "@/components/admin/AdminCard";
+import { fmtMoney, type TicketKind } from "@/lib/mockData";
+import {
+  loadVenues,
+  loadTickets,
+  updateTicket,
+  deleteTicket,
+  createTicket,
+  type DbTicket,
+  type DbVenue,
+} from "@/lib/db/tickets";
+
+type TicketKindOpt = TicketKind;
+const KIND_OPTS: TicketKindOpt[] = ["adult", "child", "bundle", "other"];
+const CATEGORY_OPTS = ["golf", "pool"] as const;
+const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+type EditState = Partial<DbTicket> & { id: string; venue_id: string };
+type CreateState = Omit<DbTicket, "id"> | null;
+
+export default function TicketsClient() {
+  const [venues, setVenues] = useState<DbVenue[]>([]);
+  const [tickets, setTickets] = useState<DbTicket[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+  const [editing, setEditing] = useState<EditState | null>(null);
+  const [creatingFor, setCreatingFor] = useState<CreateState>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function reload() {
+    setLoading(true);
+    setErr("");
+    try {
+      const [v, t] = await Promise.all([loadVenues(), loadTickets()]);
+      setVenues(v);
+      setTickets(t);
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "Failed to load tickets.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    reload();
+  }, []);
+
+  async function saveEdit() {
+    if (!editing) return;
+    setBusy(true);
+    setErr("");
+    try {
+      const { id, venue_id, ...patch } = editing;
+      void venue_id;
+      await updateTicket(id, patch);
+      setEditing(null);
+      await reload();
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "Save failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function quickToggleActive(t: DbTicket) {
+    setBusy(true);
+    setErr("");
+    try {
+      await updateTicket(t.id, { active: !t.active });
+      await reload();
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "Toggle failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function removeTicket(t: DbTicket) {
+    if (!confirm(`Delete "${t.name}"? This can't be undone.`)) return;
+    setBusy(true);
+    setErr("");
+    try {
+      await deleteTicket(t.id);
+      await reload();
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "Delete failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function saveCreate() {
+    if (!creatingFor) return;
+    setBusy(true);
+    setErr("");
+    try {
+      await createTicket(creatingFor);
+      setCreatingFor(null);
+      await reload();
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "Create failed.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <>
+      <AdminPageHeader
+        title="Tickets & Prices"
+        description="The ticket types customers can buy at checkout. Prices include VAT. Changes go live immediately on the public booking page."
+      />
+
+      {err && (
+        <div className="mb-6 rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
+          {err}
+        </div>
+      )}
+
+      {loading ? (
+        <p className="text-sm text-cream/60">Loading…</p>
+      ) : (
+        <div className="space-y-6">
+          {venues.map((venue) => {
+            const items = tickets
+              .filter((t) => t.venue_id === venue.id)
+              .sort((a, b) => a.sort_order - b.sort_order);
+            return (
+              <AdminCard
+                key={venue.id}
+                title={venue.name}
+                action={
+                  <button
+                    onClick={() =>
+                      setCreatingFor({
+                        venue_id: venue.id,
+                        name: "",
+                        description: null,
+                        kind: "adult",
+                        category: "golf",
+                        price_pence: 1100,
+                        vat_rate_pct: 20,
+                        active: true,
+                        sort_order: items.length + 1,
+                        available_days_of_week: null,
+                      })
+                    }
+                    className="rounded-full bg-plonkPink px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-white hover:bg-plonkPink/90"
+                  >
+                    + Add ticket
+                  </button>
+                }
+              >
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-cream/10 text-left text-xs uppercase tracking-widest text-cream/50">
+                        <th className="px-5 py-3 font-bold">Name</th>
+                        <th className="px-5 py-3 font-bold">Kind</th>
+                        <th className="px-5 py-3 font-bold">Price inc. VAT</th>
+                        <th className="px-5 py-3 font-bold">VAT</th>
+                        <th className="px-5 py-3 font-bold">Days</th>
+                        <th className="px-5 py-3 font-bold">Active</th>
+                        <th className="px-5 py-3 text-right font-bold"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {items.length === 0 && (
+                        <tr>
+                          <td colSpan={7} className="px-5 py-8 text-center text-sm text-cream/55">
+                            No tickets at this venue yet — click "Add ticket".
+                          </td>
+                        </tr>
+                      )}
+                      {items.map((t) => (
+                        <tr key={t.id} className="border-b border-cream/5 last:border-b-0">
+                          <td className="px-5 py-3">
+                            {t.name}
+                            {t.description && (
+                              <p className="mt-0.5 text-xs text-cream/55">{t.description}</p>
+                            )}
+                          </td>
+                          <td className="px-5 py-3"><KindBadge kind={t.kind} /></td>
+                          <td className="px-5 py-3 font-medium">{fmtMoney(t.price_pence)}</td>
+                          <td className="px-5 py-3 text-cream/65">{t.vat_rate_pct}%</td>
+                          <td className="px-5 py-3 text-cream/65 text-xs">
+                            {t.available_days_of_week && t.available_days_of_week.length > 0
+                              ? t.available_days_of_week.map((d) => DAY_LABELS[d]).join(", ")
+                              : "Every day"}
+                          </td>
+                          <td className="px-5 py-3">
+                            <button
+                              type="button"
+                              disabled={busy}
+                              onClick={() => quickToggleActive(t)}
+                              className="cursor-pointer"
+                              aria-label={t.active ? "Deactivate" : "Activate"}
+                            >
+                              <Toggle on={t.active} />
+                            </button>
+                          </td>
+                          <td className="px-5 py-3 text-right">
+                            <button
+                              onClick={() => setEditing(t)}
+                              disabled={busy}
+                              className="mr-2 text-xs font-semibold uppercase tracking-wider text-plonkYellow hover:underline"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => removeTicket(t)}
+                              disabled={busy}
+                              className="text-xs font-semibold uppercase tracking-wider text-red-400/80 hover:underline"
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </AdminCard>
+            );
+          })}
+        </div>
+      )}
+
+      <p className="mt-8 text-xs text-cream/50">
+        <strong>Kind</strong> drives booking rules — children can't be booked
+        without an adult, bundles count as adults. Available days lets you
+        restrict a ticket to a specific weekday (used by Tuesday Hackney's
+        Drink, Golf &amp; Game bundle).
+      </p>
+
+      {editing && (
+        <TicketModal
+          title="Edit ticket"
+          value={editing}
+          onChange={setEditing as (v: EditState) => void}
+          onCancel={() => setEditing(null)}
+          onSave={saveEdit}
+          busy={busy}
+        />
+      )}
+      {creatingFor && (
+        <TicketModal
+          title="Add ticket"
+          value={creatingFor as unknown as EditState}
+          onChange={(v) => setCreatingFor(v as unknown as Omit<DbTicket, "id">)}
+          onCancel={() => setCreatingFor(null)}
+          onSave={saveCreate}
+          busy={busy}
+        />
+      )}
+    </>
+  );
+}
+
+function TicketModal({
+  title,
+  value,
+  onChange,
+  onCancel,
+  onSave,
+  busy,
+}: {
+  title: string;
+  value: EditState;
+  onChange: (v: EditState) => void;
+  onCancel: () => void;
+  onSave: () => void;
+  busy: boolean;
+}) {
+  const days = value.available_days_of_week ?? [];
+  function toggleDay(d: number) {
+    const cur = new Set(days);
+    if (cur.has(d)) cur.delete(d);
+    else cur.add(d);
+    onChange({
+      ...value,
+      available_days_of_week: cur.size === 0 ? null : Array.from(cur).sort(),
+    });
+  }
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/80 p-3 sm:items-center sm:p-6" onClick={onCancel}>
+      <div className="w-full max-w-md rounded-2xl border border-cream/15 bg-ink p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+        <h3 className="font-display text-2xl">{title}</h3>
+
+        <div className="mt-5 space-y-4">
+          <Field
+            label="Name"
+            value={value.name ?? ""}
+            onChange={(v) => onChange({ ...value, name: v })}
+          />
+          <Field
+            label="Description (optional)"
+            value={value.description ?? ""}
+            onChange={(v) => onChange({ ...value, description: v || null })}
+          />
+          <div className="grid grid-cols-2 gap-3">
+            <Field
+              label="Price (£)"
+              value={((value.price_pence ?? 0) / 100).toFixed(2)}
+              onChange={(v) => {
+                const num = parseFloat(v);
+                if (Number.isFinite(num) && num >= 0) {
+                  onChange({ ...value, price_pence: Math.round(num * 100) });
+                }
+              }}
+              type="text"
+              inputMode="decimal"
+            />
+            <Field
+              label="VAT %"
+              value={String(value.vat_rate_pct ?? 20)}
+              onChange={(v) => {
+                const num = parseInt(v, 10);
+                if (Number.isFinite(num) && num >= 0 && num <= 100) {
+                  onChange({ ...value, vat_rate_pct: num });
+                }
+              }}
+              type="text"
+              inputMode="numeric"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Select
+              label="Kind"
+              value={value.kind ?? "adult"}
+              options={KIND_OPTS.map((k) => ({ value: k, label: k }))}
+              onChange={(v) => onChange({ ...value, kind: v as TicketKind })}
+            />
+            <Select
+              label="Category"
+              value={value.category ?? "golf"}
+              options={CATEGORY_OPTS.map((c) => ({ value: c, label: c }))}
+              onChange={(v) => onChange({ ...value, category: v as "golf" | "pool" })}
+            />
+          </div>
+          <Field
+            label="Sort order"
+            value={String(value.sort_order ?? 0)}
+            onChange={(v) => {
+              const num = parseInt(v, 10);
+              if (Number.isFinite(num)) onChange({ ...value, sort_order: num });
+            }}
+            type="text"
+            inputMode="numeric"
+          />
+
+          <div>
+            <label className="text-xs font-bold uppercase tracking-widest text-cream/55">
+              Available days (none = every day)
+            </label>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {DAY_LABELS.map((d, i) => {
+                const on = days.includes(i);
+                return (
+                  <button
+                    key={d}
+                    type="button"
+                    onClick={() => toggleDay(i)}
+                    className={`rounded-md border px-2.5 py-1 text-xs font-medium ${
+                      on
+                        ? "border-plonkPink bg-plonkPink/15 text-cream"
+                        : "border-cream/15 text-cream/65 hover:border-cream/30"
+                    }`}
+                  >
+                    {d}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <label className="flex items-center gap-2 text-sm text-cream/80">
+            <input
+              type="checkbox"
+              checked={!!value.active}
+              onChange={(e) => onChange({ ...value, active: e.target.checked })}
+              className="h-4 w-4 rounded border-cream/20 bg-ink/40"
+            />
+            Active (visible to customers)
+          </label>
+        </div>
+
+        <div className="mt-6 flex gap-2 justify-end">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-full border border-cream/20 px-5 py-2 text-xs font-bold uppercase tracking-wider text-cream/85 hover:bg-cream/5"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={onSave}
+            disabled={busy}
+            className="rounded-full bg-plonkPink px-5 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-plonkPink/90 disabled:opacity-40"
+          >
+            {busy ? "Saving…" : "Save"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Field({
+  label,
+  value,
+  onChange,
+  type = "text",
+  inputMode,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  type?: string;
+  inputMode?: "text" | "decimal" | "numeric";
+}) {
+  return (
+    <label className="block">
+      <span className="text-xs font-bold uppercase tracking-widest text-cream/55">{label}</span>
+      <input
+        type={type}
+        inputMode={inputMode}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1.5 w-full rounded-lg border border-cream/15 bg-ink/40 px-3 py-2 text-sm text-cream focus:border-plonkPink focus:outline-none"
+      />
+    </label>
+  );
+}
+
+function Select({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (v: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="text-xs font-bold uppercase tracking-widest text-cream/55">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1.5 w-full appearance-none rounded-lg border border-cream/15 bg-ink/40 px-3 py-2 text-sm text-cream focus:border-plonkPink focus:outline-none"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function KindBadge({ kind }: { kind: TicketKind }) {
+  const styles: Record<TicketKind, string> = {
+    adult: "bg-plonkPink/15 text-plonkPink",
+    child: "bg-plonkYellow/15 text-plonkYellow",
+    bundle: "bg-plonkTeal/15 text-plonkTeal",
+    other: "bg-cream/10 text-cream/70",
+  };
+  return (
+    <span className={`inline-block rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest ${styles[kind]}`}>
+      {kind}
+    </span>
+  );
+}
+
+function Toggle({ on }: { on: boolean }) {
+  return (
+    <span className={`inline-flex h-5 w-9 items-center rounded-full transition ${on ? "bg-plonkTeal/80" : "bg-cream/15"}`}>
+      <span className={`h-4 w-4 transform rounded-full bg-white transition ${on ? "translate-x-4" : "translate-x-0.5"}`} />
+    </span>
+  );
+}

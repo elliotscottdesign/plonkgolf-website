@@ -12,28 +12,30 @@ export default function PageHero({
   image: string;
 }) {
   return (
-    <section className="tint-hero relative isolate flex min-h-[55vh] flex-col items-center justify-center px-6 py-24 text-center">
+    <section className="relative isolate flex min-h-[72vh] flex-col items-center justify-center px-6 pt-24 pb-28 text-center">
       <div className="absolute inset-0 -z-10">
         <Image
           src={image}
           alt=""
           fill
           priority
-          className="object-cover opacity-45"
+          className="object-cover"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-forestDeep/60 via-forestDeep/70 to-forest" />
+        <div className="hero-overlay absolute inset-0" />
       </div>
       {eyebrow && (
-        <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-plonkYellow">
+        <p className="text-shadow-hero mb-4 text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
           {eyebrow}
         </p>
       )}
-      <h1 className="font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
+      <h1 className="text-shadow-hero font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
         {title}
       </h1>
       {intro && (
-        <p className="mt-5 max-w-2xl text-base text-cream/80 sm:text-lg">{intro}</p>
+        <p className="text-shadow-hero mt-5 max-w-2xl text-base text-cream sm:text-lg">
+          {intro}
+        </p>
       )}
     </section>
   );

@@ -117,6 +117,28 @@ html {
 .bed-borough { background: linear-gradient(180deg, var(--forest) 0%, var(--ember) 35%, var(--ember-deep) 70%, var(--forest) 100%); }
 .bed-info    { background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 50%, var(--forest) 100%); }
 
+/* Hero overlay — lets the image breathe in the middle, only darkens at
+   top (so nav stays legible) and bottom (so the section hands off to
+   the next colour band cleanly). */
+.hero-overlay {
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8, 26, 20, 0.45) 0%,
+      rgba(8, 26, 20, 0.0) 20%,
+      rgba(8, 26, 20, 0.0) 55%,
+      rgba(8, 26, 20, 0.55) 85%,
+      var(--forest) 100%
+    );
+}
+
+/* Text shadow for hero headlines sitting over photography */
+.text-shadow-hero {
+  text-shadow:
+    0 2px 18px rgba(0, 0, 0, 0.55),
+    0 1px 3px rgba(0, 0, 0, 0.45);
+}
+
 /* Glowing accent blobs that sit behind big serif headlines for warmth */
 .glow-blob::before {
   content: "";
