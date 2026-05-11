@@ -311,6 +311,49 @@ create policy "public read promo codes" on public.promo_codes
 
 -- (Vouchers are validated server-side by code lookup; no public select.)
 
+-- =============================================================
+-- TABLE-LEVEL GRANTS
+-- =============================================================
+-- The project was created with "Automatically expose new tables" OFF
+-- (Supabase-recommended safety default). RLS controls WHICH rows
+-- each role sees; the underlying table privileges below decide who
+-- can even ask. Belt + braces.
+
+grant select on
+  public.venues,
+  public.tickets,
+  public.addons,
+  public.opening_hours,
+  public.closed_dates,
+  public.slot_overrides,
+  public.promo_codes
+to anon;
+
+grant select, insert, update, delete on
+  public.venues,
+  public.tickets,
+  public.addons,
+  public.opening_hours,
+  public.closed_dates,
+  public.slot_overrides,
+  public.promo_codes,
+  public.vouchers,
+  public.bookings,
+  public.booking_slots,
+  public.booking_tickets,
+  public.booking_addons,
+  public.email_templates
+to authenticated;
+
+grant insert on
+  public.bookings,
+  public.booking_slots,
+  public.booking_tickets,
+  public.booking_addons
+to anon;
+
+grant usage on all sequences in schema public to anon, authenticated;
+
 -- ------ Authenticated (admin) FULL ACCESS -------
 -- This is permissive for now; once we wire Supabase Auth with admin roles
 -- we'll tighten to only the admin role.

@@ -11,13 +11,13 @@ const BOROUGH_GALLERY = [
   { src: "/borough/venue/Venue_1.jpg", alt: "Borough arches interior" },
   { src: "/borough/drinks/Cocktail_1.jpg", alt: "Borough cocktail" },
   { src: "/borough/course/Course_4.jpg", alt: "Borough course detail" },
-  { src: "/borough/venue/Venue_2.jpg", alt: "Borough arch" },
+  { src: "/borough/games/Games_3.jpg", alt: "Borough arcade and pool" },
   { src: "/borough/drinks/Beer_1.jpg", alt: "Borough craft beer" },
   { src: "/borough/course/Course_5.jpg", alt: "Borough course" },
   { src: "/borough/drinks/Cocktail_4.jpg", alt: "Borough cocktail trio" },
-  { src: "/borough/venue/Venue_4.jpg", alt: "Borough arch detail" },
-  { src: "/borough/drinks/Drinks_2.jpg", alt: "Borough drinks" },
-  { src: "/borough/venue/Venue_6.jpg", alt: "Borough interior" },
+  { src: "/borough/games/Games_4.jpg", alt: "Borough games" },
+  { src: "/borough/drinks/Cocktail_5.jpg", alt: "Borough drinks" },
+  { src: "/borough/games/Games_6.jpg", alt: "Borough arcade detail" },
 ];
 
 export const metadata: Metadata = {
@@ -96,12 +96,12 @@ export default function BoroughMarketPage() {
           </Reveal>
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <FeatureCard
-              image="/borough/venue/Venue_3.jpg"
+              image="/borough/games/Games_1.jpg"
               title="Retro arcade"
               body="Shooters, button-bashers, foosball, ping pong, plus one of London's biggest pinball collections. Buy tokens at the bar — no booking needed."
             />
             <FeatureCard
-              image="/borough/venue/Venue_5.jpg"
+              image="/borough/games/Games_2.jpg"
               title="Pool tables"
               body="Two brand-new British 7ft pool tables, bookable at £5 for 30 minutes. Please note: under-18s aren't permitted to play."
             />
@@ -116,12 +116,12 @@ export default function BoroughMarketPage() {
               body="Rotating local kegs alongside our regulars. Whatever's on, it'll be cold and properly poured."
             />
             <FeatureCard
-              image="/borough/drinks/Drinks_5.jpg"
-              title="Stone-baked pizza"
-              body="Crisp-based pizzas straight from the stone oven, plus small plates for between rounds. Vegan and gluten-free always on."
+              image="/borough/course/Course_6.jpg"
+              title="Murals & street art"
+              body="A 360° gallery on the walls, ceiling and floor — painted by some of London's most renowned spray-can talent. The course is the start; the arches are the show."
             />
             <FeatureCard
-              image="/borough/venue/Venue_7.jpg"
+              image="/borough/games/Games_5.jpg"
               title="Doubles pool tournament"
               body="3rd Wednesday of the month. £200+ in bar tabs, medals, beer cases and Tees. Eight slots — always sells out."
             />
