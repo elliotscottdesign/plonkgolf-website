@@ -107,7 +107,7 @@ export default function HackneyPage() {
             />
             <FeatureCard
               image="/hackney/drinks/Drinks_3.jpg"
-              title="Tiki cocktail bar"
+              title="No Dice Bar"
               body="Fully loaded bar stocked with draught beers, craft cans, speciality ciders, house and classic cocktails, natural wines and a wide range of soft drinks."
             />
             <FeatureCard
