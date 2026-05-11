@@ -108,7 +108,7 @@ export default function HackneyPage() {
             <FeatureCard
               image="/hackney/drinks/Drinks_3.jpg"
               title="Tiki cocktail bar"
-              body="Rotating seasonal cocktails, local craft on draught, wines and mocktails. Two cocktails for £12, weekdays till 7pm."
+              body="Fully loaded bar stocked with draught beers, craft cans, speciality ciders, house and classic cocktails, natural wines and a wide range of soft drinks."
             />
             <FeatureCard
               image="/hackney/garden/Garden_2.jpg"
