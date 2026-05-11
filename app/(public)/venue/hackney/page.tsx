@@ -76,13 +76,13 @@ export default function HackneyPage() {
             </div>
           </Reveal>
           <Reveal delay={120}>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumRaised">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumDeep">
               <Image
                 src="/hackney/course/Course_3.jpg"
                 alt="Polynesian course detail"
                 fill
                 sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-cover"
+                className="object-contain"
               />
             </div>
           </Reveal>
@@ -209,13 +209,13 @@ function FeatureCard({
 }) {
   const inner = (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-plumRaised transition hover:border-plonkYellow/40">
-      <div className="relative aspect-[5/3] overflow-hidden">
+      <div className="relative aspect-[5/3] overflow-hidden bg-plumDeep">
         <Image
           src={image}
           alt=""
           fill
           sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-          className="object-cover transition duration-700 group-hover:scale-105"
+          className="object-contain transition duration-700 group-hover:scale-105"
         />
       </div>
       <div className="flex flex-1 flex-col p-6">

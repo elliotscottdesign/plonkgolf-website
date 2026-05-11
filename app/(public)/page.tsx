@@ -295,13 +295,13 @@ function VenueSpotlight({
         }`}
       >
         <Reveal>
-          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumRaised">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumDeep">
             <Image
               src={image}
               alt={imageAlt}
               fill
               sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-cover"
+              className="object-contain"
             />
           </div>
         </Reveal>
@@ -366,13 +366,13 @@ function CtaCard({
       href={href}
       className="group relative overflow-hidden rounded-2xl border border-emberLine/60 bg-emberRaised transition hover:border-plonkYellow/60"
     >
-      <div className="relative aspect-[16/10]">
+      <div className="relative aspect-[16/10] bg-emberDeep">
         <Image
           src={image}
           alt=""
           fill
           sizes="(min-width: 768px) 50vw, 100vw"
-          className="object-cover transition duration-700 group-hover:scale-105"
+          className="object-contain transition duration-700 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-emberDeep via-emberDeep/40 to-transparent" />
       </div>
@@ -401,13 +401,13 @@ function FeatureCard({
 }) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-plumRaised transition hover:border-plonkYellow/40">
-      <div className="relative aspect-[5/3] overflow-hidden">
+      <div className="relative aspect-[5/3] overflow-hidden bg-plumDeep">
         <Image
           src={image}
           alt=""
           fill
           sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-          className="object-cover transition duration-700 group-hover:scale-105"
+          className="object-contain transition duration-700 group-hover:scale-105"
         />
       </div>
       <div className="flex flex-1 flex-col p-6">

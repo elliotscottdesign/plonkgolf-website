@@ -49,13 +49,13 @@ export default function BoroughMarketPage() {
       <section className="tint-forest-to-ember relative overflow-hidden px-6 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16">
           <Reveal>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-emberRaised md:order-2">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-emberDeep md:order-2">
               <Image
                 src="/borough/course/Course_2.jpg"
                 alt="Borough London-themed course"
                 fill
                 sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-cover"
+                className="object-contain"
               />
             </div>
           </Reveal>
@@ -216,13 +216,13 @@ function FeatureCard({
   return (
     <Reveal>
       <article className="group h-full overflow-hidden rounded-2xl border border-emberLine/50 bg-ember transition hover:border-plonkYellow/40">
-        <div className="relative aspect-[5/3] overflow-hidden">
+        <div className="relative aspect-[5/3] overflow-hidden bg-emberDeep">
           <Image
             src={image}
             alt=""
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-            className="object-cover transition duration-700 group-hover:scale-105"
+            className="object-contain transition duration-700 group-hover:scale-105"
           />
         </div>
         <div className="p-6">
