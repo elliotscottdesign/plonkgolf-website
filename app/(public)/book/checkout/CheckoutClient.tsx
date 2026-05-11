@@ -562,6 +562,11 @@ function Field({
   );
 }
 
+// Custom dropdown — native <select> popups inherit OS chrome (grey/blue
+// rectangle on macOS) which clashed with the booking flow's dark green
+// palette. This is a button + panel built from divs so the styling
+// matches the rest of the form. Hidden <input> keeps native form
+// validation working for the required-field check.
 function SelectField({
   label,
   value,
@@ -575,24 +580,102 @@ function SelectField({
   required?: boolean;
   options: { value: string; label: string; disabled?: boolean }[];
 }) {
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDocClick = (e: MouseEvent) => {
+      if (!wrapperRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const selected = options.find((o) => o.value === value && !o.disabled);
+  const placeholder = options.find((o) => o.disabled)?.label ?? "Pick one…";
+
   return (
     <label className="block">
       <span className="text-xs font-bold uppercase tracking-widest text-cream/55">
         {label}
         {required && <span className="text-plonkPink"> *</span>}
       </span>
-      <select
-        value={value}
-        required={required}
-        onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 w-full appearance-none rounded-lg border border-cream/15 bg-ink/40 px-4 py-2.5 text-sm focus:border-plonkPink focus:outline-none"
-      >
-        {options.map((o) => (
-          <option key={o.value} value={o.value} disabled={o.disabled}>
-            {o.label}
-          </option>
-        ))}
-      </select>
+      <div className="relative mt-1.5" ref={wrapperRef}>
+        <button
+          type="button"
+          onClick={() => setOpen((o) => !o)}
+          className={`flex w-full items-center justify-between rounded-lg border border-cream/15 bg-ink/40 px-4 py-2.5 text-left text-sm transition hover:border-cream/30 focus:border-plonkPink focus:outline-none ${
+            open ? "border-plonkPink" : ""
+          }`}
+        >
+          <span className={selected ? "text-cream" : "text-cream/40"}>
+            {selected?.label ?? placeholder}
+          </span>
+          <span
+            className={`ml-2 text-cream/50 transition-transform ${
+              open ? "rotate-180" : ""
+            }`}
+            aria-hidden
+          >
+            ▾
+          </span>
+        </button>
+
+        {open && (
+          <ul
+            role="listbox"
+            className="absolute left-0 right-0 z-20 mt-2 max-h-64 overflow-auto rounded-lg border border-cream/15 bg-ink/95 py-1.5 text-sm shadow-2xl backdrop-blur"
+          >
+            {options
+              .filter((o) => !o.disabled)
+              .map((o) => {
+                const active = o.value === value;
+                return (
+                  <li
+                    key={o.value}
+                    role="option"
+                    aria-selected={active}
+                    onClick={() => {
+                      onChange(o.value);
+                      setOpen(false);
+                    }}
+                    className={`flex cursor-pointer items-center justify-between px-4 py-2 transition ${
+                      active
+                        ? "bg-plonkPink/15 text-cream"
+                        : "text-cream/85 hover:bg-cream/5 hover:text-cream"
+                    }`}
+                  >
+                    <span>{o.label}</span>
+                    {active && (
+                      <span aria-hidden className="text-plonkPink">
+                        ✓
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
+          </ul>
+        )}
+
+        {/* Hidden field keeps the surrounding <form>'s native required-check
+            working — browsers don't see the custom dropdown as fillable. */}
+        <input
+          tabIndex={-1}
+          aria-hidden
+          required={required}
+          value={value}
+          onChange={() => {}}
+          className="pointer-events-none absolute left-4 top-1/2 h-0 w-0 -translate-y-1/2 opacity-0"
+        />
+      </div>
     </label>
   );
 }
