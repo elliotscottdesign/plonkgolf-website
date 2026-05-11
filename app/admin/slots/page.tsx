@@ -9,7 +9,7 @@ export default function SlotsPage() {
     <>
       <AdminPageHeader
         title="Slot Capacity"
-        description="Default is 6 tickets every 5 minutes per venue. Override that here for specific dates / hours — busier days, maintenance windows, etc."
+        description="Default is 6 tickets every 10 minutes per venue. Override that here for specific dates / hours — busier days, maintenance windows, etc."
         action={
           <button className="rounded-full bg-plonkPink px-5 py-2 text-xs font-bold uppercase tracking-wider text-white">
             + Add override
@@ -20,7 +20,7 @@ export default function SlotsPage() {
 
       <div className="mb-6 grid gap-3 sm:grid-cols-2">
         <Setting label="Default capacity per slot" value="6 tickets" />
-        <Setting label="Slot length" value="5 minutes" />
+        <Setting label="Slot length" value="10 minutes" />
       </div>
 
       <AdminCard title="Overrides">
@@ -52,7 +52,7 @@ export default function SlotsPage() {
                       </td>
                       <td className="px-5 py-3 text-cream/65">{venueName}</td>
                       <td className="px-5 py-3 text-cream/80">{s.startTime} – {s.endTime}</td>
-                      <td className="px-5 py-3 font-medium">{s.capacity} / 5 min</td>
+                      <td className="px-5 py-3 font-medium">{s.capacity} / 10 min</td>
                       <td className="px-5 py-3 text-cream/65">{s.reason}</td>
                       <td className="px-5 py-3 text-right">
                         <button className="mr-2 text-xs font-semibold uppercase tracking-wider text-plonkYellow hover:underline">

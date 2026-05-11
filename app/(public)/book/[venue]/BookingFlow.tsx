@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import type { Addon, Ticket, Venue } from "@/lib/mockData";
 import { fmtMoney } from "@/lib/mockData";
 
-// Mock available slots for a date — every 5 min between 17:00 and 22:00,
-// some randomised to be unavailable / nearly full.
+// Mock available slots for a date — every 10 min between 17:00 and 22:00,
+// some randomised to be unavailable / nearly full. Capacity is 6 per slot.
 function generateSlots(dateStr: string): { time: string; left: number }[] {
   const seed = [...dateStr].reduce((s, c) => s + c.charCodeAt(0), 0);
   const rand = (n: number) => {
@@ -16,13 +16,13 @@ function generateSlots(dateStr: string): { time: string; left: number }[] {
   };
   const slots: { time: string; left: number }[] = [];
   for (let h = 17; h <= 22; h++) {
-    for (let m = 0; m < 60; m += 5) {
+    for (let m = 0; m < 60; m += 10) {
       if (h === 22 && m > 0) break;
       const i = h * 60 + m;
       const r = rand(i);
       let left: number;
-      if (r < 0.18) left = 0;
-      else if (r < 0.4) left = Math.floor(r * 10) % 3 + 1;
+      if (r < 0.15) left = 0;
+      else if (r < 0.4) left = (Math.floor(r * 10) % 3) + 1;
       else left = 6;
       slots.push({
         time: `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
@@ -33,23 +33,46 @@ function generateSlots(dateStr: string): { time: string; left: number }[] {
   return slots;
 }
 
-function getNextDates(n: number): { iso: string; label: string }[] {
-  const out: { iso: string; label: string }[] = [];
+function getNextDates(n: number): { iso: string; topLabel: string; bottomLabel: string }[] {
+  const out: { iso: string; topLabel: string; bottomLabel: string }[] = [];
   const today = new Date();
   for (let i = 0; i < n; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
-    out.push({
-      iso: d.toISOString().slice(0, 10),
-      label:
-        i === 0
-          ? "Today"
-          : i === 1
-            ? "Tomorrow"
-            : d.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "short" }),
-    });
+    let topLabel: string;
+    let bottomLabel: string;
+    if (i === 0) {
+      topLabel = "Today";
+      bottomLabel = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+    } else if (i === 1) {
+      topLabel = "Tomorrow";
+      bottomLabel = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+    } else {
+      topLabel = d.toLocaleDateString("en-GB", { weekday: "short" });
+      bottomLabel = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
+    }
+    out.push({ iso: d.toISOString().slice(0, 10), topLabel, bottomLabel });
   }
   return out;
+}
+
+function maxBookableDateIso(): string {
+  // Allow booking up to 1 year ahead.
+  const d = new Date();
+  d.setFullYear(d.getFullYear() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function fullDateLabel(iso: string): string {
+  return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
 }
 
 export default function BookingFlow({
@@ -74,8 +97,9 @@ export default function BookingFlow({
   const [promoApplied, setPromoApplied] = useState<{ code: string; pctOff: number } | null>(null);
   const [promoError, setPromoError] = useState("");
 
-  const dates = useMemo(() => getNextDates(14), []);
+  const dates = useMemo(() => getNextDates(8), []);
   const slots = useMemo(() => generateSlots(dateIso), [dateIso]);
+  const isQuickDate = dates.some((d) => d.iso === dateIso);
 
   const subtotalPence = useMemo(() => {
     let s = 0;
@@ -155,7 +179,7 @@ export default function BookingFlow({
         <div className="space-y-10">
           {/* Step 1: Date */}
           <Step number={1} title="Pick a date">
-            <div className="-mx-1 flex flex-wrap gap-2 overflow-x-auto">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
               {dates.map((d) => {
                 const active = d.iso === dateIso;
                 return (
@@ -165,16 +189,43 @@ export default function BookingFlow({
                       setDateIso(d.iso);
                       setSlotTime(null);
                     }}
-                    className={`shrink-0 rounded-xl border px-4 py-2.5 text-sm transition ${
+                    className={`flex min-h-[68px] flex-col items-center justify-center rounded-xl border px-3 py-3 transition ${
                       active
                         ? "border-plonkPink bg-plonkPink/15 text-cream"
-                        : "border-cream/15 text-cream/70 hover:border-cream/30"
+                        : "border-cream/15 text-cream/80 hover:border-cream/30 active:bg-cream/5"
                     }`}
                   >
-                    {d.label}
+                    <span className="text-sm font-semibold">{d.topLabel}</span>
+                    <span className="mt-0.5 text-[11px] uppercase tracking-widest text-cream/55">
+                      {d.bottomLabel}
+                    </span>
                   </button>
                 );
               })}
+            </div>
+
+            <div className="mt-4 flex flex-col gap-2 rounded-xl border border-cream/15 bg-ink/40 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
+                  Or pick any date
+                </p>
+                {!isQuickDate && (
+                  <p className="mt-1 text-sm text-cream">{fullDateLabel(dateIso)}</p>
+                )}
+              </div>
+              <input
+                type="date"
+                min={todayIso()}
+                max={maxBookableDateIso()}
+                value={dateIso}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    setDateIso(e.target.value);
+                    setSlotTime(null);
+                  }
+                }}
+                className="min-h-[44px] rounded-lg border border-cream/15 bg-ink/60 px-3 py-2 text-sm text-cream focus:border-plonkPink focus:outline-none"
+              />
             </div>
           </Step>
 
@@ -182,9 +233,9 @@ export default function BookingFlow({
           <Step
             number={2}
             title="Pick a time"
-            subtitle="6 tickets per 5-minute slot. Numbers shown are tickets left."
+            subtitle="6 tickets per 10-minute slot. Numbers shown are tickets still available right now."
           >
-            <div className="grid grid-cols-3 gap-2 sm:grid-cols-5 md:grid-cols-6">
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
               {slots.map((s) => {
                 const sold = s.left === 0;
                 const active = s.time === slotTime;
@@ -193,15 +244,15 @@ export default function BookingFlow({
                     key={s.time}
                     disabled={sold}
                     onClick={() => setSlotTime(s.time)}
-                    className={`rounded-lg border px-2 py-2.5 text-sm transition ${
+                    className={`flex min-h-[60px] flex-col items-center justify-center rounded-lg border px-2 py-2 text-sm transition ${
                       sold
                         ? "cursor-not-allowed border-cream/5 bg-cream/5 text-cream/30 line-through"
                         : active
                           ? "border-plonkPink bg-plonkPink/15 text-cream"
-                          : "border-cream/15 text-cream hover:border-cream/30"
+                          : "border-cream/15 text-cream hover:border-cream/30 active:bg-cream/5"
                     }`}
                   >
-                    <p className="font-mono">{s.time}</p>
+                    <p className="font-mono text-base">{s.time}</p>
                     {!sold && (
                       <p className="mt-0.5 text-[10px] uppercase tracking-widest text-cream/55">
                         {s.left} left
@@ -345,7 +396,7 @@ export default function BookingFlow({
             <button
               disabled={!canContinue}
               onClick={continueToCheckout}
-              className="mt-6 w-full rounded-full bg-plonkPink py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90 disabled:cursor-not-allowed disabled:opacity-40"
+              className="mt-6 w-full rounded-full bg-plonkPink py-4 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {canContinue
                 ? "Continue to checkout"
@@ -353,6 +404,13 @@ export default function BookingFlow({
                   ? "Adult ticket required"
                   : "Pick a time + tickets first"}
             </button>
+
+            {canContinue && (
+              <p className="mt-3 flex items-center justify-center gap-1.5 text-center text-[11px] text-cream/55">
+                <span aria-hidden>⏱</span>
+                We'll hold your tickets for 15 mins while you check out
+              </p>
+            )}
 
             <p className="mt-3 text-center text-[10px] uppercase tracking-widest text-cream/40">
               Preview — no money will be taken

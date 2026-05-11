@@ -1,9 +1,40 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TICKETS, ADDONS, VENUES, fmtMoney } from "@/lib/mockData";
+
+const HOLD_MS = 15 * 60 * 1000; // 15 minutes
+const HOLD_KEY = "plonk_book_hold_expires_at";
+
+function useHoldTimer(): { msLeft: number; expired: boolean } {
+  const [msLeft, setMsLeft] = useState<number>(HOLD_MS);
+  const startedRef = useRef(false);
+
+  useEffect(() => {
+    if (startedRef.current) return;
+    startedRef.current = true;
+    let expiresAt = Number(sessionStorage.getItem(HOLD_KEY) || 0);
+    if (!expiresAt || expiresAt < Date.now()) {
+      expiresAt = Date.now() + HOLD_MS;
+      sessionStorage.setItem(HOLD_KEY, String(expiresAt));
+    }
+    const tick = () => setMsLeft(Math.max(0, expiresAt - Date.now()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  return { msLeft, expired: msLeft <= 0 };
+}
+
+function fmtCountdown(ms: number): string {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  const m = Math.floor(total / 60);
+  const s = total % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
 
 function CheckoutInner() {
   const router = useRouter();
@@ -38,6 +69,8 @@ function CheckoutInner() {
   const [phone, setPhone] = useState("");
   const [marketingOptIn, setMarketingOptIn] = useState(false);
 
+  const { msLeft, expired } = useHoldTimer();
+
   const tickets = TICKETS.filter((t) => (ticketQty[t.id] || 0) > 0);
   const addons = ADDONS.filter((a) => (addonQty[a.id] || 0) > 0);
 
@@ -60,9 +93,11 @@ function CheckoutInner() {
 
   function handlePay(e: React.FormEvent) {
     e.preventDefault();
+    if (expired) return;
     // In production this hits a Supabase Edge Function which creates a
     // Stripe Checkout session and redirects the browser to Stripe.
     // For the preview, jump straight to the success page.
+    sessionStorage.removeItem(HOLD_KEY);
     const successParams = new URLSearchParams({
       ref: `PLNK-${Math.random().toString(36).slice(2, 6).toUpperCase()}${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
       venue: venueId,
@@ -75,7 +110,8 @@ function CheckoutInner() {
     router.push(`/book/success?${successParams.toString()}`);
   }
 
-  const canPay = email && firstName && lastName && tickets.length > 0;
+  const canPay =
+    !expired && email && firstName && lastName && tickets.length > 0;
 
   if (!venue || tickets.length === 0) {
     return (
@@ -104,6 +140,33 @@ function CheckoutInner() {
         <p className="mt-2 text-sm text-cream/70">
           Almost there — just your details, then payment.
         </p>
+
+        {expired ? (
+          <div className="mt-6 rounded-xl border border-red-400/40 bg-red-400/10 px-5 py-4">
+            <p className="text-sm font-semibold text-red-300">
+              Your 15-minute ticket hold has expired
+            </p>
+            <p className="mt-1 text-xs text-cream/70">
+              Tickets have been released so other customers can book. Head
+              back to the booking page to pick a slot again.
+            </p>
+            <Link
+              href={`/book/${venueId}`}
+              className="mt-3 inline-block rounded-full bg-plonkPink px-5 py-2 text-xs font-bold uppercase tracking-wider text-white"
+            >
+              Start again
+            </Link>
+          </div>
+        ) : (
+          <div className="mt-6 flex items-center gap-3 rounded-xl border border-plonkYellow/30 bg-plonkYellow/5 px-5 py-3 text-sm text-plonkYellow">
+            <span aria-hidden className="text-lg">⏱</span>
+            <span>
+              Your tickets are held for{" "}
+              <strong className="font-mono">{fmtCountdown(msLeft)}</strong>.
+              Finish checkout before then.
+            </span>
+          </div>
+        )}
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
           {/* Form */}
@@ -152,7 +215,7 @@ function CheckoutInner() {
               disabled={!canPay}
               className="w-full rounded-full bg-plonkPink py-4 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90 disabled:cursor-not-allowed disabled:opacity-40"
             >
-              Pay {fmtMoney(total)} →
+              {expired ? "Hold expired — start again" : `Pay ${fmtMoney(total)} →`}
             </button>
           </form>
 
