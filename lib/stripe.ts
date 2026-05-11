@@ -3,11 +3,12 @@
 import { loadStripe, type Stripe } from "@stripe/stripe-js";
 
 // Publishable key — safe to ship in the browser. Stripe designed it that way.
-// Override via NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY at build time when we
-// switch to live mode after Stripe verifies the business.
+// Override via NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY at build time if we ever
+// want to switch back to test mode (the secret/webhook side is governed by
+// Supabase Edge Function secrets — these two halves must match).
 const STRIPE_PUBLISHABLE_KEY =
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
-  "pk_test_51TVsTZEpRnfAMZgtbKPW90ovI7P0piUcQgIm9bB1sTsy5zZHkqVU2bpzJH5Q6Akeg0kIWYWiC9fFMa2dOfx0x6Ur003SCZYmTR";
+  "pk_live_51TVsTZEpRnfAMZgtrvncT1YGkRAg4pGvgyutMpWrlcNdcyJFUL7PhbN9wUb0wzBrx3652OBS5rPRNoBfgpkhbtjk00MZFqkfax";
 
 let _stripePromise: Promise<Stripe | null> | null = null;
 
