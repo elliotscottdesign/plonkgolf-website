@@ -293,6 +293,15 @@ Deno.serve(async (req) => {
 
   const { subject, text, html } = composeEmail(booking as unknown as Booking);
 
+  // Strip trailing whitespace from every line. Without this, blank lines that
+  // contain only indentation spaces get quoted-printable-encoded as `=20` and
+  // some mail clients (Gmail, Outlook) render the `=20` literally instead of
+  // decoding it back to a space.
+  const stripTrailingWs = (s: string) =>
+    s.split("\n").map((line) => line.replace(/[ \t]+$/g, "")).join("\n");
+  const cleanText = stripTrailingWs(text);
+  const cleanHtml = stripTrailingWs(html);
+
   const client = new SMTPClient({
     connection: {
       hostname: "smtp.gmail.com",
@@ -308,8 +317,8 @@ Deno.serve(async (req) => {
       to: booking.customer_email,
       replyTo: REPLY_TO,
       subject,
-      content: text,
-      html,
+      content: cleanText,
+      html: cleanHtml,
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
