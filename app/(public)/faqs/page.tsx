@@ -98,11 +98,11 @@ const SECTIONS: Section[] = [
       },
       {
         q: "Is there a happy hour?",
-        a: "At Plonk Hackney, all golf tickets are £5 per person Monday to Friday before 5pm.",
+        a: "At Plonk Hackney, all golf tickets are £5 per person Monday to Friday til 7pm. Drinks deals on at the bar too.",
       },
       {
         q: "What's the Monday Plonk Hackney deal?",
-        a: "Buy one, get one free on tickets after 5pm every Monday at Plonk Hackney. Your basket recalculates automatically when you pick a Monday slot — no code needed.",
+        a: "Buy one, get one free on tickets after 7pm every Monday at Plonk Hackney (after happy hour finishes). Your basket recalculates automatically when you pick a Monday slot — no code needed.",
       },
       {
         q: "What's the Tuesday Hackney bundle?",
