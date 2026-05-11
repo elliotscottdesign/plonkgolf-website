@@ -1,4 +1,5 @@
 import Image from "next/image";
+import HeroSlider from "./HeroSlider";
 
 export default function PageHero({
   eyebrow,
@@ -9,20 +10,29 @@ export default function PageHero({
   eyebrow?: string;
   title: string;
   intro?: string;
-  image: string;
+  /** Pass a single src for a static hero, or an array for an auto-cycling slider.
+   *  The slider is a placeholder until a hero video is ready — when the video is
+   *  in, drop it in here (or swap PageHero for a <video>-aware variant).         */
+  image: string | string[];
 }) {
+  const isArray = Array.isArray(image);
+
   return (
     <section className="relative isolate flex flex-col">
-      {/* Image — full, uninterrupted */}
+      {/* Image — uninterrupted, ready for a future video */}
       <div className="relative h-[58vh] min-h-[420px] w-full overflow-hidden md:h-[68vh]">
-        <Image
-          src={image}
-          alt=""
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
+        {isArray ? (
+          <HeroSlider images={image.map((src) => ({ src }))} />
+        ) : (
+          <Image
+            src={image}
+            alt=""
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+        )}
         {/* Subtle top shade so the nav stays legible */}
         <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-forestDeep/55 to-transparent" />
         {/* Bottom fade — image dissolves into forest to meet the copy band */}

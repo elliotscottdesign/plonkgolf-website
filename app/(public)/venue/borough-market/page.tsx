@@ -33,7 +33,16 @@ export default function BoroughMarketPage() {
         eyebrow="Borough Market · Indoor · 9 holes"
         title="Crazy Golf at London Bridge"
         intro="Tucked into four railway arches under London Bridge. A 360° gallery from London's best street artists, surrounding nine holes of London icons."
-        image="/borough/course/Course_1.jpg"
+        image={[
+          "/borough/course/Course_1.jpg",
+          "/borough/course/Course_3.jpg",
+          "/borough/games/Games_1.jpg",
+          "/borough/drinks/Cocktail_1.jpg",
+          "/borough/course/Course_4.jpg",
+          "/borough/games/Games_3.jpg",
+          "/borough/drinks/Beer_1.jpg",
+          "/borough/venue/Venue_1.jpg",
+        ]}
       />
 
       {/* London course intro (forest → ember) */}

@@ -30,7 +30,16 @@ export default function HackneyPage() {
         eyebrow="Outdoors & covered"
         title="Plonk Hackney at No Dice Games Bar"
         intro="Our perfectly positioned games bar and golf spot is just a short walk from Broadway Market and looks across London Fields."
-        image="/hackney/course/Course_1.jpg"
+        image={[
+          "/hackney/course/Course_1.jpg",
+          "/hackney/garden/Garden_1.jpg",
+          "/hackney/course/Course_3.jpg",
+          "/hackney/pool/Pool_1.jpg",
+          "/hackney/drinks/Drinks_3.jpg",
+          "/hackney/games/Games_2.jpg",
+          "/hackney/venue/Interior_2.jpg",
+          "/hackney/course/Course_5.jpg",
+        ]}
       />
 
       {/* Polynesian intro (forest → plum) */}
