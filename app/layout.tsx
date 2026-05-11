@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import CookieConsent from "@/components/CookieConsent";
 
 export const metadata: Metadata = {
-  title: "Plonk Golf — Crazy Golf in London",
+  title: "Plonk Golf — Crazy Golf Creations Across the Capital",
   description:
-    "Plonk Crazy Golf — the wackiest mini golf courses and coolest arcade and games bars across London. Hackney & Borough Market.",
+    "Plonk Crazy Golf — two original 9-hole courses in London. Hackney and Borough Market. Cocktails, food, arcade and games.",
 };
 
 export default function RootLayout({
@@ -18,11 +19,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
-          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display&display=swap"
+          href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Serif+Display:ital@0;1&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <CookieConsent />
+      </body>
     </html>
   );
 }

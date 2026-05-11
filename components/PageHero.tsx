@@ -22,7 +22,7 @@ export default function PageHero({
           className="object-cover opacity-40"
           sizes="100vw"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/60 via-ink/70 to-ink" />
+        <div className="absolute inset-0 bg-gradient-to-b from-forestDeep/60 via-forestDeep/70 to-forest" />
       </div>
       {eyebrow && (
         <p className="mb-3 text-xs font-bold uppercase tracking-[0.3em] text-plonkYellow">

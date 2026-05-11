@@ -2,25 +2,37 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const NAV: { label: string; href: string }[] = [
-  { label: "Venues", href: "/#venues" },
-  { label: "Private Hire", href: "/private-hire" },
-  { label: "Events", href: "/events" },
-  { label: "Deals", href: "/deals" },
+  { label: "Hackney", href: "/venue/hackney" },
+  { label: "Borough", href: "/venue/borough-market" },
+  { label: "Private hire", href: "/private-hire" },
   { label: "Vouchers", href: "/vouchers" },
-  { label: "FAQs", href: "/faqs" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-cream/10 bg-ink/85 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+    <header
+      className={`sticky top-0 z-50 border-b transition ${
+        scrolled
+          ? "border-forestLine/50 bg-forestDeep/90 backdrop-blur"
+          : "border-transparent bg-transparent"
+      }`}
+    >
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="flex items-center" aria-label="Plonk Golf — home">
           <Image
             src="/images/plonk-logo.png"
@@ -28,7 +40,7 @@ export default function Header() {
             width={140}
             height={56}
             priority
-            className="h-10 w-auto"
+            className="h-9 w-auto"
           />
         </Link>
 
@@ -37,14 +49,14 @@ export default function Header() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-sm font-medium uppercase tracking-wider text-cream/80 transition hover:text-cream"
+              className="text-[13px] font-semibold uppercase tracking-wider text-cream/75 transition hover:text-cream"
             >
               {item.label}
             </Link>
           ))}
           <Link
             href="/book"
-            className="rounded-full bg-plonkPink px-5 py-2 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
+            className="rounded-full bg-plonkPink px-5 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
           >
             Book Now
           </Link>
@@ -75,7 +87,7 @@ export default function Header() {
       </div>
 
       {open && (
-        <nav className="border-t border-cream/10 bg-ink px-6 py-4 md:hidden">
+        <nav className="border-t border-forestLine/50 bg-forestDeep px-6 py-5 md:hidden">
           <ul className="flex flex-col gap-3">
             {NAV.map((item) => (
               <li key={item.href}>
