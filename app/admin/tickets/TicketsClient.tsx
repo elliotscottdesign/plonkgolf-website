@@ -62,12 +62,11 @@ export default function TicketsClient() {
     reload();
   }, []);
 
-  async function saveEdit() {
-    if (!editing) return;
+  async function saveEdit(final: EditState) {
     setBusy(true);
     setErr("");
     try {
-      const { id, venue_id, ...patch } = editing;
+      const { id, venue_id, ...patch } = final;
       void venue_id;
       await updateTicket(id, patch);
       setEditing(null);
@@ -106,12 +105,13 @@ export default function TicketsClient() {
     }
   }
 
-  async function saveCreate() {
-    if (!creatingFor) return;
+  async function saveCreate(final: EditState) {
     setBusy(true);
     setErr("");
     try {
-      await createTicket(creatingFor);
+      const { id, ...rest } = final;
+      void id;
+      await createTicket(rest as Omit<DbTicket, "id">);
       setCreatingFor(null);
       await reload();
     } catch (e: unknown) {
@@ -253,8 +253,7 @@ export default function TicketsClient() {
       {editing && (
         <TicketModal
           title="Edit ticket"
-          value={editing}
-          onChange={setEditing as (v: EditState) => void}
+          initial={editing}
           onCancel={() => setEditing(null)}
           onSave={saveEdit}
           busy={busy}
@@ -263,8 +262,7 @@ export default function TicketsClient() {
       {creatingFor && (
         <TicketModal
           title="Add ticket"
-          value={creatingFor as unknown as EditState}
-          onChange={(v) => setCreatingFor(v as unknown as Omit<DbTicket, "id">)}
+          initial={creatingFor as unknown as EditState}
           onCancel={() => setCreatingFor(null)}
           onSave={saveCreate}
           busy={busy}
@@ -276,94 +274,130 @@ export default function TicketsClient() {
 
 function TicketModal({
   title,
-  value,
-  onChange,
+  initial,
   onCancel,
   onSave,
   busy,
 }: {
   title: string;
-  value: EditState;
-  onChange: (v: EditState) => void;
+  initial: EditState;
   onCancel: () => void;
-  onSave: () => void;
+  onSave: (final: EditState) => void;
   busy: boolean;
 }) {
-  const days = value.available_days_of_week ?? [];
+  // Draft of the non-numeric fields. Numeric fields are tracked as raw strings
+  // below so the user can type without us reformatting on every keystroke.
+  const [draft, setDraft] = useState<EditState>(initial);
+  const [priceStr, setPriceStr] = useState<string>(
+    ((initial.price_pence ?? 0) / 100).toFixed(2),
+  );
+  const [vatStr, setVatStr] = useState<string>(String(initial.vat_rate_pct ?? 20));
+  const [sortStr, setSortStr] = useState<string>(String(initial.sort_order ?? 0));
+  const [localErr, setLocalErr] = useState<string>("");
+
+  const days = draft.available_days_of_week ?? [];
+
   function toggleDay(d: number) {
     const cur = new Set(days);
     if (cur.has(d)) cur.delete(d);
     else cur.add(d);
-    onChange({
-      ...value,
+    setDraft({
+      ...draft,
       available_days_of_week: cur.size === 0 ? null : Array.from(cur).sort(),
     });
   }
+
+  function handleSave() {
+    setLocalErr("");
+    const price = parseFloat(priceStr.replace(/[^0-9.\-]/g, ""));
+    if (!Number.isFinite(price) || price < 0) {
+      setLocalErr("Enter a valid price (e.g. 11.00).");
+      return;
+    }
+    const vat = parseInt(vatStr, 10);
+    if (!Number.isFinite(vat) || vat < 0 || vat > 100) {
+      setLocalErr("VAT % must be between 0 and 100.");
+      return;
+    }
+    const sort = parseInt(sortStr, 10);
+    if (!Number.isFinite(sort)) {
+      setLocalErr("Sort order must be a whole number.");
+      return;
+    }
+    if (!draft.name || draft.name.trim().length === 0) {
+      setLocalErr("Ticket needs a name.");
+      return;
+    }
+    onSave({
+      ...draft,
+      name: draft.name!.trim(),
+      price_pence: Math.round(price * 100),
+      vat_rate_pct: vat,
+      sort_order: sort,
+    });
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-ink/80 p-3 sm:items-center sm:p-6" onClick={onCancel}>
-      <div className="w-full max-w-md rounded-2xl border border-cream/15 bg-ink p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/80 p-3 sm:items-center sm:p-6"
+      onClick={onCancel}
+    >
+      <div
+        className="w-full max-w-md rounded-2xl border border-cream/15 bg-ink p-6 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
         <h3 className="font-display text-2xl">{title}</h3>
 
         <div className="mt-5 space-y-4">
           <Field
             label="Name"
-            value={value.name ?? ""}
-            onChange={(v) => onChange({ ...value, name: v })}
+            value={draft.name ?? ""}
+            onChange={(v) => setDraft({ ...draft, name: v })}
           />
           <Field
             label="Description (optional)"
-            value={value.description ?? ""}
-            onChange={(v) => onChange({ ...value, description: v || null })}
+            value={draft.description ?? ""}
+            onChange={(v) => setDraft({ ...draft, description: v || null })}
           />
           <div className="grid grid-cols-2 gap-3">
             <Field
               label="Price (£)"
-              value={((value.price_pence ?? 0) / 100).toFixed(2)}
-              onChange={(v) => {
-                const num = parseFloat(v);
-                if (Number.isFinite(num) && num >= 0) {
-                  onChange({ ...value, price_pence: Math.round(num * 100) });
-                }
-              }}
+              value={priceStr}
+              onChange={setPriceStr}
               type="text"
               inputMode="decimal"
+              placeholder="11.00"
             />
             <Field
               label="VAT %"
-              value={String(value.vat_rate_pct ?? 20)}
-              onChange={(v) => {
-                const num = parseInt(v, 10);
-                if (Number.isFinite(num) && num >= 0 && num <= 100) {
-                  onChange({ ...value, vat_rate_pct: num });
-                }
-              }}
+              value={vatStr}
+              onChange={setVatStr}
               type="text"
               inputMode="numeric"
+              placeholder="20"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <Select
               label="Kind"
-              value={value.kind ?? "adult"}
+              value={draft.kind ?? "adult"}
               options={KIND_OPTS.map((k) => ({ value: k, label: k }))}
-              onChange={(v) => onChange({ ...value, kind: v as TicketKind })}
+              onChange={(v) => setDraft({ ...draft, kind: v as TicketKind })}
             />
             <Select
               label="Category"
-              value={value.category ?? "golf"}
+              value={draft.category ?? "golf"}
               options={CATEGORY_OPTS.map((c) => ({ value: c, label: c }))}
-              onChange={(v) => onChange({ ...value, category: v as "golf" | "pool" })}
+              onChange={(v) => setDraft({ ...draft, category: v as "golf" | "pool" })}
             />
           </div>
           <Field
             label="Sort order"
-            value={String(value.sort_order ?? 0)}
-            onChange={(v) => {
-              const num = parseInt(v, 10);
-              if (Number.isFinite(num)) onChange({ ...value, sort_order: num });
-            }}
+            value={sortStr}
+            onChange={setSortStr}
             type="text"
             inputMode="numeric"
+            placeholder="1"
           />
 
           <div>
@@ -394,12 +428,18 @@ function TicketModal({
           <label className="flex items-center gap-2 text-sm text-cream/80">
             <input
               type="checkbox"
-              checked={!!value.active}
-              onChange={(e) => onChange({ ...value, active: e.target.checked })}
+              checked={!!draft.active}
+              onChange={(e) => setDraft({ ...draft, active: e.target.checked })}
               className="h-4 w-4 rounded border-cream/20 bg-ink/40"
             />
             Active (visible to customers)
           </label>
+
+          {localErr && (
+            <p className="rounded-lg border border-red-400/30 bg-red-400/5 px-3 py-2 text-sm text-red-300">
+              {localErr}
+            </p>
+          )}
         </div>
 
         <div className="mt-6 flex gap-2 justify-end">
@@ -412,7 +452,7 @@ function TicketModal({
           </button>
           <button
             type="button"
-            onClick={onSave}
+            onClick={handleSave}
             disabled={busy}
             className="rounded-full bg-plonkPink px-5 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-plonkPink/90 disabled:opacity-40"
           >
@@ -430,12 +470,14 @@ function Field({
   onChange,
   type = "text",
   inputMode,
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   type?: string;
   inputMode?: "text" | "decimal" | "numeric";
+  placeholder?: string;
 }) {
   return (
     <label className="block">
@@ -445,7 +487,8 @@ function Field({
         inputMode={inputMode}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 w-full rounded-lg border border-cream/15 bg-ink/40 px-3 py-2 text-sm text-cream focus:border-plonkPink focus:outline-none"
+        placeholder={placeholder}
+        className="mt-1.5 w-full rounded-lg border border-cream/15 bg-ink/40 px-3 py-2 text-sm text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none"
       />
     </label>
   );

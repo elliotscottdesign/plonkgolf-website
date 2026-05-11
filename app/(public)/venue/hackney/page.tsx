@@ -30,8 +30,8 @@ export default function HackneyPage() {
   return (
     <main>
       <PageHero
-        eyebrow="Hackney · Outdoor · 9 holes"
-        title="Crazy Golf in Hackney"
+        eyebrow="Outdoors & covered"
+        title="Plonk Hackney at No Dice Games Bar"
         intro="Our perfectly positioned games bar and golf spot is just a short walk from Broadway Market and looks across London Fields."
         image="/hackney/course/Course_1.jpg"
       />
