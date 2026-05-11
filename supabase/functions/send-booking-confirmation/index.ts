@@ -136,7 +136,14 @@ function composeEmail(booking: Booking): {
       )}`,
   );
 
-  const subject = `Booking confirmed — ${venueName} on ${date} (${booking.reference})`;
+  // Subject is kept pure-ASCII on purpose. The em dash (—) used in the body
+  // looks fine there because the body is properly Quoted-Printable encoded,
+  // but in the subject line denomailer's encoded-word splitter produces an
+  // RFC 2047-invalid line break inside the encoded-word for any non-ASCII
+  // character. Gmail then mis-parses the headers and shows the raw MIME
+  // source as the message body. Plain dash → none of that happens.
+  const subject =
+    `Booking confirmed - ${venueName} on ${date} (${booking.reference})`;
 
   // ---------- plain text ----------
   const totalsLines = booking.discount_pence > 0
