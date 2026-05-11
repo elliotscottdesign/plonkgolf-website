@@ -29,18 +29,18 @@ export default function PageHero({
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-forest" />
       </div>
 
-      {/* Copy — sits on forest, vertically centred in its band */}
-      <div className="flex min-h-[36vh] flex-col items-center justify-center bg-forest px-6 py-20 text-center md:py-28">
+      {/* Copy — sits on forest, vertically centred in a tight band */}
+      <div className="flex flex-col items-center justify-center bg-forest px-6 py-10 text-center md:py-14">
         {eyebrow && (
           <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
             {eyebrow}
           </p>
         )}
-        <h1 className="mt-6 font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
+        <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
           {title}
         </h1>
         {intro && (
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-cream/85 sm:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-cream/85 sm:text-lg">
             {intro}
           </p>
         )}
