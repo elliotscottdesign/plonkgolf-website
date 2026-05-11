@@ -13,7 +13,32 @@
 // =============================================================
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
-import { handlePreflight, jsonResponse } from "../_shared/cors.ts";
+
+// ---------- inlined CORS helpers (kept here so the function is self-
+//            contained for the Supabase Dashboard paste-and-deploy flow) ----
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Max-Age": "86400",
+};
+function jsonResponse(body: unknown, init: ResponseInit = {}) {
+  return new Response(JSON.stringify(body), {
+    ...init,
+    headers: {
+      ...corsHeaders,
+      "content-type": "application/json",
+      ...(init.headers || {}),
+    },
+  });
+}
+function handlePreflight(req: Request): Response | null {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: corsHeaders });
+  }
+  return null;
+}
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") ?? "";
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
