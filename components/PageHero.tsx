@@ -11,16 +11,17 @@ export default function PageHero({
   title: string;
   intro?: string;
   /** Pass a single src for a static hero, or an array for an auto-cycling slider.
-   *  The slider is a placeholder until a hero video is ready — when the video is
-   *  in, drop it in here (or swap PageHero for a <video>-aware variant).         */
+   *  The slider is a placeholder until a hero video is ready.                    */
   image: string | string[];
 }) {
   const isArray = Array.isArray(image);
 
   return (
     <section className="relative isolate flex flex-col">
-      {/* Image — uninterrupted, ready for a future video */}
-      <div className="relative h-[58vh] min-h-[420px] w-full overflow-hidden md:h-[68vh]">
+      {/* Image — full, never cropped. object-contain lets the whole shot show,
+          letterbox bars (if any) take the forest colour so they blend into the
+          title band underneath.                                                 */}
+      <div className="relative w-full bg-forest aspect-[3/2] max-h-[80vh] min-h-[320px] overflow-hidden">
         {isArray ? (
           <HeroSlider images={image.map((src) => ({ src }))} />
         ) : (
@@ -29,17 +30,15 @@ export default function PageHero({
             alt=""
             fill
             priority
-            className="object-cover"
+            className="object-contain"
             sizes="100vw"
           />
         )}
-        {/* Subtle top shade so the nav stays legible */}
-        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-forestDeep/55 to-transparent" />
-        {/* Bottom fade — image dissolves into forest to meet the copy band */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-forest" />
+        {/* Subtle top shade so the sticky nav stays legible over light photos */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-forestDeep/55 to-transparent" />
       </div>
 
-      {/* Copy — sits on forest, vertically centred in a tight band */}
+      {/* Copy — clean hard edge between image and title band */}
       <div className="flex flex-col items-center justify-center bg-forest px-6 py-10 text-center md:py-14">
         {eyebrow && (
           <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">

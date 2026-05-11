@@ -38,7 +38,7 @@ export default function HeroSlider({
             fill
             priority={i === 0}
             sizes="100vw"
-            className="object-cover"
+            className="object-contain"
           />
         </div>
       ))}

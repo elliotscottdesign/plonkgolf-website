@@ -40,18 +40,18 @@ export default function HomePage() {
     <main>
       {/* ───────────── HERO (forest) ───────────── */}
       <section className="relative isolate flex flex-col">
-        {/* Image — uninterrupted, ready for a future video */}
-        <div className="relative h-[68vh] min-h-[480px] w-full overflow-hidden md:h-[78vh]">
+        {/* Image — full, never cropped. object-contain shows the whole shot;
+            letterbox bars take the forest colour so they merge with the band below */}
+        <div className="relative w-full bg-forest aspect-[3/2] max-h-[80vh] min-h-[360px] overflow-hidden">
           <Image
             src="/borough/course/Course_1.jpg"
             alt=""
             fill
             priority
-            className="object-cover"
+            className="object-contain"
             sizes="100vw"
           />
-          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-forestDeep/55 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-forest" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-forestDeep/55 to-transparent" />
         </div>
 
         {/* Copy + booking widget — sit on forest below the image */}
