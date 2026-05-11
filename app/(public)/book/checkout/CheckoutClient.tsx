@@ -582,7 +582,7 @@ function Field({
         value={value}
         required={required}
         onChange={(e) => onChange(e.target.value)}
-        className="mt-1.5 w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-2.5 text-sm focus:border-plonkPink focus:outline-none"
+        className="mt-1.5 w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-2.5 text-sm text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none"
       />
     </label>
   );

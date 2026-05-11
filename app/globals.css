@@ -231,3 +231,24 @@ html {
   filter: blur(60px);
   z-index: 0;
 }
+
+/* Chrome / Safari autofill — by default repaints the input white with
+   black text, overriding our dark form styles. The inset box-shadow
+   trick is the only way around it (Chrome refuses to honour bg-color
+   directly on :-webkit-autofill). Setting -webkit-text-fill-color
+   covers the text colour at the same time. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(15, 23, 21, 0.85) inset !important;
+  -webkit-text-fill-color: #F2EBD9 !important;
+  caret-color: #F2EBD9;
+  transition: background-color 9999s ease-in-out 0s;
+}
