@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import BookingFlow from "./BookingFlow";
 import { TICKETS, ADDONS, VENUES } from "@/lib/mockData";
 
@@ -36,5 +37,9 @@ export default function VenueBookingPage({
     (a) => (a.venueId === venue.id || a.venueId === "all") && a.active,
   );
 
-  return <BookingFlow venue={venue} tickets={tickets} addons={addons} />;
+  return (
+    <Suspense fallback={null}>
+      <BookingFlow venue={venue} tickets={tickets} addons={addons} />
+    </Suspense>
+  );
 }

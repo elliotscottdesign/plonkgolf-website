@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Gallery from "@/components/Gallery";
+import HeroBookingWidget from "@/components/HeroBookingWidget";
 
 const PLONK_LIFE = [
   { src: "/images/gallery01.jpg", alt: "Plonk crazy golf" },
@@ -53,9 +54,13 @@ export default function HomePage() {
           do the rest.
         </p>
 
+        <div className="mt-10 w-full max-w-3xl px-2">
+          <HeroBookingWidget />
+        </div>
+
         <Link
-          href="#venues"
-          className="mt-10 inline-block rounded-full bg-plonkPink px-10 py-4 text-base font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
+          href="/book"
+          className="mt-8 inline-block rounded-full bg-plonkPink px-10 py-4 text-base font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90 md:hidden"
         >
           Book Now
         </Link>
