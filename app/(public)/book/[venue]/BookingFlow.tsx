@@ -33,25 +33,19 @@ function generateSlots(dateStr: string): { time: string; left: number }[] {
   return slots;
 }
 
-function getNextDates(n: number): { iso: string; topLabel: string; bottomLabel: string }[] {
-  const out: { iso: string; topLabel: string; bottomLabel: string }[] = [];
+function getNextDates(n: number): { iso: string; weekday: string; dayNumber: string; monthLabel: string }[] {
+  const out: { iso: string; weekday: string; dayNumber: string; monthLabel: string }[] = [];
   const today = new Date();
+  today.setHours(0, 0, 0, 0);
   for (let i = 0; i < n; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
-    let topLabel: string;
-    let bottomLabel: string;
-    if (i === 0) {
-      topLabel = "Today";
-      bottomLabel = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-    } else if (i === 1) {
-      topLabel = "Tomorrow";
-      bottomLabel = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-    } else {
-      topLabel = d.toLocaleDateString("en-GB", { weekday: "short" });
-      bottomLabel = d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
-    }
-    out.push({ iso: d.toISOString().slice(0, 10), topLabel, bottomLabel });
+    out.push({
+      iso: d.toISOString().slice(0, 10),
+      weekday: d.toLocaleDateString("en-GB", { weekday: "short" }),
+      dayNumber: String(d.getDate()),
+      monthLabel: d.toLocaleDateString("en-GB", { month: "long", year: "numeric" }).toUpperCase(),
+    });
   }
   return out;
 }
@@ -65,14 +59,6 @@ function maxBookableDateIso(): string {
 
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
-}
-
-function fullDateLabel(iso: string): string {
-  return new Date(iso + "T00:00:00").toLocaleDateString("en-GB", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
 }
 
 function dayOfWeekFromIso(iso: string): number {
@@ -160,10 +146,19 @@ export default function BookingFlow({
   const [promoApplied, setPromoApplied] = useState<{ code: string; pctOff: number } | null>(null);
   const [promoError, setPromoError] = useState("");
 
-  const dates = useMemo(() => getNextDates(8), []);
+  const dates = useMemo(() => getNextDates(60), []);
   const slots = useMemo(() => generateSlots(dateIso), [dateIso]);
-  const isQuickDate = dates.some((d) => d.iso === dateIso);
   const dow = useMemo(() => dayOfWeekFromIso(dateIso), [dateIso]);
+
+  // Date strip pagination — 6 chips visible at a time.
+  const DATE_PAGE_SIZE = 6;
+  const [dateOffset, setDateOffset] = useState(0);
+  const visibleDates = dates.slice(dateOffset, dateOffset + DATE_PAGE_SIZE);
+  const monthLabel = visibleDates[0]?.monthLabel || "";
+
+  // Time slots — show 12 by default, expand to all on demand.
+  const [showAllSlots, setShowAllSlots] = useState(false);
+  const visibleSlots = showAllSlots ? slots : slots.slice(0, 12);
 
   // Filter tickets to those available on the chosen day of the week.
   const availableTickets = useMemo(
@@ -275,98 +270,156 @@ export default function BookingFlow({
       <div className="mx-auto grid max-w-5xl gap-8 px-6 py-10 lg:grid-cols-[1fr_320px]">
         <div className="space-y-10">
           {/* Step 1: Date */}
-          <Step number={1} title="Pick a date">
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-              {dates.map((d) => {
-                const active = d.iso === dateIso;
-                return (
-                  <button
-                    key={d.iso}
-                    onClick={() => {
-                      setDateIso(d.iso);
+          <section>
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-display text-2xl sm:text-3xl">Select a date</h2>
+              <label
+                className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg border border-cream/15 text-cream/70 transition hover:border-cream/30 hover:text-cream"
+                title="Pick any date"
+              >
+                <CalendarIcon />
+                <input
+                  type="date"
+                  min={todayIso()}
+                  max={maxBookableDateIso()}
+                  value={dateIso}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      setDateIso(e.target.value);
                       setSlotTime(null);
-                    }}
-                    className={`flex min-h-[68px] flex-col items-center justify-center rounded-xl border px-3 py-3 transition ${
-                      active
-                        ? "border-plonkPink bg-plonkPink/15 text-cream"
-                        : "border-cream/15 text-cream/80 hover:border-cream/30 active:bg-cream/5"
-                    }`}
-                  >
-                    <span className="text-sm font-semibold">{d.topLabel}</span>
-                    <span className="mt-0.5 text-[11px] uppercase tracking-widest text-cream/55">
-                      {d.bottomLabel}
-                    </span>
-                  </button>
-                );
-              })}
+                      // Scroll date strip to show the picked date if within window
+                      const idx = dates.findIndex((d) => d.iso === e.target.value);
+                      if (idx >= 0) {
+                        setDateOffset(Math.max(0, idx - 2));
+                      }
+                    }
+                  }}
+                  className="sr-only"
+                />
+              </label>
             </div>
 
-            <div className="mt-4 flex flex-col gap-2 rounded-xl border border-cream/15 bg-ink/40 p-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
-                  Or pick any date
-                </p>
-                {!isQuickDate && (
-                  <p className="mt-1 text-sm text-cream">{fullDateLabel(dateIso)}</p>
-                )}
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.2em] text-cream/55">
+              {monthLabel}
+            </p>
+
+            <div className="flex items-stretch gap-1.5 sm:gap-2">
+              <button
+                type="button"
+                onClick={() => setDateOffset((o) => Math.max(0, o - DATE_PAGE_SIZE))}
+                disabled={dateOffset === 0}
+                className="flex w-9 shrink-0 items-center justify-center rounded-lg border border-cream/15 text-cream/70 transition hover:border-cream/30 hover:text-cream disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label="Previous dates"
+              >
+                ←
+              </button>
+              <div className="grid flex-1 grid-cols-6 gap-1.5 sm:gap-2">
+                {visibleDates.map((d) => {
+                  const active = d.iso === dateIso;
+                  return (
+                    <button
+                      key={d.iso}
+                      onClick={() => {
+                        setDateIso(d.iso);
+                        setSlotTime(null);
+                      }}
+                      className={`flex min-h-[64px] flex-col items-center justify-center rounded-lg border px-1 py-2 transition ${
+                        active
+                          ? "border-plonkPink bg-plonkPink text-white"
+                          : "border-cream/15 bg-ink/40 text-cream/85 hover:border-cream/30 active:bg-cream/5"
+                      }`}
+                    >
+                      <span
+                        className={`text-[10px] font-semibold uppercase tracking-widest ${
+                          active ? "text-white/85" : "text-cream/60"
+                        }`}
+                      >
+                        {d.weekday}
+                      </span>
+                      <span className="mt-0.5 text-xl font-bold leading-none">
+                        {d.dayNumber}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
-              <input
-                type="date"
-                min={todayIso()}
-                max={maxBookableDateIso()}
-                value={dateIso}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    setDateIso(e.target.value);
-                    setSlotTime(null);
-                  }
-                }}
-                className="min-h-[44px] rounded-lg border border-cream/15 bg-ink/60 px-3 py-2 text-sm text-cream focus:border-plonkPink focus:outline-none"
-              />
+              <button
+                type="button"
+                onClick={() =>
+                  setDateOffset((o) =>
+                    Math.min(dates.length - DATE_PAGE_SIZE, o + DATE_PAGE_SIZE),
+                  )
+                }
+                disabled={dateOffset + DATE_PAGE_SIZE >= dates.length}
+                className="flex w-9 shrink-0 items-center justify-center rounded-lg border border-cream/15 text-cream/70 transition hover:border-cream/30 hover:text-cream disabled:cursor-not-allowed disabled:opacity-30"
+                aria-label="Next dates"
+              >
+                →
+              </button>
             </div>
-          </Step>
+          </section>
 
           {/* Step 2: Slot */}
-          <Step
-            number={2}
-            title="Pick a time"
-            subtitle="6 tickets per 10-minute slot. Numbers shown are tickets still available right now."
-          >
-            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
-              {slots.map((s) => {
+          <section>
+            <h2 className="mb-3 font-display text-2xl sm:text-3xl">Select a time</h2>
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-5">
+              {visibleSlots.map((s) => {
                 const sold = s.left === 0;
+                const lowAvail = !sold && s.left <= 2;
                 const active = s.time === slotTime;
                 return (
                   <button
                     key={s.time}
                     disabled={sold}
                     onClick={() => setSlotTime(s.time)}
-                    className={`flex min-h-[60px] flex-col items-center justify-center rounded-lg border px-2 py-2 text-sm transition ${
+                    className={`flex min-h-[56px] flex-col items-center justify-center rounded-lg border text-base font-semibold transition ${
                       sold
                         ? "cursor-not-allowed border-cream/5 bg-cream/5 text-cream/30 line-through"
                         : active
-                          ? "border-plonkPink bg-plonkPink/15 text-cream"
-                          : "border-cream/15 text-cream hover:border-cream/30 active:bg-cream/5"
+                          ? "border-plonkPink bg-plonkPink text-white"
+                          : "border-cream/15 bg-ink/40 text-cream hover:border-cream/30 active:bg-cream/5"
                     }`}
                   >
-                    <p className="font-mono text-base">{s.time}</p>
-                    {!sold && (
-                      <p className="mt-0.5 text-[10px] uppercase tracking-widest text-cream/55">
-                        {s.left} left
-                      </p>
+                    <span className="font-mono">{s.time}</span>
+                    {lowAvail && (
+                      <span
+                        className={`mt-0.5 text-[10px] font-bold uppercase tracking-widest ${
+                          active ? "text-white/85" : "text-plonkYellow"
+                        }`}
+                      >
+                        Only {s.left} left
+                      </span>
                     )}
                   </button>
                 );
               })}
             </div>
-          </Step>
+            {slots.length > 12 && !showAllSlots && (
+              <button
+                type="button"
+                onClick={() => setShowAllSlots(true)}
+                className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-plonkYellow underline-offset-4 hover:underline"
+              >
+                Show more times ▾
+              </button>
+            )}
+            {showAllSlots && slots.length > 12 && (
+              <button
+                type="button"
+                onClick={() => setShowAllSlots(false)}
+                className="mt-3 inline-flex items-center gap-1 text-sm text-cream/60 underline-offset-4 hover:underline"
+              >
+                Show fewer
+              </button>
+            )}
+          </section>
 
           {/* Step 3: Tickets */}
-          <Step
-            number={3}
-            title="How many tickets?"
-            subtitle="Under-16s must be accompanied by at least one adult and can only book slots before 6pm."
-          >
+          <section>
+            <h2 className="mb-1 font-display text-2xl sm:text-3xl">Select tickets</h2>
+            <p className="mb-3 text-xs text-cream/55">
+              Under-16s must be accompanied by an adult and can only book slots before 6pm.
+            </p>
             {(ctx.happyHour || ctx.mondayBOGOF || ctx.tuesdaySpecial) && (
               <div className="mb-4 space-y-2">
                 {ctx.happyHour && (
@@ -460,11 +513,15 @@ export default function BookingFlow({
                 time or remove the child tickets.
               </div>
             )}
-          </Step>
+          </section>
 
           {/* Step 4: Add-ons */}
           {addons.length > 0 && (
-            <Step number={4} title="Add a little extra (optional)">
+            <section>
+              <h2 className="mb-3 font-display text-2xl sm:text-3xl">
+                Add extras{" "}
+                <span className="text-sm font-normal text-cream/45">(optional)</span>
+              </h2>
               <ul className="space-y-3">
                 {addons.map((a) => (
                   <li
@@ -482,11 +539,15 @@ export default function BookingFlow({
                   </li>
                 ))}
               </ul>
-            </Step>
+            </section>
           )}
 
           {/* Step 5: Promo */}
-          <Step number={5} title="Promo or voucher code (optional)">
+          <section>
+            <h2 className="mb-3 font-display text-2xl sm:text-3xl">
+              Promo code{" "}
+              <span className="text-sm font-normal text-cream/45">(optional)</span>
+            </h2>
             <div className="flex gap-2">
               <input
                 value={promoCode}
@@ -508,7 +569,7 @@ export default function BookingFlow({
               </p>
             )}
             {promoError && <p className="mt-2 text-sm text-red-400">{promoError}</p>}
-          </Step>
+          </section>
         </div>
 
         {/* Sidebar summary */}
@@ -596,29 +657,6 @@ export default function BookingFlow({
   );
 }
 
-function Step({
-  number,
-  title,
-  subtitle,
-  children,
-}: {
-  number: number;
-  title: string;
-  subtitle?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <section>
-      <div className="mb-3 flex items-baseline gap-3">
-        <span className="font-display text-2xl text-plonkYellow">{number}.</span>
-        <h2 className="font-display text-2xl">{title}</h2>
-      </div>
-      {subtitle && <p className="mb-4 text-xs text-cream/55">{subtitle}</p>}
-      {children}
-    </section>
-  );
-}
-
 function QtyStepper({
   value,
   onChange,
@@ -648,6 +686,27 @@ function QtyStepper({
         +
       </button>
     </div>
+  );
+}
+
+function CalendarIcon() {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <rect x="3" y="4" width="18" height="17" rx="2.5" />
+      <line x1="3" y1="9" x2="21" y2="9" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+    </svg>
   );
 }
 
