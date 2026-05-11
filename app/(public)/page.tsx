@@ -41,7 +41,9 @@ export default function HomePage() {
       {/* ───────────── HERO (forest) ───────────── */}
       <section className="relative isolate flex flex-col">
         {/* Image — always fills the full width; aspect-[3/2] matches our venue
-            photo ratio so the shot fits cleanly without top/bottom crop. */}
+            photo ratio so the shot fits cleanly without top/bottom crop.
+            The desktop booking widget floats over this image, near the top
+            just below the sticky header. */}
         <div className="relative w-full bg-forest aspect-[3/2] max-h-[80vh] min-h-[360px] overflow-hidden">
           <Image
             src="/borough/course/Course_1.jpg"
@@ -52,10 +54,19 @@ export default function HomePage() {
             sizes="100vw"
           />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-forestDeep/55 to-transparent" />
+
+          {/* Booking widget — desktop only, floats over the image just below
+              the sticky header. Hidden on mobile (the pink CTA below the
+              image takes its place there). */}
+          <div className="pointer-events-none absolute inset-x-0 top-6 z-30 hidden px-6 md:block">
+            <div className="pointer-events-auto mx-auto w-full max-w-3xl">
+              <HeroBookingWidget />
+            </div>
+          </div>
         </div>
 
-        {/* Copy + booking widget — sit on forest below the image */}
-        <div className="bg-forest px-6 pb-20 pt-4 text-center">
+        {/* Copy below the image — sits on forest */}
+        <div className="bg-forest px-6 pb-20 pt-10 text-center">
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
               Hackney · Borough Market
@@ -76,10 +87,6 @@ export default function HomePage() {
           </Reveal>
 
           <Reveal delay={360} className="w-full">
-            <div className="mx-auto mt-10 w-full max-w-3xl px-2">
-              <HeroBookingWidget />
-            </div>
-
             <Link
               href="/book"
               className="mt-8 inline-block rounded-full bg-plonkPink px-10 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-plonkPink/20 transition hover:bg-plonkPink/90 md:hidden"
