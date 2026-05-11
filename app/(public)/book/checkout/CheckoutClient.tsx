@@ -67,6 +67,7 @@ function CheckoutInner() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
+  const [heardFrom, setHeardFrom] = useState("");
   const [marketingOptIn, setMarketingOptIn] = useState(false);
 
   const { msLeft, expired } = useHoldTimer();
@@ -105,13 +106,21 @@ function CheckoutInner() {
       time,
       total: String(total),
       email,
+      phone,
+      heard_from: heardFrom,
       name: `${firstName} ${lastName}`.trim(),
     });
     router.push(`/book/success?${successParams.toString()}`);
   }
 
   const canPay =
-    !expired && email && firstName && lastName && tickets.length > 0;
+    !expired &&
+    email &&
+    firstName &&
+    lastName &&
+    phone &&
+    heardFrom &&
+    tickets.length > 0;
 
   if (!venue || tickets.length === 0) {
     return (
@@ -180,7 +189,23 @@ function CheckoutInner() {
                   <Field label="Email" type="email" required value={email} onChange={setEmail} />
                 </div>
                 <div className="sm:col-span-2">
-                  <Field label="Phone (optional)" type="tel" value={phone} onChange={setPhone} />
+                  <Field label="Phone" type="tel" required value={phone} onChange={setPhone} />
+                </div>
+                <div className="sm:col-span-2">
+                  <SelectField
+                    label="Where did you hear about us?"
+                    required
+                    value={heardFrom}
+                    onChange={setHeardFrom}
+                    options={[
+                      { value: "", label: "Pick one…", disabled: true },
+                      { value: "local", label: "Local" },
+                      { value: "word_of_mouth", label: "Word of Mouth" },
+                      { value: "google", label: "Google" },
+                      { value: "social_media", label: "Social Media" },
+                      { value: "from_a_mate", label: "From a Mate" },
+                    ]}
+                  />
                 </div>
               </div>
               <label className="mt-4 flex items-start gap-3 text-sm text-cream/70">
@@ -304,6 +329,41 @@ function Field({
         onChange={(e) => onChange(e.target.value)}
         className="mt-1.5 w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-2.5 text-sm focus:border-plonkPink focus:outline-none"
       />
+    </label>
+  );
+}
+
+function SelectField({
+  label,
+  value,
+  onChange,
+  required,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+  options: { value: string; label: string; disabled?: boolean }[];
+}) {
+  return (
+    <label className="block">
+      <span className="text-xs font-bold uppercase tracking-widest text-cream/55">
+        {label}
+        {required && <span className="text-plonkPink"> *</span>}
+      </span>
+      <select
+        value={value}
+        required={required}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1.5 w-full appearance-none rounded-lg border border-cream/15 bg-ink/40 px-4 py-2.5 text-sm focus:border-plonkPink focus:outline-none"
+      >
+        {options.map((o) => (
+          <option key={o.value} value={o.value} disabled={o.disabled}>
+            {o.label}
+          </option>
+        ))}
+      </select>
     </label>
   );
 }

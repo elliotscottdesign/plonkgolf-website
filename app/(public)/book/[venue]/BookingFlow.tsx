@@ -75,6 +75,69 @@ function fullDateLabel(iso: string): string {
   });
 }
 
+function dayOfWeekFromIso(iso: string): number {
+  return new Date(iso + "T00:00:00").getDay(); // 0=Sun..6=Sat
+}
+
+function parseHHMM(s: string): number {
+  const [h, m] = s.split(":").map(Number);
+  return h * 60 + (m || 0);
+}
+
+// Returns the pricing rules that apply right now, given the venue + selected
+// slot. These are CUSTOMER-FACING — used to recompute prices and explain why.
+type PricingContext = {
+  happyHour: boolean; // Hackney £5 before 5pm Mon–Fri
+  mondayBOGOF: boolean; // Hackney BOGOF Mondays (post-5pm)
+  tuesdaySpecial: boolean; // Hackney Tuesday — bundle ticket available
+  childCutoff: boolean; // Slot is at/after 18:00 — no child tickets
+};
+
+function computePricingContext(
+  venueId: string,
+  iso: string,
+  slotTime: string | null,
+): PricingContext {
+  const dow = dayOfWeekFromIso(iso);
+  const t = slotTime ? parseHHMM(slotTime) : null;
+  const isHackney = venueId === "hackney";
+  const isWeekday = dow >= 1 && dow <= 5;
+  const isMonday = dow === 1;
+  const isTuesday = dow === 2;
+
+  return {
+    happyHour: isHackney && isWeekday && t !== null && t < 17 * 60,
+    mondayBOGOF: isHackney && isMonday && t !== null && t >= 17 * 60,
+    tuesdaySpecial: isHackney && isTuesday,
+    childCutoff: t !== null && t >= 18 * 60,
+  };
+}
+
+// Returns the effective unit price for a ticket given context.
+// Bundle (Tuesday special) and add-ons are not affected by happy hour / BOGOF.
+function effectiveUnitPrice(ticket: Ticket, ctx: PricingContext): number {
+  if (ticket.kind === "bundle") return ticket.pricePence;
+  if (ctx.happyHour) return 500; // £5 happy-hour price
+  return ticket.pricePence;
+}
+
+// Returns the subtotal contribution for `qty` of a ticket, applying BOGOF
+// where applicable. BOGOF on top of happy-hour is NOT stacked (happy hour
+// already discounts to £5 — best of the two applies).
+function ticketLineTotal(
+  ticket: Ticket,
+  qty: number,
+  ctx: PricingContext,
+): { total: number; paidQty: number; freeQty: number } {
+  if (qty <= 0) return { total: 0, paidQty: 0, freeQty: 0 };
+  const unit = effectiveUnitPrice(ticket, ctx);
+  if (ctx.mondayBOGOF && ticket.kind !== "bundle" && !ctx.happyHour) {
+    const paid = Math.ceil(qty / 2);
+    return { total: paid * unit, paidQty: paid, freeQty: qty - paid };
+  }
+  return { total: qty * unit, paidQty: qty, freeQty: 0 };
+}
+
 export default function BookingFlow({
   venue,
   tickets,
@@ -100,13 +163,40 @@ export default function BookingFlow({
   const dates = useMemo(() => getNextDates(8), []);
   const slots = useMemo(() => generateSlots(dateIso), [dateIso]);
   const isQuickDate = dates.some((d) => d.iso === dateIso);
+  const dow = useMemo(() => dayOfWeekFromIso(dateIso), [dateIso]);
 
-  const subtotalPence = useMemo(() => {
+  // Filter tickets to those available on the chosen day of the week.
+  const availableTickets = useMemo(
+    () =>
+      tickets.filter(
+        (t) => !t.availableDaysOfWeek || t.availableDaysOfWeek.includes(dow),
+      ),
+    [tickets, dow],
+  );
+
+  const ctx = useMemo(
+    () => computePricingContext(venue.id, dateIso, slotTime),
+    [venue.id, dateIso, slotTime],
+  );
+
+  // Per-ticket line totals using pricing rules.
+  const ticketLines = useMemo(
+    () =>
+      availableTickets.map((t) => {
+        const qty = ticketQty[t.id] || 0;
+        const line = ticketLineTotal(t, qty, ctx);
+        return { ticket: t, qty, ...line };
+      }),
+    [availableTickets, ticketQty, ctx],
+  );
+
+  const ticketSubtotal = ticketLines.reduce((s, l) => s + l.total, 0);
+  const addonSubtotal = useMemo(() => {
     let s = 0;
-    for (const t of tickets) s += (ticketQty[t.id] || 0) * t.pricePence;
     for (const a of addons) s += (addonQty[a.id] || 0) * a.pricePence;
     return s;
-  }, [tickets, addons, ticketQty, addonQty]);
+  }, [addons, addonQty]);
+  const subtotalPence = ticketSubtotal + addonSubtotal;
 
   const discountPence = promoApplied
     ? Math.round((subtotalPence * promoApplied.pctOff) / 100)
@@ -114,17 +204,24 @@ export default function BookingFlow({
   const totalPence = Math.max(0, subtotalPence - discountPence);
   const totalTickets = Object.values(ticketQty).reduce((s, n) => s + n, 0);
 
-  // Rule: child tickets must always be accompanied by at least one adult ticket.
-  const adultCount = tickets
-    .filter((t) => t.kind === "adult")
+  // Rule: child tickets must always be accompanied by at least one adult/bundle ticket.
+  const adultCount = availableTickets
+    .filter((t) => t.kind === "adult" || t.kind === "bundle")
     .reduce((s, t) => s + (ticketQty[t.id] || 0), 0);
-  const childCount = tickets
+  const childCount = availableTickets
     .filter((t) => t.kind === "child")
     .reduce((s, t) => s + (ticketQty[t.id] || 0), 0);
   const childRuleViolated = childCount > 0 && adultCount === 0;
 
+  // Rule: child tickets only available before 6pm. If the chosen slot is at
+  // or after 18:00 and any child tickets are in the basket, force them to 0.
+  const childCutoffViolated = ctx.childCutoff && childCount > 0;
+
   const canContinue =
-    !!slotTime && totalTickets > 0 && !childRuleViolated;
+    !!slotTime &&
+    totalTickets > 0 &&
+    !childRuleViolated &&
+    !childCutoffViolated;
 
   function applyPromo() {
     const code = promoCode.trim().toUpperCase();
@@ -268,29 +365,99 @@ export default function BookingFlow({
           <Step
             number={3}
             title="How many tickets?"
-            subtitle="Under-16s must be accompanied by at least one adult."
+            subtitle="Under-16s must be accompanied by at least one adult and can only book slots before 6pm."
           >
+            {(ctx.happyHour || ctx.mondayBOGOF || ctx.tuesdaySpecial) && (
+              <div className="mb-4 space-y-2">
+                {ctx.happyHour && (
+                  <RuleBanner color="teal">
+                    Happy hour — all tickets £5 (Mon–Fri before 5pm)
+                  </RuleBanner>
+                )}
+                {ctx.mondayBOGOF && (
+                  <RuleBanner color="pink">
+                    Monday — buy one, get one free on tickets
+                  </RuleBanner>
+                )}
+                {ctx.tuesdaySpecial && (
+                  <RuleBanner color="yellow">
+                    Tuesday special — Drink, Golf & Game bundle available below
+                  </RuleBanner>
+                )}
+              </div>
+            )}
+
             <ul className="space-y-3">
-              {tickets.map((t) => (
-                <li
-                  key={t.id}
-                  className="flex items-center justify-between rounded-xl border border-cream/10 bg-ink/40 p-4"
-                >
-                  <div>
-                    <p className="font-medium">{t.name}</p>
-                    <p className="text-xs text-cream/55">{fmtMoney(t.pricePence)} inc. VAT</p>
-                  </div>
-                  <QtyStepper
-                    value={ticketQty[t.id] || 0}
-                    onChange={(v) => setTicketQty({ ...ticketQty, [t.id]: v })}
-                  />
-                </li>
-              ))}
+              {availableTickets.map((t) => {
+                const unit = effectiveUnitPrice(t, ctx);
+                const discounted = unit !== t.pricePence;
+                const disabled = t.kind === "child" && ctx.childCutoff;
+                return (
+                  <li
+                    key={t.id}
+                    className={`rounded-xl border p-4 ${
+                      t.kind === "bundle"
+                        ? "border-plonkYellow/40 bg-plonkYellow/5"
+                        : "border-cream/10 bg-ink/40"
+                    } ${disabled ? "opacity-50" : ""}`}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="font-medium">{t.name}</p>
+                          {t.kind === "bundle" && (
+                            <span className="rounded-full bg-plonkYellow/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-plonkYellow">
+                              Tuesday special
+                            </span>
+                          )}
+                        </div>
+                        {t.description && (
+                          <p className="mt-1 text-xs text-cream/65">
+                            {t.description}
+                          </p>
+                        )}
+                        <p className="mt-1 text-xs text-cream/55">
+                          {discounted ? (
+                            <>
+                              <span className="text-plonkTeal">
+                                {fmtMoney(unit)}
+                              </span>{" "}
+                              <span className="line-through">
+                                {fmtMoney(t.pricePence)}
+                              </span>{" "}
+                              inc. VAT
+                            </>
+                          ) : (
+                            <>{fmtMoney(t.pricePence)} inc. VAT</>
+                          )}
+                        </p>
+                        {disabled && (
+                          <p className="mt-1 text-xs text-plonkYellow">
+                            Under-16s only available before 6pm — pick an
+                            earlier slot
+                          </p>
+                        )}
+                      </div>
+                      <QtyStepper
+                        value={ticketQty[t.id] || 0}
+                        onChange={(v) => setTicketQty({ ...ticketQty, [t.id]: v })}
+                        disabled={disabled}
+                      />
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
-            {childRuleViolated && (
+            {childRuleViolated && !childCutoffViolated && (
               <div className="mt-4 rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
                 Add at least one adult ticket — children can't be booked on
                 their own.
+              </div>
+            )}
+            {childCutoffViolated && (
+              <div className="mt-4 rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
+                Children's tickets aren't available after 6pm. Pick an earlier
+                time or remove the child tickets.
               </div>
             )}
           </Step>
@@ -352,16 +519,21 @@ export default function BookingFlow({
             </p>
 
             <ul className="mt-4 divide-y divide-cream/10 text-sm">
-              {tickets
-                .filter((t) => (ticketQty[t.id] || 0) > 0)
-                .map((t) => (
-                  <li key={t.id} className="flex justify-between py-2.5">
-                    <span>
-                      {ticketQty[t.id]}× {t.name}
-                    </span>
-                    <span className="text-cream/85">
-                      {fmtMoney((ticketQty[t.id] || 0) * t.pricePence)}
-                    </span>
+              {ticketLines
+                .filter((l) => l.qty > 0)
+                .map((l) => (
+                  <li key={l.ticket.id} className="py-2.5">
+                    <div className="flex justify-between">
+                      <span>
+                        {l.qty}× {l.ticket.name}
+                      </span>
+                      <span className="text-cream/85">{fmtMoney(l.total)}</span>
+                    </div>
+                    {l.freeQty > 0 && (
+                      <p className="mt-0.5 text-[11px] text-plonkPink">
+                        {l.freeQty} free — Monday BOGOF
+                      </p>
+                    )}
                   </li>
                 ))}
               {addons
@@ -400,9 +572,11 @@ export default function BookingFlow({
             >
               {canContinue
                 ? "Continue to checkout"
-                : childRuleViolated
-                  ? "Adult ticket required"
-                  : "Pick a time + tickets first"}
+                : childCutoffViolated
+                  ? "Children only before 6pm"
+                  : childRuleViolated
+                    ? "Adult ticket required"
+                    : "Pick a time + tickets first"}
             </button>
 
             {canContinue && (
@@ -448,16 +622,18 @@ function Step({
 function QtyStepper({
   value,
   onChange,
+  disabled,
 }: {
   value: number;
   onChange: (v: number) => void;
+  disabled?: boolean;
 }) {
   return (
     <div className="flex items-center gap-3">
       <button
         onClick={() => onChange(Math.max(0, value - 1))}
-        disabled={value === 0}
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-cream/20 text-lg disabled:opacity-30"
+        disabled={disabled || value === 0}
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/20 text-lg disabled:opacity-30"
         aria-label="Decrease"
       >
         −
@@ -465,11 +641,33 @@ function QtyStepper({
       <span className="w-6 text-center font-medium">{value}</span>
       <button
         onClick={() => onChange(value + 1)}
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-cream/20 text-lg"
+        disabled={disabled}
+        className="flex h-10 w-10 items-center justify-center rounded-full border border-cream/20 text-lg disabled:opacity-30"
         aria-label="Increase"
       >
         +
       </button>
+    </div>
+  );
+}
+
+function RuleBanner({
+  children,
+  color,
+}: {
+  children: React.ReactNode;
+  color: "teal" | "pink" | "yellow";
+}) {
+  const styles: Record<typeof color, string> = {
+    teal: "border-plonkTeal/40 bg-plonkTeal/10 text-plonkTeal",
+    pink: "border-plonkPink/40 bg-plonkPink/10 text-plonkPink",
+    yellow: "border-plonkYellow/30 bg-plonkYellow/5 text-plonkYellow",
+  };
+  return (
+    <div
+      className={`rounded-xl border px-4 py-2.5 text-xs font-semibold uppercase tracking-widest ${styles[color]}`}
+    >
+      {children}
     </div>
   );
 }

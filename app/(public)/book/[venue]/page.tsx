@@ -27,7 +27,11 @@ export default function VenueBookingPage({
     );
   }
 
-  const tickets = TICKETS.filter((t) => t.venueId === venue.id && t.active);
+  // Only golf tickets are bookable through the main flow.
+  // Pool sits in the admin but isn't offered here yet.
+  const tickets = TICKETS.filter(
+    (t) => t.venueId === venue.id && t.active && t.category === "golf",
+  ).sort((a, b) => a.sortOrder - b.sortOrder);
   const addons = ADDONS.filter(
     (a) => (a.venueId === venue.id || a.venueId === "all") && a.active,
   );
