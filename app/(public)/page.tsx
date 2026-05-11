@@ -38,7 +38,7 @@ export default function HomePage() {
       <section className="relative isolate flex min-h-[92vh] flex-col items-center justify-center px-6 text-center">
         <div className="absolute inset-0 -z-10">
           <Image
-            src="/images/PLONK-BOROUGH_02_241468_Web_2.jpg"
+            src="/borough/course/Course_1.jpg"
             alt=""
             fill
             priority
@@ -121,7 +121,7 @@ export default function HomePage() {
           bookHref="/book/hackney"
           detailHref="/venue/hackney"
           eyebrow="Outdoor · 9 holes · beer garden"
-          image="/images/Plonk_Hackeny_2788_web.jpg"
+          image="/hackney/course/Course_1.jpg"
           imageAlt="Plonk Hackney crazy golf"
           blurb="A short walk from Broadway Market overlooking London Fields. Our Polynesian-themed outdoor course, with a beer garden, taco kitchen, pool, retro arcade and craft cocktail bar."
           features={[
@@ -137,7 +137,7 @@ export default function HomePage() {
           bookHref="/book/borough"
           detailHref="/venue/borough-market"
           eyebrow="Indoor · 9 holes · under London Bridge"
-          image="/images/PLONK-BOROUGH-AUGUST-230624_web.jpg"
+          image="/borough/course/Course_2.jpg"
           imageAlt="Plonk Borough Market crazy golf"
           blurb="Tucked into four railway arches under London Bridge. A London-themed indoor course threading past the city's monuments, surrounded by murals from London's best spray-can talent."
           features={[
@@ -213,14 +213,14 @@ export default function HomePage() {
             title="Private hire & events"
             blurb="Birthdays, work parties, hen dos, weddings. Take over a course, an arch, or the whole venue."
             href="/private-hire"
-            image="/images/PLONK-HACKNEY-NOV-220190_web.jpg"
+            image="/hackney/venue/Interior_5.jpg"
           />
           <CtaCard
             eyebrow="The easy gift"
             title="Plonk gift vouchers"
             blurb="A round, a meal, a cocktail flight, or all three. Delivered to inbox, redeemable at either venue."
             href="/vouchers"
-            image="/images/voucher_banner_web.jpg"
+            image="/borough/drinks/Cocktail_1.jpg"
           />
         </div>
       </section>
@@ -229,7 +229,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden border-t border-forestLine/40">
         <div className="absolute inset-0 -z-10">
           <Image
-            src="/images/Plonk_Hackney_Pool_1_web.jpg"
+            src="/hackney/pool/Pool_1.jpg"
             alt=""
             fill
             className="object-cover opacity-30"

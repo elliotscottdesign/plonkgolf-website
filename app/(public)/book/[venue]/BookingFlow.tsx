@@ -93,8 +93,12 @@ function computePricingContext(
   const isTuesday = dow === 2;
 
   return {
-    happyHour: isHackney && isWeekday && t !== null && t < 19 * 60, // til 7pm
-    mondayBOGOF: isHackney && isMonday && t !== null && t >= 19 * 60, // post happy hour
+    // Happy hour £5 tickets: Tue–Fri before 5pm. Mondays don't get happy
+    // hour because BOGOF takes over all day.
+    happyHour:
+      isHackney && isWeekday && !isMonday && t !== null && t < 17 * 60,
+    // BOGOF: all day every Monday at Hackney.
+    mondayBOGOF: isHackney && isMonday,
     tuesdaySpecial: isHackney && isTuesday,
     childCutoff: t !== null && t >= 18 * 60,
   };
@@ -500,12 +504,12 @@ export default function BookingFlow({
               <div className="mb-4 space-y-2">
                 {ctx.happyHour && (
                   <RuleBanner color="teal">
-                    Happy hour — all tickets £5 (Mon–Fri til 7pm)
+                    Happy hour — all tickets £5 (Tue–Fri before 5pm)
                   </RuleBanner>
                 )}
                 {ctx.mondayBOGOF && (
                   <RuleBanner color="pink">
-                    Monday — buy one, get one free on tickets
+                    Monday — buy one, get one free on tickets, all day
                   </RuleBanner>
                 )}
                 {ctx.tuesdaySpecial && (
