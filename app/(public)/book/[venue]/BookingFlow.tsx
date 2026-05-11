@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import type { Addon, Ticket, Venue } from "@/lib/mockData";
-import { fmtMoney } from "@/lib/mockData";
+import type { Addon, Ticket, Venue } from "@/lib/db/catalogue";
+import { fmtMoney } from "@/lib/format";
 import { localIso } from "@/lib/dateIso";
 import CalendarPopup from "@/components/CalendarPopup";
 

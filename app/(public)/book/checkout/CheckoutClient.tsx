@@ -10,7 +10,7 @@ import {
   useStripe,
 } from "@stripe/react-stripe-js";
 import type { StripeElementsOptions } from "@stripe/stripe-js";
-import { fmtMoney } from "@/lib/mockData";
+import { fmtMoney } from "@/lib/format";
 import { loadCatalogue, type Catalogue } from "@/lib/db/catalogue";
 import {
   getStripe,

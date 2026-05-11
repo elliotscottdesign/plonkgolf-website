@@ -1,13 +1,7 @@
 "use client";
 
 import { supabase } from "@/lib/supabase";
-import type {
-  Addon,
-  Ticket,
-  TicketCategory,
-  TicketKind,
-  Venue,
-} from "@/lib/mockData";
+import type { TicketCategory, TicketKind } from "@/lib/db/tickets";
 
 // Loads the customer-facing catalogue (one venue + its tickets + its addons)
 // from Supabase and returns it in the same shape the existing UI expects.
@@ -15,6 +9,35 @@ import type {
 // We keep the DB rows out of the UI by converting venue UUIDs → slug strings
 // here. That way BookingFlow / CheckoutClient don't have to know anything
 // has moved; they keep treating venue.id as "hackney"/"borough".
+
+// Public-facing types — camelCase, slug-keyed. These are the shape the
+// booking UI components consume; the DB row types live in their per-table
+// db modules.
+export type Venue = { id: "hackney" | "borough"; name: string };
+
+export type Ticket = {
+  id: string;
+  venueId: Venue["id"];
+  name: string;
+  description?: string;
+  pricePence: number;
+  vatRatePct: number;
+  active: boolean;
+  sortOrder: number;
+  kind: TicketKind;
+  category: TicketCategory;
+  availableDaysOfWeek?: number[];
+};
+
+export type Addon = {
+  id: string;
+  venueId: Venue["id"] | "all";
+  name: string;
+  description?: string;
+  pricePence: number;
+  active: boolean;
+};
+
 export type Catalogue = {
   venue: Venue;
   tickets: Ticket[];

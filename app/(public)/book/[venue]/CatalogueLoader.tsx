@@ -6,9 +6,7 @@ import BookingFlow from "./BookingFlow";
 import { loadCatalogue, type Catalogue } from "@/lib/db/catalogue";
 
 // Loads the live venue + tickets + addons from Supabase on mount, then
-// hands them to the existing BookingFlow component unchanged. This is
-// what swaps the public booking page off the old hard-coded mock prices
-// (lib/mockData.ts) and onto the same data the admin edits.
+// hands them to the existing BookingFlow component unchanged.
 export default function CatalogueLoader({ venueSlug }: { venueSlug: string }) {
   const [data, setData] = useState<Catalogue | null>(null);
   const [notFound, setNotFound] = useState(false);
