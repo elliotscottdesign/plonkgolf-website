@@ -39,10 +39,23 @@ export default function TicketsClient() {
       setVenues(v);
       setTickets(t);
     } catch (e: unknown) {
-      setErr(e instanceof Error ? e.message : "Failed to load tickets.");
+      setErr(describeError(e, "Failed to load tickets"));
     } finally {
       setLoading(false);
     }
+  }
+
+  function describeError(e: unknown, fallback: string): string {
+    if (e instanceof Error) return e.message;
+    if (typeof e === "object" && e !== null) {
+      const o = e as Record<string, unknown>;
+      const msg = typeof o.message === "string" ? o.message : "";
+      const code = typeof o.code === "string" ? o.code : "";
+      const hint = typeof o.hint === "string" ? o.hint : "";
+      const parts = [msg, code ? `(${code})` : "", hint ? `— ${hint}` : ""].filter(Boolean);
+      if (parts.length > 0) return parts.join(" ");
+    }
+    return fallback;
   }
 
   useEffect(() => {
@@ -60,7 +73,7 @@ export default function TicketsClient() {
       setEditing(null);
       await reload();
     } catch (e: unknown) {
-      setErr(e instanceof Error ? e.message : "Save failed.");
+      setErr(describeError(e, "Save failed"));
     } finally {
       setBusy(false);
     }
@@ -73,7 +86,7 @@ export default function TicketsClient() {
       await updateTicket(t.id, { active: !t.active });
       await reload();
     } catch (e: unknown) {
-      setErr(e instanceof Error ? e.message : "Toggle failed.");
+      setErr(describeError(e, "Toggle failed"));
     } finally {
       setBusy(false);
     }
@@ -87,7 +100,7 @@ export default function TicketsClient() {
       await deleteTicket(t.id);
       await reload();
     } catch (e: unknown) {
-      setErr(e instanceof Error ? e.message : "Delete failed.");
+      setErr(describeError(e, "Delete failed"));
     } finally {
       setBusy(false);
     }
@@ -102,7 +115,7 @@ export default function TicketsClient() {
       setCreatingFor(null);
       await reload();
     } catch (e: unknown) {
-      setErr(e instanceof Error ? e.message : "Create failed.");
+      setErr(describeError(e, "Create failed"));
     } finally {
       setBusy(false);
     }
