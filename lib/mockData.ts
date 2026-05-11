@@ -54,16 +54,55 @@ export type Addon = {
   id: string;
   venueId: Venue["id"] | "all";
   name: string;
+  description?: string;
   pricePence: number;
   active: boolean;
 };
 
 export const ADDONS: Addon[] = [
-  { id: "a1", venueId: "all", name: "Arcade tokens (5)", pricePence: 300, active: true },
-  { id: "a2", venueId: "all", name: "Plonk medal", pricePence: 600, active: true },
-  { id: "a3", venueId: "all", name: "Bucket of 6 beers", pricePence: 2500, active: true },
-  { id: "a4", venueId: "all", name: "Tray of 6 shots", pricePence: 1800, active: true },
-  { id: "a5", venueId: "all", name: "Jug of rum punch", pricePence: 2500, active: true },
+  {
+    id: "a1",
+    venueId: "all",
+    name: "Arcade tokens (5)",
+    description:
+      "Use in our arcade machines at the bar — shooters, racers, foosball, pinball, classic games, darts and skeeball.",
+    pricePence: 300,
+    active: true,
+  },
+  {
+    id: "a2",
+    venueId: "all",
+    name: "Plonk medal",
+    description: "A premium weight metal medal with lanyard.",
+    pricePence: 600,
+    active: true,
+  },
+  {
+    id: "a3",
+    venueId: "all",
+    name: "Bucket of 6 beers",
+    description:
+      "Pick any of our house bottles or cans — Asahi, Bud, Corona, Lowrise or Local.",
+    pricePence: 2500,
+    active: true,
+  },
+  {
+    id: "a4",
+    venueId: "all",
+    name: "Tray of 6 shots",
+    description: "Pick any house spirit or shooter.",
+    pricePence: 1800,
+    active: true,
+  },
+  {
+    id: "a5",
+    venueId: "all",
+    name: "Plonkers Punch (jug)",
+    description:
+      "Wray & Nephew's rum, dark rum, triple sec, pineapple and grenadine. Good for 4 glasses.",
+    pricePence: 2500,
+    active: true,
+  },
 ];
 
 export type Booking = {

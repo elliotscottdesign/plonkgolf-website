@@ -526,16 +526,31 @@ export default function BookingFlow({
                 {addons.map((a) => (
                   <li
                     key={a.id}
-                    className="flex items-center justify-between rounded-xl border border-cream/10 bg-ink/40 p-4"
+                    className="rounded-xl border border-cream/10 bg-ink/40 p-4"
                   >
-                    <div>
-                      <p className="font-medium">{a.name}</p>
-                      <p className="text-xs text-cream/55">{fmtMoney(a.pricePence)}</p>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium">{a.name}</p>
+                        <p className="text-xs text-cream/55">{fmtMoney(a.pricePence)}</p>
+                      </div>
+                      <QtyStepper
+                        value={addonQty[a.id] || 0}
+                        onChange={(v) => setAddonQty({ ...addonQty, [a.id]: v })}
+                      />
                     </div>
-                    <QtyStepper
-                      value={addonQty[a.id] || 0}
-                      onChange={(v) => setAddonQty({ ...addonQty, [a.id]: v })}
-                    />
+                    {a.description && (
+                      <details className="group mt-2 text-xs">
+                        <summary className="flex cursor-pointer items-center gap-1 text-cream/60 transition hover:text-cream">
+                          <span>Details</span>
+                          <span className="transition group-open:rotate-180" aria-hidden>
+                            ▾
+                          </span>
+                        </summary>
+                        <p className="mt-2 leading-relaxed text-cream/75">
+                          {a.description}
+                        </p>
+                      </details>
+                    )}
                   </li>
                 ))}
               </ul>

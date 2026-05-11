@@ -36,7 +36,14 @@ export default function AddonsPage() {
                     : VENUES.find((v) => v.id === a.venueId)?.name || "—";
                 return (
                   <tr key={a.id} className="border-b border-cream/5 last:border-b-0">
-                    <td className="px-5 py-3">{a.name}</td>
+                    <td className="px-5 py-3">
+                      <p className="font-medium">{a.name}</p>
+                      {a.description && (
+                        <p className="mt-1 max-w-md text-xs text-cream/55">
+                          {a.description}
+                        </p>
+                      )}
+                    </td>
                     <td className="px-5 py-3 text-cream/65">{where}</td>
                     <td className="px-5 py-3 font-medium">{fmtMoney(a.pricePence)}</td>
                     <td className="px-5 py-3">
