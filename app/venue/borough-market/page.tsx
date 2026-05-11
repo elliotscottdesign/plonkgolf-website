@@ -2,6 +2,22 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
+import Gallery from "@/components/Gallery";
+
+const BOROUGH_GALLERY = [
+  { src: "/images/PLONK-BOROUGH_02_241468_Web_2.jpg", alt: "Plonk Borough course" },
+  { src: "/images/PLONK-BOROUGH_02_241533_Web.jpg", alt: "Plonk Borough London course" },
+  { src: "/images/PLONK-BOROUGH-AUGUST-230624_web.jpg", alt: "Plonk Borough August" },
+  { src: "/images/Plonk_Borough_Arcade_-2_web.jpg", alt: "Borough Market arcade" },
+  { src: "/images/PLONK_Shoreditch_0R1A3813_web_adjusted.jpg", alt: "Plonk arches detail" },
+  { src: "/images/PLONK_Shoreditch_0R1A3814_web.jpg", alt: "Plonk arches detail" },
+  { src: "/images/Shoreditch-Pool-Featured.jpg", alt: "Pool tables under the arches" },
+  { src: "/images/Borough_guide_web-copy.jpg", alt: "Borough course guide" },
+  { src: "/images/PLONK-COCKTAILS_215298_L_web.jpg", alt: "Plonk cocktails" },
+  { src: "/images/PLONK-COCKTAILS_215335_SQ.jpg", alt: "Plonk cocktails" },
+  { src: "/images/Margarita.jpg", alt: "Margarita" },
+  { src: "/images/bmph.jpg", alt: "Borough Market interior" },
+];
 
 export const metadata: Metadata = {
   title: "Plonk Borough Market — Crazy Golf at London Bridge",
@@ -80,6 +96,12 @@ export default function BoroughMarketPage() {
           </div>
         </div>
       </section>
+
+      <Gallery
+        heading="Inside Plonk Borough"
+        intro="The London-themed course, the arcade, the bar — all under London Bridge."
+        images={BOROUGH_GALLERY}
+      />
 
       <section className="mx-auto max-w-6xl px-6 py-16">
         <h2 className="font-display text-3xl sm:text-4xl">Find us</h2>

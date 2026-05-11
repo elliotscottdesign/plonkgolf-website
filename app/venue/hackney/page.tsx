@@ -2,6 +2,22 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
+import Gallery from "@/components/Gallery";
+
+const HACKNEY_GALLERY = [
+  { src: "/images/Plonk_Hackeny_1976_web.jpg", alt: "Plonk Hackney" },
+  { src: "/images/Plonk_Hackeny_2788_web.jpg", alt: "Plonk Hackney course" },
+  { src: "/images/PLONK-HACKNEY-NOV-220190_web.jpg", alt: "Plonk Hackney evening" },
+  { src: "/images/PLONK-HACKNEY-NOV-220217_Web.jpg", alt: "Plonk Hackney bar" },
+  { src: "/images/PLONK_LF_AW_OCt_20_web.jpg", alt: "Plonk Hackney autumn" },
+  { src: "/images/Plonk_LF_2020_web-145.jpg", alt: "Plonk Hackney games" },
+  { src: "/images/Plonk_Hackney_Pool_1_web.jpg", alt: "Hackney pool table" },
+  { src: "/images/MPL_294A9392_Web.jpg", alt: "Hackney detail" },
+  { src: "/images/MPL_294A9492_Web.jpg", alt: "Hackney detail" },
+  { src: "/images/PAH-V2-1-1.jpg", alt: "Plonk Hackney venue" },
+  { src: "/images/PAH-V2-3.jpg", alt: "Plonk Hackney venue" },
+  { src: "/images/HACKNEY_0R1A9980_web1.jpg", alt: "Hackney scene" },
+];
 
 export const metadata: Metadata = {
   title: "Plonk Hackney — Crazy Golf in East London",
@@ -89,6 +105,12 @@ export default function HackneyPage() {
           </div>
         </div>
       </section>
+
+      <Gallery
+        heading="Inside Plonk Hackney"
+        intro="A look around — Polynesian course, beer garden, pool, arcade and tiki bar."
+        images={HACKNEY_GALLERY}
+      />
 
       <section className="mx-auto max-w-6xl px-6 py-16">
         <h2 className="font-display text-3xl sm:text-4xl">Find us</h2>

@@ -1,5 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import Gallery from "@/components/Gallery";
+
+const PLONK_LIFE = [
+  { src: "/images/gallery01.jpg", alt: "Plonk crazy golf" },
+  { src: "/images/gallery05.jpg", alt: "Plonk course detail" },
+  { src: "/images/Plonk_Hackeny_2788_web.jpg", alt: "Plonk Hackney" },
+  { src: "/images/PLONK-COCKTAILS_215298_L_web.jpg", alt: "Plonk cocktails" },
+  { src: "/images/gallery08.jpg", alt: "Plonk crazy golf hole" },
+  { src: "/images/Plonk_Borough_Arcade_-2_web.jpg", alt: "Plonk Borough arcade" },
+  { src: "/images/Plonk_Hackney_Pool_1_web.jpg", alt: "Plonk pool table" },
+  { src: "/images/gallery10.jpg", alt: "Plonk crazy golf course" },
+];
 
 const PRESS = [
   { name: "Evening Standard", src: "/images/London-Evening-Standard-logo.jpg" },
@@ -105,6 +117,8 @@ export default function HomePage() {
           />
         </div>
       </section>
+
+      <Gallery heading="Plonk life" images={PLONK_LIFE} />
     </main>
   );
 }

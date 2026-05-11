@@ -1,6 +1,22 @@
 import Image from "next/image";
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
+import Gallery from "@/components/Gallery";
+
+const ABOUT_GALLERY = [
+  { src: "/images/gallery02.jpg", alt: "Plonk course" },
+  { src: "/images/gallery03.jpg", alt: "Plonk crazy golf" },
+  { src: "/images/gallery06.jpg", alt: "Plonk course" },
+  { src: "/images/gallery07.jpg", alt: "Plonk course" },
+  { src: "/images/gallery09.jpg", alt: "Plonk crazy golf" },
+  { src: "/images/gallery11.jpg", alt: "Plonk course detail" },
+  { src: "/images/gallery12.jpg", alt: "Plonk crazy golf" },
+  { src: "/images/gallery13.jpg", alt: "Plonk course detail" },
+  { src: "/images/gallery14.jpg", alt: "Plonk crazy golf" },
+  { src: "/images/gallery15.jpg", alt: "Plonk course detail" },
+  { src: "/images/gallery16.jpg", alt: "Plonk crazy golf" },
+  { src: "/images/1SOCIAL_2017-1.jpg", alt: "Plonk crowd" },
+];
 
 export const metadata: Metadata = {
   title: "About — Plonk Golf",
@@ -67,6 +83,12 @@ export default function AboutPage() {
           plonking good time!
         </p>
       </article>
+
+      <Gallery
+        heading="A decade of Plonking"
+        intro="Highlights from courses past and present."
+        images={ABOUT_GALLERY}
+      />
     </main>
   );
 }
