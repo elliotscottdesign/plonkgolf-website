@@ -6,14 +6,22 @@ const config: Config = {
     extend: {
       colors: {
         ink: "#0a0a0a",
-        cream: "#f5efe1",
+        forest: "#0E2A21",
+        forestDeep: "#081A14",
+        forestRaised: "#163A2E",
+        forestLine: "#2A4D3F",
+        cream: "#F2EBD9",
+        creamDim: "#C7BFA9",
         plonkPink: "#ff3d8a",
-        plonkYellow: "#ffd83d",
+        plonkYellow: "#E8C547",
         plonkTeal: "#1ec8b8",
       },
       fontFamily: {
-        display: ["var(--font-display)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
         body: ["var(--font-body)", "system-ui", "sans-serif"],
+      },
+      letterSpacing: {
+        eyebrow: "0.3em",
       },
     },
   },

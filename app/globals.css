@@ -5,10 +5,68 @@
 :root {
   --font-display: "DM Serif Display", Georgia, serif;
   --font-body: "DM Sans", system-ui, sans-serif;
+  --forest: #0E2A21;
+  --forest-deep: #081A14;
+  --forest-raised: #163A2E;
+  --forest-line: #2A4D3F;
+  --cream: #F2EBD9;
+  --cream-dim: #C7BFA9;
+  --pink: #ff3d8a;
+  --yellow: #E8C547;
 }
 
 html, body {
-  background: #0a0a0a;
-  color: #f5efe1;
+  background: var(--forest);
+  color: var(--cream);
   font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: var(--yellow);
+  color: var(--forest-deep);
+}
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Subtle grain on dark backgrounds */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode: overlay;
+  opacity: 0.4;
+}
+
+/* Hide native scrollbar on horizontal strips */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Smooth marquee */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee {
+  animation: marquee 40s linear infinite;
 }

@@ -46,6 +46,15 @@ function CheckoutInner() {
   const ticketsParam = params.get("tickets") || "{}";
   const addonsParam = params.get("addons") || "{}";
   const promoCode = params.get("promo") || "";
+  const slotsParam = params.get("slots") || "[]";
+  const slotGroups: { time: string; count: number }[] = (() => {
+    try {
+      const parsed = JSON.parse(slotsParam);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  })();
 
   const venue = VENUES.find((v) => v.id === venueId);
   const ticketQty: Record<string, number> = (() => {
@@ -109,6 +118,7 @@ function CheckoutInner() {
       phone,
       heard_from: heardFrom,
       name: `${firstName} ${lastName}`.trim(),
+      slots: slotsParam,
     });
     router.push(`/book/success?${successParams.toString()}`);
   }
@@ -250,7 +260,20 @@ function CheckoutInner() {
                 {venue.name}
               </p>
               <p className="mt-2 font-display text-lg">{fmtDate(date)}</p>
-              <p className="text-sm text-cream/70">{time}</p>
+              {slotGroups.length > 1 ? (
+                <div className="mt-1 text-sm">
+                  <p className="text-cream/70">Split across {slotGroups.length} start times:</p>
+                  <ul className="mt-1 space-y-0.5">
+                    {slotGroups.map((g) => (
+                      <li key={g.time} className="font-mono text-xs text-plonkTeal">
+                        {g.time} · {g.count} {g.count === 1 ? "player" : "players"}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <p className="text-sm text-cream/70">{time}</p>
+              )}
 
               <ul className="mt-5 divide-y divide-cream/10 border-y border-cream/10 text-sm">
                 {tickets.map((t) => (

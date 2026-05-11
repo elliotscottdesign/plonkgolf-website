@@ -242,24 +242,56 @@ export default function BookingFlow({
   // or after 18:00 and any child tickets are in the basket, force them to 0.
   const childCutoffViolated = ctx.childCutoff && childCount > 0;
 
-  // Rule: total party size (all golf ticket types combined) cannot exceed
-  // the chosen slot's remaining capacity.
+  // Total party size (all golf ticket types combined).
   const partyTotal = availableTickets.reduce(
     (s, t) => s + (ticketQty[t.id] || 0),
     0,
   );
-  const slotCapacity = slotTime
-    ? (slots.find((s) => s.time === slotTime)?.left ?? 6)
-    : 6;
-  const overCapacity = partyTotal > slotCapacity;
-  const canAddMoreTickets = partyTotal < slotCapacity;
+
+  // Allocate the party across consecutive slots starting at slotTime — this
+  // is the feature that solves the "we have 2 left at 18:10 and 6 at 18:20,
+  // but customer wants 8" problem. One booking, multiple slot reservations,
+  // 10 minutes apart at most.
+  const slotAllocation = useMemo(() => {
+    if (!slotTime || partyTotal === 0) {
+      return { groups: [] as { time: string; count: number }[], shortfall: 0 };
+    }
+    const startIdx = slots.findIndex((s) => s.time === slotTime);
+    if (startIdx === -1) {
+      return { groups: [], shortfall: partyTotal };
+    }
+    let remaining = partyTotal;
+    const groups: { time: string; count: number }[] = [];
+    for (let i = startIdx; i < slots.length && remaining > 0; i++) {
+      const slot = slots[i];
+      const take = Math.min(slot.left, remaining);
+      if (take > 0) {
+        groups.push({ time: slot.time, count: take });
+        remaining -= take;
+      }
+    }
+    return { groups, shortfall: remaining };
+  }, [slotTime, partyTotal, slots]);
+
+  // Max we could possibly fit starting from the chosen slot — used to cap
+  // the + button on ticket steppers.
+  const maxCumulativeCapacity = useMemo(() => {
+    if (!slotTime) return 6;
+    const startIdx = slots.findIndex((s) => s.time === slotTime);
+    if (startIdx === -1) return 6;
+    return slots.slice(startIdx).reduce((s, x) => s + x.left, 0);
+  }, [slotTime, slots]);
+
+  const cannotFitParty = !!slotTime && slotAllocation.shortfall > 0;
+  const isSplitBooking = slotAllocation.groups.length > 1;
+  const canAddMoreTickets = partyTotal < maxCumulativeCapacity;
 
   const canContinue =
     !!slotTime &&
     totalTickets > 0 &&
     !childRuleViolated &&
     !childCutoffViolated &&
-    !overCapacity;
+    !cannotFitParty;
 
   function applyPromo() {
     const code = promoCode.trim().toUpperCase();
@@ -284,6 +316,7 @@ export default function BookingFlow({
       tickets: JSON.stringify(ticketQty),
       addons: JSON.stringify(addonQty),
       promo: promoApplied?.code || "",
+      slots: JSON.stringify(slotAllocation.groups),
     });
     router.push(`/book/checkout?${params.toString()}`);
   }
@@ -530,11 +563,33 @@ export default function BookingFlow({
                 );
               })}
             </ul>
-            {overCapacity && (
+            {isSplitBooking && !cannotFitParty && (
+              <div className="mt-4 rounded-xl border border-plonkTeal/40 bg-plonkTeal/10 px-4 py-3 text-sm text-plonkTeal">
+                <p className="font-semibold">
+                  Your group of {partyTotal} will be split across{" "}
+                  {slotAllocation.groups.length} start times
+                </p>
+                <ul className="mt-2 space-y-0.5 text-cream/85">
+                  {slotAllocation.groups.map((g) => (
+                    <li key={g.time} className="font-mono text-xs">
+                      <span className="text-plonkTeal">{g.time}</span> — {g.count}{" "}
+                      {g.count === 1 ? "player" : "players"}
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-xs text-cream/70">
+                  One booking, one payment. Your groups arrive 10 minutes
+                  apart and play together.
+                </p>
+              </div>
+            )}
+            {cannotFitParty && (
               <div className="mt-4 rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
-                Only {slotCapacity}{" "}
-                {slotCapacity === 1 ? "ticket" : "tickets"} left for{" "}
-                {slotTime}. Reduce your tickets or pick another time.
+                We can't fit {partyTotal}{" "}
+                {partyTotal === 1 ? "person" : "people"} starting at{" "}
+                {slotTime}. {slotAllocation.shortfall}{" "}
+                {slotAllocation.shortfall === 1 ? "ticket" : "tickets"} short
+                — try an earlier start time or reduce your party.
               </div>
             )}
             {childRuleViolated && !childCutoffViolated && (
@@ -630,6 +685,22 @@ export default function BookingFlow({
               Your basket
             </p>
 
+            {isSplitBooking && !cannotFitParty && (
+              <div className="mt-4 rounded-lg border border-plonkTeal/30 bg-plonkTeal/5 p-3 text-xs">
+                <p className="font-bold uppercase tracking-widest text-plonkTeal">
+                  Split across {slotAllocation.groups.length} slots
+                </p>
+                <ul className="mt-1 space-y-0.5 text-cream/75">
+                  {slotAllocation.groups.map((g) => (
+                    <li key={g.time} className="font-mono">
+                      {g.time} · {g.count}{" "}
+                      {g.count === 1 ? "player" : "players"}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <ul className="mt-4 divide-y divide-cream/10 text-sm">
               {ticketLines
                 .filter((l) => l.qty > 0)
@@ -684,8 +755,8 @@ export default function BookingFlow({
             >
               {canContinue
                 ? "Continue to checkout"
-                : overCapacity
-                  ? `Only ${slotCapacity} left in this slot`
+                : cannotFitParty
+                  ? "Pick an earlier time"
                   : childCutoffViolated
                     ? "Children only before 6pm"
                     : childRuleViolated

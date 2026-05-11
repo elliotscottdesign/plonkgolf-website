@@ -14,6 +14,15 @@ function SuccessInner() {
   const total = parseInt(params.get("total") || "0", 10);
   const email = params.get("email") || "";
   const name = params.get("name") || "";
+  const slotsParam = params.get("slots") || "[]";
+  const slotGroups: { time: string; count: number }[] = (() => {
+    try {
+      const parsed = JSON.parse(slotsParam);
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  })();
 
   const venue = VENUES.find((v) => v.id === venueId);
   const fmtDate = (iso: string) =>
@@ -54,9 +63,30 @@ function SuccessInner() {
           <dl className="mt-6 space-y-3 border-t border-cream/10 pt-6 text-sm">
             <Row label="Venue" value={venue?.name || "—"} />
             <Row label="Date" value={fmtDate(date)} />
-            <Row label="Time" value={time} />
+            {slotGroups.length > 1 ? (
+              <div className="flex justify-between">
+                <dt className="text-cream/60">Start times</dt>
+                <dd className="text-right">
+                  {slotGroups.map((g) => (
+                    <div key={g.time} className="font-mono text-sm text-plonkTeal">
+                      {g.time} · {g.count} {g.count === 1 ? "player" : "players"}
+                    </div>
+                  ))}
+                </dd>
+              </div>
+            ) : (
+              <Row label="Time" value={time} />
+            )}
             <Row label="Total paid" value={fmtMoney(total)} bold />
           </dl>
+
+          {slotGroups.length > 1 && (
+            <p className="mt-4 rounded-lg border border-plonkTeal/30 bg-plonkTeal/5 p-3 text-xs leading-relaxed text-cream/80">
+              Your group has been split across {slotGroups.length} start times
+              so everyone fits in — please arrive together for the first start
+              time. Our team will get each group on the course in turn.
+            </p>
+          )}
 
           <p className="mt-6 text-xs text-cream/60">
             Show this reference (or your confirmation email) at the bar when
