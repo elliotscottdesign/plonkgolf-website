@@ -13,11 +13,14 @@ export default function Footer() {
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-4">
         <div>
           <h3 className="font-display text-2xl">Plonk Golf</h3>
-          <p className="mt-3 text-sm text-cream/70">
-            The wackiest mini golf courses and coolest arcade & games bars
-            across London.
+          <p className="mt-3 text-sm leading-relaxed text-cream/75">
+            London's Original Crazy Golf and Games Bars. Accept no imitators.
           </p>
-          <p className="mt-3 text-sm text-cream/70">
+          <p className="mt-3 text-sm leading-relaxed text-cream/75">
+            Keep your money independent — stand up and say no to VC and
+            PE-backed businesses.
+          </p>
+          <p className="mt-4 text-sm text-cream/70">
             <a href="mailto:info@plonkgolf.co.uk" className="underline hover:text-cream">
               info@plonkgolf.co.uk
             </a>
