@@ -1,50 +1,89 @@
 import Image from "next/image";
 import Link from "next/link";
 
+const PRESS = [
+  { name: "Evening Standard", src: "/images/London-Evening-Standard-logo.jpg" },
+  { name: "Londonist", src: "/images/londonist.jpg" },
+  { name: "Time Out", src: "/images/timeput_logo_2-1.png" },
+  { name: "The Nudge", src: "/images/The-Nudge.jpg" },
+  { name: "Secret London", src: "/images/SecretLondon.jpg" },
+  { name: "Metro", src: "/images/metro-logo.jpg" },
+];
+
 export default function HomePage() {
   return (
-    <main className="min-h-screen">
+    <main>
       {/* Hero */}
-      <section className="relative isolate flex min-h-[80vh] flex-col items-center justify-center px-6 text-center">
+      <section className="relative isolate flex min-h-[85vh] flex-col items-center justify-center px-6 text-center">
         <div className="absolute inset-0 -z-10">
           <Image
             src="/images/hackney-hero.jpg"
             alt=""
             fill
             priority
-            className="object-cover opacity-40"
+            className="object-cover opacity-50"
             sizes="100vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/60 to-ink" />
+          <div className="absolute inset-0 bg-gradient-to-b from-ink/40 via-ink/65 to-ink" />
         </div>
 
-        <Image
-          src="/images/plonk-logo.png"
-          alt="Plonk Golf"
-          width={260}
-          height={104}
-          priority
-          className="mb-8 w-44 sm:w-56 md:w-64"
-        />
-
-        <h1 className="font-display text-4xl leading-tight sm:text-6xl md:text-7xl">
-          Crazy Golf in London
+        <p className="mb-4 text-xs font-bold uppercase tracking-[0.3em] text-plonkYellow">
+          London · Hackney · Borough Market
+        </p>
+        <h1 className="font-display text-5xl leading-tight sm:text-6xl md:text-7xl">
+          Crazy Golf
+          <br />
+          in London
         </h1>
-        <p className="mt-4 max-w-xl text-base sm:text-lg text-cream/80">
-          The wackiest mini golf courses and coolest arcade & games bars across
-          London. Hackney · Borough Market.
+        <p className="mt-6 max-w-xl text-base text-cream/80 sm:text-lg">
+          The wackiest mini golf courses and coolest arcade & games bars
+          across London. Bring your friends and a competitive spirit — we'll
+          do the rest.
         </p>
 
         <Link
           href="#venues"
-          className="mt-8 inline-block rounded-full bg-plonkPink px-8 py-3 font-semibold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
+          className="mt-10 inline-block rounded-full bg-plonkPink px-10 py-4 text-base font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
         >
           Book Now
         </Link>
       </section>
 
+      {/* Press strip */}
+      <section className="border-y border-cream/10 bg-ink/60 py-8">
+        <p className="text-center text-xs font-bold uppercase tracking-[0.3em] text-cream/50">
+          As featured in
+        </p>
+        <div className="mx-auto mt-6 flex max-w-5xl flex-wrap items-center justify-center gap-x-10 gap-y-6 px-6">
+          {PRESS.map((p) => (
+            <div key={p.name} className="relative h-12 w-24 opacity-70 grayscale transition hover:opacity-100 hover:grayscale-0">
+              <Image src={p.src} alt={p.name} fill className="object-contain" sizes="96px" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* About blurb */}
+      <section className="mx-auto max-w-3xl px-6 py-20 text-center">
+        <h2 className="font-display text-3xl sm:text-4xl">
+          Plonk Crazy Golf & Games Bars
+        </h2>
+        <p className="mt-6 text-base leading-relaxed text-cream/75 sm:text-lg">
+          Enter the world of Plonk Crazy Golf — the wackiest mini golf courses
+          and coolest arcade and games bars across London. Our lively venues
+          include indoor and outdoor crazy golf, craft beers, cocktails and
+          games.
+        </p>
+        <Link
+          href="/about"
+          className="mt-8 inline-block text-sm font-semibold uppercase tracking-wider text-plonkYellow hover:underline"
+        >
+          More about Plonk →
+        </Link>
+      </section>
+
       {/* Venues */}
-      <section id="venues" className="mx-auto max-w-6xl px-6 py-20">
+      <section id="venues" className="mx-auto max-w-6xl px-6 pb-24">
         <h2 className="mb-12 text-center font-display text-3xl sm:text-4xl">
           Our Venues
         </h2>
@@ -52,35 +91,33 @@ export default function HomePage() {
         <div className="grid gap-8 md:grid-cols-2">
           <VenueCard
             name="Hackney"
+            tagline="Outdoor — 9 holes — beer garden"
             image="/images/hackney-hero.jpg"
-            blurb="Our perfectly positioned games bar and golf spot, a short walk from Broadway Market overlooking London Fields. 9 holes of outdoor crazy golf, craft cocktails, draught beers, tacos, pool, pinball."
+            blurb="Our perfectly positioned games bar and golf spot, a short walk from Broadway Market overlooking London Fields. Polynesian-themed course, retro arcade, pool, tacos and craft cocktails."
             href="/venue/hackney"
           />
           <VenueCard
             name="Borough Market"
+            tagline="Indoor — 9 holes — under London Bridge"
             image="/images/borough-hero.jpg"
-            blurb="Our biggest indoor venue, tucked under London Bridge across 4 arches — London-themed crazy golf taking you through the capital's monuments, surrounded by graffiti murals."
+            blurb="Our biggest indoor venue, tucked under London Bridge across 4 arches — London-themed crazy golf through the capital's monuments, surrounded by graffiti murals by some of London's top spray-can talent."
             href="/venue/borough-market"
           />
         </div>
       </section>
-
-      {/* Placeholder footer */}
-      <footer className="border-t border-cream/10 px-6 py-10 text-center text-sm text-cream/60">
-        © {new Date().getFullYear()} Plonk Golf Ltd — new site coming
-        soon.
-      </footer>
     </main>
   );
 }
 
 function VenueCard({
   name,
+  tagline,
   image,
   blurb,
   href,
 }: {
   name: string;
+  tagline: string;
   image: string;
   blurb: string;
   href: string;
@@ -100,9 +137,12 @@ function VenueCard({
         />
       </div>
       <div className="p-6">
-        <h3 className="font-display text-2xl">{name}</h3>
-        <p className="mt-2 text-sm leading-relaxed text-cream/70">{blurb}</p>
-        <span className="mt-4 inline-block text-sm font-semibold uppercase tracking-wider text-plonkYellow">
+        <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
+          {tagline}
+        </p>
+        <h3 className="mt-2 font-display text-3xl">{name}</h3>
+        <p className="mt-3 text-sm leading-relaxed text-cream/70">{blurb}</p>
+        <span className="mt-5 inline-block text-sm font-semibold uppercase tracking-wider text-plonkPink">
           Book {name} →
         </span>
       </div>
