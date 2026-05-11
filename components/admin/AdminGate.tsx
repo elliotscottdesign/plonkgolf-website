@@ -1,34 +1,25 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-
-const SESSION_KEY = "ndb_admin_unlocked";
-// Placeholder gate password — real auth (Supabase) replaces this once backend is wired.
-const PLACEHOLDER_PW = "plonk-admin";
-
-export function isUnlocked() {
-  if (typeof window === "undefined") return false;
-  return sessionStorage.getItem(SESSION_KEY) === "1";
-}
-
-export function setUnlocked(v: boolean) {
-  if (typeof window === "undefined") return;
-  if (v) sessionStorage.setItem(SESSION_KEY, "1");
-  else sessionStorage.removeItem(SESSION_KEY);
-}
-
-export function logout() {
-  setUnlocked(false);
-}
+import { supabase } from "@/lib/supabase";
 
 export default function AdminGate({ children }: { children: React.ReactNode }) {
   const [ready, setReady] = useState(false);
-  const [ok, setOk] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
-    setOk(isUnlocked());
-    setReady(true);
+    const sb = supabase();
+    sb.auth.getSession().then(({ data }) => {
+      setSignedIn(!!data.session);
+      setEmail(data.session?.user?.email ?? "");
+      setReady(true);
+    });
+    const { data: sub } = sb.auth.onAuthStateChange((_event, session) => {
+      setSignedIn(!!session);
+      setEmail(session?.user?.email ?? "");
+    });
+    return () => sub.subscription.unsubscribe();
   }, []);
 
   if (!ready) {
@@ -39,26 +30,38 @@ export default function AdminGate({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (!ok) return <LoginForm onSuccess={() => setOk(true)} />;
-  return <>{children}</>;
+  if (!signedIn) return <LoginForm />;
+  return (
+    <>
+      <div className="hidden">{email /* expose for debug; not displayed */}</div>
+      {children}
+    </>
+  );
 }
 
-function LoginForm({ onSuccess }: { onSuccess: () => void }) {
-  const router = useRouter();
+export async function logout() {
+  await supabase().auth.signOut();
+}
+
+function LoginForm() {
+  const [email, setEmail] = useState("");
   const [pw, setPw] = useState("");
   const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (pw === PLACEHOLDER_PW) {
-      setUnlocked(true);
-      setErr("");
-      onSuccess();
-      router.refresh();
-    } else {
-      setErr("Wrong password");
-      setPw("");
+    setBusy(true);
+    setErr("");
+    const { error } = await supabase().auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password: pw,
+    });
+    if (error) {
+      setErr(error.message);
+      setBusy(false);
     }
+    // On success, onAuthStateChange in the parent flips signedIn -> true.
   }
 
   return (
@@ -73,28 +76,41 @@ function LoginForm({ onSuccess }: { onSuccess: () => void }) {
         </p>
 
         <label className="mt-6 block text-xs font-bold uppercase tracking-widest text-plonkYellow">
+          Email
+        </label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          autoFocus
+          autoComplete="email"
+          className="mt-2 w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-3 text-sm text-cream outline-none focus:border-plonkPink"
+        />
+
+        <label className="mt-4 block text-xs font-bold uppercase tracking-widest text-plonkYellow">
           Password
         </label>
         <input
           type="password"
           value={pw}
           onChange={(e) => setPw(e.target.value)}
-          autoFocus
+          autoComplete="current-password"
           className="mt-2 w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-3 text-sm text-cream outline-none focus:border-plonkPink"
         />
+
         {err && <p className="mt-3 text-sm text-red-400">{err}</p>}
 
         <button
           type="submit"
-          className="mt-6 w-full rounded-full bg-plonkPink py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
+          disabled={busy || !email || !pw}
+          className="mt-6 w-full rounded-full bg-plonkPink py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90 disabled:cursor-not-allowed disabled:opacity-40"
         >
-          Sign in
+          {busy ? "Signing in…" : "Sign in"}
         </button>
 
-        <p className="mt-6 rounded-lg border border-plonkYellow/30 bg-plonkYellow/5 p-3 text-xs leading-relaxed text-plonkYellow">
-          <strong>Preview password:</strong> <code>plonk-admin</code>
-          <br />
-          Real Supabase login replaces this when the backend is wired.
+        <p className="mt-6 text-xs leading-relaxed text-cream/55">
+          Admin accounts are created in the Supabase dashboard under
+          Authentication → Users.
         </p>
       </form>
     </div>

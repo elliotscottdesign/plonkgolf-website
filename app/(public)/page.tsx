@@ -35,8 +35,9 @@ export default function HomePage() {
   return (
     <main>
       {/* ───────────── HERO (forest) ───────────── */}
-      <section className="relative isolate flex min-h-[92vh] flex-col items-center justify-center px-6 text-center">
-        <div className="absolute inset-0 -z-10">
+      <section className="relative isolate flex flex-col">
+        {/* Image — uninterrupted, ready for a future video */}
+        <div className="relative h-[68vh] min-h-[480px] w-full overflow-hidden md:h-[78vh]">
           <Image
             src="/borough/course/Course_1.jpg"
             alt=""
@@ -45,43 +46,43 @@ export default function HomePage() {
             className="object-cover"
             sizes="100vw"
           />
-          <div className="hero-overlay absolute inset-0" />
+          <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-forestDeep/55 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-forest" />
         </div>
 
-        <Reveal>
-          <p className="text-shadow-hero mb-6 text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-            Hackney · Borough Market
-          </p>
-        </Reveal>
-        <Reveal delay={120}>
-          <h1 className="text-shadow-hero font-display text-5xl leading-[1.05] sm:text-6xl md:text-7xl lg:text-[88px]">
-            Crazy Golf Creations
-            <br />
-            <span className="italic text-plonkYellow">Across the Capital</span>
-          </h1>
-        </Reveal>
-        <Reveal delay={240}>
-          <p className="text-shadow-hero mt-8 max-w-xl text-base text-cream sm:text-lg">
-            Two original courses. Two iconic London arches. One unforgettable
-            round — with cocktails, food and games to match.
-          </p>
-        </Reveal>
+        {/* Copy + booking widget — sit on forest below the image */}
+        <div className="bg-forest px-6 pb-20 pt-4 text-center">
+          <Reveal>
+            <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
+              Hackney · Borough Market
+            </p>
+          </Reveal>
+          <Reveal delay={120}>
+            <h1 className="mt-5 font-display text-5xl leading-[1.05] sm:text-6xl md:text-7xl lg:text-[80px]">
+              Crazy Golf Creations
+              <br />
+              <span className="italic text-plonkYellow">Across the Capital</span>
+            </h1>
+          </Reveal>
+          <Reveal delay={240}>
+            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-cream/85 sm:text-lg">
+              Two original courses. Two iconic London arches. One unforgettable
+              round — with cocktails, food and games to match.
+            </p>
+          </Reveal>
 
-        <Reveal delay={360} className="w-full">
-          <div className="mt-12 w-full max-w-3xl px-2 mx-auto">
-            <HeroBookingWidget />
-          </div>
+          <Reveal delay={360} className="w-full">
+            <div className="mx-auto mt-10 w-full max-w-3xl px-2">
+              <HeroBookingWidget />
+            </div>
 
-          <Link
-            href="/book"
-            className="mt-8 inline-block rounded-full bg-plonkPink px-10 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-plonkPink/20 transition hover:bg-plonkPink/90 md:hidden"
-          >
-            Book a tee time
-          </Link>
-        </Reveal>
-
-        <div className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 text-xs uppercase tracking-eyebrow text-cream/40">
-          Scroll
+            <Link
+              href="/book"
+              className="mt-8 inline-block rounded-full bg-plonkPink px-10 py-4 text-sm font-bold uppercase tracking-wider text-white shadow-lg shadow-plonkPink/20 transition hover:bg-plonkPink/90 md:hidden"
+            >
+              Book a tee time
+            </Link>
+          </Reveal>
         </div>
       </section>
 

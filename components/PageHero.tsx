@@ -12,8 +12,9 @@ export default function PageHero({
   image: string;
 }) {
   return (
-    <section className="relative isolate flex min-h-[72vh] flex-col items-center justify-center px-6 pt-24 pb-28 text-center">
-      <div className="absolute inset-0 -z-10">
+    <section className="relative isolate flex flex-col">
+      {/* Image — full, uninterrupted */}
+      <div className="relative h-[58vh] min-h-[420px] w-full overflow-hidden md:h-[68vh]">
         <Image
           src={image}
           alt=""
@@ -22,21 +23,28 @@ export default function PageHero({
           className="object-cover"
           sizes="100vw"
         />
-        <div className="hero-overlay absolute inset-0" />
+        {/* Subtle top shade so the nav stays legible */}
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-forestDeep/55 to-transparent" />
+        {/* Bottom fade — image dissolves into forest to meet the copy band */}
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-forest" />
       </div>
-      {eyebrow && (
-        <p className="text-shadow-hero mb-4 text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-          {eyebrow}
-        </p>
-      )}
-      <h1 className="text-shadow-hero font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
-        {title}
-      </h1>
-      {intro && (
-        <p className="text-shadow-hero mt-5 max-w-2xl text-base text-cream sm:text-lg">
-          {intro}
-        </p>
-      )}
+
+      {/* Copy — sits on forest, where the gradient to the next section begins */}
+      <div className="bg-forest px-6 pb-16 pt-2 text-center md:pb-20">
+        {eyebrow && (
+          <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
+            {eyebrow}
+          </p>
+        )}
+        <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
+          {title}
+        </h1>
+        {intro && (
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-cream/85 sm:text-lg">
+            {intro}
+          </p>
+        )}
+      </div>
     </section>
   );
 }
