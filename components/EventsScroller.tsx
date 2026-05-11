@@ -33,7 +33,7 @@ export default function EventsScroller({
         >
           {posters.map((p) => {
             const inner = (
-              <article className="group relative aspect-[2/3] w-[70vw] shrink-0 snap-start overflow-hidden rounded-2xl border border-cream/10 bg-black/20 sm:w-[40vw] md:w-[26vw] lg:w-[22%]">
+              <article className="group relative aspect-[5/7] w-[70vw] shrink-0 snap-start overflow-hidden rounded-2xl border border-cream/10 bg-black/20 sm:w-[42vw] md:w-[28vw] lg:w-[23%]">
                 <Image
                   src={p.src}
                   alt={p.alt}

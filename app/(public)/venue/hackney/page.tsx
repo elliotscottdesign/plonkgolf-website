@@ -5,16 +5,15 @@ import PageHero from "@/components/PageHero";
 import EventsScroller from "@/components/EventsScroller";
 import Reveal from "@/components/Reveal";
 
-// PLACEHOLDER POSTERS — swap each src for the real event posters once
-// /public/hackney/events/Event_*.jpg is populated. Aspect ratio 2:3 works
-// best (e.g. 1000x1500). Add as many as you like; the scroller is endless.
 const EVENT_POSTERS = [
-  { src: "/hackney/garden/Garden_2.jpg", alt: "Event poster 1" },
-  { src: "/hackney/games/Games_1.jpg", alt: "Event poster 2" },
-  { src: "/hackney/venue/Interior_5.jpg", alt: "Event poster 3" },
-  { src: "/hackney/drinks/Drinks_1.jpg", alt: "Event poster 4" },
-  { src: "/hackney/garden/Garden_4.jpg", alt: "Event poster 5" },
-  { src: "/hackney/games/Games_4.jpg", alt: "Event poster 6" },
+  { src: "/hackney/events/Happy_Hour.jpg", alt: "Happy Hour at No Dice" },
+  { src: "/hackney/events/No_Dice_Mondays.jpg", alt: "No Dice Mondays" },
+  { src: "/hackney/events/Burger_Deal.jpg", alt: "Burger deal at Snack Bar" },
+  { src: "/hackney/events/Cue.jpg", alt: "Cue — pool night" },
+  { src: "/hackney/events/Pingers.jpg", alt: "Pingers — ping pong night" },
+  { src: "/hackney/events/Rolling_Bones.jpg", alt: "Rolling Bones" },
+  { src: "/hackney/events/Fun_Club.jpg", alt: "Fun Club" },
+  { src: "/hackney/events/Fun_of_the_Fair.jpg", alt: "Fun of the Fair" },
 ];
 
 export const metadata: Metadata = {

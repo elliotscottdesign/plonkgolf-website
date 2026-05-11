@@ -2,8 +2,20 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import {
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import type { StripeElementsOptions } from "@stripe/stripe-js";
 import { TICKETS, ADDONS, VENUES, fmtMoney } from "@/lib/mockData";
+import {
+  getStripe,
+  CREATE_PAYMENT_INTENT_URL,
+  SUPABASE_ANON_KEY,
+} from "@/lib/stripe";
 
 const HOLD_MS = 15 * 60 * 1000; // 15 minutes
 const HOLD_KEY = "plonk_book_hold_expires_at";
@@ -36,8 +48,13 @@ function fmtCountdown(ms: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
+type Intent = {
+  clientSecret: string;
+  reference: string;
+  totalPence: number;
+};
+
 function CheckoutInner() {
-  const router = useRouter();
   const params = useSearchParams();
 
   const venueId = params.get("venue") || "hackney";
@@ -84,12 +101,16 @@ function CheckoutInner() {
   const tickets = TICKETS.filter((t) => (ticketQty[t.id] || 0) > 0);
   const addons = ADDONS.filter((a) => (addonQty[a.id] || 0) > 0);
 
+  // Client-side preview total — what we *show* in the summary. The real
+  // amount charged is calculated server-side inside the Edge Function from
+  // current DB prices, then echoed back. They should always agree, but the
+  // server is the source of truth.
   let subtotal = 0;
   for (const t of tickets) subtotal += ticketQty[t.id] * t.pricePence;
   for (const a of addons) subtotal += addonQty[a.id] * a.pricePence;
   const pct = promoCode === "FRIDAY20" ? 20 : promoCode === "STUDENT10" ? 10 : 0;
   const discount = Math.round((subtotal * pct) / 100);
-  const total = Math.max(0, subtotal - discount);
+  const previewTotal = Math.max(0, subtotal - discount);
 
   const fmtDate = (iso: string) => {
     if (!iso) return "";
@@ -101,36 +122,70 @@ function CheckoutInner() {
     });
   };
 
-  function handlePay(e: React.FormEvent) {
-    e.preventDefault();
-    if (expired) return;
-    // In production this hits a Supabase Edge Function which creates a
-    // Stripe Checkout session and redirects the browser to Stripe.
-    // For the preview, jump straight to the success page.
-    sessionStorage.removeItem(HOLD_KEY);
-    const successParams = new URLSearchParams({
-      ref: `PLNK-${Math.random().toString(36).slice(2, 6).toUpperCase()}${Math.random().toString(36).slice(2, 6).toUpperCase()}`,
-      venue: venueId,
-      date,
-      time,
-      total: String(total),
-      email,
-      phone,
-      heard_from: heardFrom,
-      name: `${firstName} ${lastName}`.trim(),
-      slots: slotsParam,
-    });
-    router.push(`/book/success?${successParams.toString()}`);
-  }
+  // --------- Customer details -> ready to create PaymentIntent ----------
+  const detailsValid =
+    !!email && !!firstName && !!lastName && !!phone && !!heardFrom;
 
-  const canPay =
-    !expired &&
-    email &&
-    firstName &&
-    lastName &&
-    phone &&
-    heardFrom &&
-    tickets.length > 0;
+  const [intent, setIntent] = useState<Intent | null>(null);
+  const [intentError, setIntentError] = useState<string | null>(null);
+  const [intentLoading, setIntentLoading] = useState(false);
+  const intentRequestedRef = useRef(false);
+
+  async function startPayment() {
+    if (intentRequestedRef.current || intent || expired || !detailsValid) return;
+    if (!venue || tickets.length === 0) return;
+    intentRequestedRef.current = true;
+    setIntentLoading(true);
+    setIntentError(null);
+    try {
+      const res = await fetch(CREATE_PAYMENT_INTENT_URL, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          apikey: SUPABASE_ANON_KEY,
+          authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({
+          venue_slug: venueId,
+          slot_date: date,
+          slot_groups: slotGroups,
+          tickets: tickets.map((t) => ({
+            name: t.name,
+            quantity: ticketQty[t.id],
+          })),
+          addons: addons.map((a) => ({
+            name: a.name,
+            quantity: addonQty[a.id],
+          })),
+          promo_code: promoCode || undefined,
+          customer: {
+            name: `${firstName} ${lastName}`.trim(),
+            email,
+            phone,
+            heard_from: heardFrom,
+            marketing_opt_in: marketingOptIn,
+          },
+        }),
+      });
+      const body = await res.json();
+      if (!res.ok) {
+        intentRequestedRef.current = false;
+        setIntentError(body?.error || `Request failed (${res.status})`);
+        setIntentLoading(false);
+        return;
+      }
+      setIntent({
+        clientSecret: body.client_secret,
+        reference: body.reference,
+        totalPence: body.total_pence,
+      });
+      setIntentLoading(false);
+    } catch (e) {
+      intentRequestedRef.current = false;
+      setIntentError(e instanceof Error ? e.message : "Network error");
+      setIntentLoading(false);
+    }
+  }
 
   if (!venue || tickets.length === 0) {
     return (
@@ -145,6 +200,23 @@ function CheckoutInner() {
       </main>
     );
   }
+
+  const elementsOptions: StripeElementsOptions | null = intent
+    ? {
+        clientSecret: intent.clientSecret,
+        appearance: {
+          theme: "night",
+          variables: {
+            colorPrimary: "#ff3d8a",
+            colorBackground: "#0E2A21",
+            colorText: "#F2EBD9",
+            colorDanger: "#ff6b6b",
+            borderRadius: "10px",
+            fontFamily: "DM Sans, system-ui, sans-serif",
+          },
+        },
+      }
+    : null;
 
   return (
     <main className="min-h-screen px-6 py-12">
@@ -188,8 +260,8 @@ function CheckoutInner() {
         )}
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_360px]">
-          {/* Form */}
-          <form onSubmit={handlePay} className="space-y-6">
+          {/* Left column — details + payment */}
+          <div className="space-y-6">
             <section className="rounded-2xl border border-cream/10 bg-ink/40 p-6">
               <h2 className="font-display text-xl">Your details</h2>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -234,26 +306,54 @@ function CheckoutInner() {
             <section className="rounded-2xl border border-cream/10 bg-ink/40 p-6">
               <h2 className="font-display text-xl">Payment</h2>
               <p className="mt-2 text-sm text-cream/70">
-                When you hit "Pay", you'll be redirected to Stripe to enter your card.
-                Apple Pay, Google Pay and Link are all supported automatically.
+                Card, Apple Pay, Google Pay and Link all supported. You won't
+                leave this page — the form below is hosted securely by Stripe.
               </p>
-              <div className="mt-5 rounded-xl border border-plonkYellow/30 bg-plonkYellow/5 px-4 py-3 text-xs text-plonkYellow">
-                <strong>Preview mode.</strong> No real card will be charged.
-                "Pay" jumps you straight to the confirmation screen for
-                preview purposes.
-              </div>
+
+              {!intent && !intentLoading && !intentError && (
+                <button
+                  type="button"
+                  onClick={startPayment}
+                  disabled={expired || !detailsValid}
+                  className="mt-5 w-full rounded-full border border-cream/20 py-3 text-sm font-bold uppercase tracking-wider text-cream transition hover:border-cream/50 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  {detailsValid
+                    ? "Continue to payment"
+                    : "Fill in your details to continue"}
+                </button>
+              )}
+
+              {intentLoading && (
+                <p className="mt-5 text-sm text-cream/60">
+                  Preparing secure checkout…
+                </p>
+              )}
+
+              {intentError && (
+                <div className="mt-5 rounded-xl border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-300">
+                  {intentError}
+                </div>
+              )}
+
+              {intent && elementsOptions && (
+                <div className="mt-5">
+                  <Elements
+                    stripe={getStripe()}
+                    options={elementsOptions}
+                  >
+                    <PaymentForm
+                      reference={intent.reference}
+                      totalPence={intent.totalPence}
+                      disabled={expired}
+                      onPaying={() => sessionStorage.removeItem(HOLD_KEY)}
+                    />
+                  </Elements>
+                </div>
+              )}
             </section>
+          </div>
 
-            <button
-              type="submit"
-              disabled={!canPay}
-              className="w-full rounded-full bg-plonkPink py-4 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {expired ? "Hold expired — start again" : `Pay ${fmtMoney(total)} →`}
-            </button>
-          </form>
-
-          {/* Summary */}
+          {/* Right column — summary */}
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <div className="rounded-2xl border border-cream/10 bg-ink/60 p-6">
               <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
@@ -311,7 +411,9 @@ function CheckoutInner() {
                 )}
                 <div className="flex justify-between border-t border-cream/10 pt-2 text-lg">
                   <span>Total</span>
-                  <span className="font-display">{fmtMoney(total)}</span>
+                  <span className="font-display">
+                    {fmtMoney(intent?.totalPence ?? previewTotal)}
+                  </span>
                 </div>
                 <p className="text-[10px] uppercase tracking-widest text-cream/40">
                   Inc. 20% VAT
@@ -322,6 +424,70 @@ function CheckoutInner() {
         </div>
       </div>
     </main>
+  );
+}
+
+function PaymentForm({
+  reference,
+  totalPence,
+  disabled,
+  onPaying,
+}: {
+  reference: string;
+  totalPence: number;
+  disabled: boolean;
+  onPaying: () => void;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [submitting, setSubmitting] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!stripe || !elements || disabled) return;
+    setSubmitting(true);
+    setErr(null);
+    onPaying();
+
+    // Build the return URL — Stripe redirects here once 3DS / async methods
+    // finish. We pass the reference so the success page can verify against
+    // the DB. The payment_intent + status query params are added by Stripe.
+    const base = `${window.location.origin}${window.location.pathname.replace(/checkout\/?$/, "success/")}`;
+    const returnUrl = `${base}?ref=${encodeURIComponent(reference)}`;
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: { return_url: returnUrl },
+    });
+
+    if (error) {
+      setErr(error.message ?? "Payment failed");
+      setSubmitting(false);
+    }
+    // On success Stripe redirects, so we never reach this point.
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <PaymentElement options={{ layout: "tabs" }} />
+      {err && (
+        <div className="rounded-xl border border-red-400/40 bg-red-400/10 px-4 py-3 text-sm text-red-300">
+          {err}
+        </div>
+      )}
+      <button
+        type="submit"
+        disabled={!stripe || !elements || disabled || submitting}
+        className="w-full rounded-full bg-plonkPink py-4 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90 disabled:cursor-not-allowed disabled:opacity-40"
+      >
+        {submitting
+          ? "Processing…"
+          : disabled
+            ? "Hold expired — start again"
+            : `Pay £${(totalPence / 100).toFixed(2)} →`}
+      </button>
+    </form>
   );
 }
 
