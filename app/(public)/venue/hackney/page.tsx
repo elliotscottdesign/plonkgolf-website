@@ -88,7 +88,7 @@ export default function HackneyPage() {
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              The full Plonk
+              No Dice Games Bar
             </p>
             <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
               More than just golf
