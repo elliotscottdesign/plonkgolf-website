@@ -40,15 +40,15 @@ export default function HomePage() {
     <main>
       {/* ───────────── HERO (forest) ───────────── */}
       <section className="relative isolate flex flex-col">
-        {/* Image — full, never cropped. object-contain shows the whole shot;
-            letterbox bars take the forest colour so they merge with the band below */}
+        {/* Image — always fills the full width; aspect-[3/2] matches our venue
+            photo ratio so the shot fits cleanly without top/bottom crop. */}
         <div className="relative w-full bg-forest aspect-[3/2] max-h-[80vh] min-h-[360px] overflow-hidden">
           <Image
             src="/borough/course/Course_1.jpg"
             alt=""
             fill
             priority
-            className="object-contain"
+            className="object-cover"
             sizes="100vw"
           />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-forestDeep/55 to-transparent" />

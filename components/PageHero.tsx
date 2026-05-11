@@ -18,10 +18,10 @@ export default function PageHero({
 
   return (
     <section className="relative isolate flex flex-col">
-      {/* Image — full, never cropped. object-contain lets the whole shot show,
-          letterbox bars (if any) take the forest colour so they blend into the
-          title band underneath.                                                 */}
-      <div className="relative w-full bg-forest aspect-[3/2] max-h-[80vh] min-h-[320px] overflow-hidden">
+      {/* Image — always fills the full width. aspect-[3/2] matches the natural
+          ratio of our venue photos so they fit without top/bottom crop on the
+          most common viewports; ultrawide screens see a very minor side crop. */}
+      <div className="relative w-full bg-forest aspect-[3/2] max-h-[80vh] min-h-[360px] overflow-hidden">
         {isArray ? (
           <HeroSlider images={image.map((src) => ({ src }))} />
         ) : (
@@ -30,7 +30,7 @@ export default function PageHero({
             alt=""
             fill
             priority
-            className="object-contain"
+            className="object-cover"
             sizes="100vw"
           />
         )}
