@@ -9,6 +9,7 @@ import {
   type FieldKind,
 } from "@/lib/db/content";
 import { uploadImage } from "@/lib/db/media";
+import { getImageSpec, specCaption } from "@/lib/imageSpecs";
 
 function describe(err: unknown, fallback: string) {
   if (err instanceof Error) return err.message;
@@ -159,6 +160,7 @@ function FieldEditor({
         )}
         <KindInput
           kind={row.field_kind}
+          contentKey={row.key}
           value={value}
           onChange={onChange}
           fallback={fallback}
@@ -175,11 +177,13 @@ function FieldEditor({
 
 function KindInput({
   kind,
+  contentKey,
   value,
   onChange,
   fallback,
 }: {
   kind: FieldKind;
+  contentKey: string;
   value: string;
   onChange: (v: string) => void;
   fallback?: string;
@@ -187,7 +191,14 @@ function KindInput({
   const placeholder = fallback ? `Default: ${fallback.slice(0, 60)}${fallback.length > 60 ? "…" : ""}` : "";
 
   if (kind === "image") {
-    return <ImageInput value={value} onChange={onChange} fallback={fallback} />;
+    return (
+      <ImageInput
+        contentKey={contentKey}
+        value={value}
+        onChange={onChange}
+        fallback={fallback}
+      />
+    );
   }
   if (kind === "textarea" || kind === "html") {
     return (
@@ -214,10 +225,12 @@ function KindInput({
 }
 
 function ImageInput({
+  contentKey,
   value,
   onChange,
   fallback,
 }: {
+  contentKey: string;
   value: string;
   onChange: (v: string) => void;
   fallback?: string;
@@ -226,6 +239,7 @@ function ImageInput({
   const [err, setErr] = useState("");
   const fileRef = useRef<HTMLInputElement | null>(null);
   const preview = value || fallback || "";
+  const spec = getImageSpec(contentKey);
 
   async function handleFile(file: File) {
     setBusy(true);
@@ -243,12 +257,13 @@ function ImageInput({
 
   return (
     <div className="space-y-3">
+      <SpecCaption spec={spec} />
       {preview && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={preview}
           alt=""
-          className="aspect-[3/2] w-full max-w-md rounded-lg border border-cream/10 bg-ink/30 object-cover"
+          className={`${spec.aspectClass} w-full max-w-md rounded-lg border border-cream/10 bg-ink/30 object-cover`}
         />
       )}
       <div className="flex flex-wrap items-center gap-2">
@@ -288,6 +303,32 @@ function ImageInput({
       />
       {err && (
         <p className="text-xs text-red-300">{err}</p>
+      )}
+    </div>
+  );
+}
+
+// Small banner shown above every image upload field, telling the
+// admin user what shape and size of file fits the slot best. Reads
+// straight from lib/imageSpecs so docs and UI stay in lock-step.
+export function SpecCaption({ spec }: { spec: ReturnType<typeof getImageSpec> }) {
+  return (
+    <div
+      className={`rounded-lg border px-3 py-2 text-xs ${
+        spec.inferred
+          ? "border-plonkYellow/30 bg-plonkYellow/5 text-plonkYellow"
+          : "border-cream/15 bg-ink/30 text-cream/70"
+      }`}
+    >
+      <span className="font-semibold text-cream/90">
+        Recommended:&nbsp;
+      </span>
+      <span>
+        {spec.width.toLocaleString()}×{spec.height.toLocaleString()}px,{" "}
+        {spec.orientation} ({spec.aspectLabel}), JPEG under {spec.maxKb}KB.
+      </span>
+      {spec.notes && (
+        <p className="mt-1 text-[11px] italic opacity-80">{spec.notes}</p>
       )}
     </div>
   );

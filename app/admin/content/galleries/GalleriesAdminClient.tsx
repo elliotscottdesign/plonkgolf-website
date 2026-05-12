@@ -11,6 +11,8 @@ import {
   deleteGalleryImage,
   type DbGalleryImage,
 } from "@/lib/db/galleries";
+import { getImageSpec } from "@/lib/imageSpecs";
+import { SpecCaption } from "@/components/admin/ContentEditor";
 
 // Every gallery the public site reads from. New galleries can be added
 // here (and consumed by the page that needs them); the admin will then
@@ -184,7 +186,8 @@ export default function GalleriesAdminClient() {
         </div>
 
         {/* Image grid for active gallery */}
-        <div className="flex-1">
+        <div className="flex-1 space-y-3">
+          <SpecCaption spec={getImageSpec(activeKey)} />
           <AdminCard
             title={activeGalleryMeta.label}
             action={
@@ -223,7 +226,7 @@ export default function GalleriesAdminClient() {
                     <img
                       src={g.src}
                       alt={g.alt ?? ""}
-                      className="aspect-[4/3] w-full rounded-lg object-cover"
+                      className={`${getImageSpec(activeKey).aspectClass} w-full rounded-lg object-cover`}
                     />
                     <input
                       type="text"
