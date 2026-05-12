@@ -47,7 +47,7 @@ export default function DealsPage() {
         image="/hackney/drinks/Drinks_3.jpg"
       />
 
-      <section className="tint-forest-to-forestDeep">
+      <section>
       <div className="mx-auto max-w-5xl px-6 py-20">
         <div className="grid gap-6 md:grid-cols-2">
           {DEALS.map((d) => (

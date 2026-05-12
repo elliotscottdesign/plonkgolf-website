@@ -13,7 +13,7 @@ export default function BigEmailCta({
 }) {
   const subjectParam = encodeURIComponent(subject);
   return (
-    <section className="tint-ember-to-forest-deep px-6 py-28">
+    <section className="px-6 py-28">
       <div className="mx-auto max-w-3xl text-center">
         <Reveal>
           <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">

@@ -37,7 +37,7 @@ export default function AboutPage() {
       />
 
       {body && (
-        <section className="tint-forest-to-forestDeep">
+        <section>
           <article
             className="mx-auto max-w-3xl px-6 py-16 text-base leading-relaxed text-cream/85 [&_a]:underline [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-2xl [&_p+p]:mt-4"
             dangerouslySetInnerHTML={{ __html: body }}
@@ -45,7 +45,7 @@ export default function AboutPage() {
         </section>
       )}
 
-      <section className="tint-forest-to-forestDeep">
+      <section>
       <article className="mx-auto max-w-3xl px-6 py-20 text-base leading-relaxed text-cream/85">
         <p>
           Plonk Crazy Golf was founded by a troop of set designers from the

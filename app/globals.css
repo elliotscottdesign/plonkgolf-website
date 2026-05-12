@@ -9,6 +9,7 @@
   --forest-deep: #081A14;
   --forest-raised: #163A2E;
   --forest-line: #2A4D3F;
+  --forest-light: #1F4A3B;
   --plum: #1F1233;
   --plum-deep: #110820;
   --plum-raised: #2C1846;
@@ -91,12 +92,14 @@ html {
    forest → plum → ember → forest palette. Adjacent sections
    share their edge colour for seamless transitions.
 */
-.tint-forest         { background: var(--forest); }
-.tint-forest-deep    { background: var(--forest-deep); }
-.tint-plum           { background: var(--plum); }
-.tint-plum-deep      { background: var(--plum-deep); }
-.tint-ember          { background: var(--ember); }
-.tint-ember-deep     { background: var(--ember-deep); }
+/* "Solid" tints are kept subtly graded within their tonal family so
+   no section ever sits as one flat colour. */
+.tint-forest         { background: linear-gradient(180deg, var(--forest-light) 0%, var(--forest) 100%); }
+.tint-forest-deep    { background: linear-gradient(180deg, var(--forest) 0%, var(--forest-deep) 100%); }
+.tint-plum           { background: linear-gradient(180deg, var(--plum-raised) 0%, var(--plum) 100%); }
+.tint-plum-deep      { background: linear-gradient(180deg, var(--plum) 0%, var(--plum-deep) 100%); }
+.tint-ember          { background: linear-gradient(180deg, var(--lilac-raised) 0%, var(--lilac) 100%); }
+.tint-ember-deep     { background: linear-gradient(180deg, var(--lilac) 0%, var(--lilac-deep) 100%); }
 
 /* Every tint-X-to-Y starts at X (0%) and ends EXACTLY at Y (100%) so
    adjacent sections that name the same colour at their boundary line
@@ -115,7 +118,7 @@ html {
 .tint-plumDeep-to-plum     { background: linear-gradient(180deg, var(--plum-deep) 0%, var(--plum) 100%); }
 .tint-plum-to-forest-deep  { background: linear-gradient(180deg, var(--plum) 0%, var(--forest-deep) 100%); }
 
-.tint-forest-to-emberDeep  { background: linear-gradient(180deg, var(--forest) 0%, var(--ember) 50%, var(--ember-deep) 100%); }
+.tint-forest-to-emberDeep  { background: linear-gradient(180deg, var(--forest) 0%, var(--plum) 50%, var(--lilac-deep) 100%); }
 .tint-emberDeep-to-ember   { background: linear-gradient(180deg, var(--ember-deep) 0%, var(--ember) 100%); }
 .tint-ember-to-forest-deep { background: linear-gradient(180deg, var(--ember) 0%, var(--forest-deep) 100%); }
 
@@ -167,44 +170,34 @@ html {
    ember for Borough, forest for everything else) but lands on the
    same lilac wash at the bottom that .bed-booking uses, so the whole
    site feels like one continuous palette as you scroll. */
-.bed-hackney {
+/* Unified page bed — every long-scroll page flows the same way:
+   lighter green at the top → forest → plum → lilac-deep → lilac.
+   Venue-specific identity is now expressed through accent colours
+   on cards/UI rather than splitting the page bed. */
+.bed-hackney,
+.bed-borough,
+.bed-info,
+.bed-page {
   background: linear-gradient(
     180deg,
-    var(--forest) 0%,
-    var(--plum) 30%,
-    var(--plum-deep) 55%,
-    var(--lilac-deep) 80%,
-    var(--lilac) 100%
-  );
-}
-.bed-borough {
-  background: linear-gradient(
-    180deg,
-    var(--forest) 0%,
-    var(--ember) 30%,
-    var(--ember-deep) 55%,
-    var(--lilac-deep) 80%,
-    var(--lilac) 100%
-  );
-}
-.bed-info {
-  background: linear-gradient(
-    180deg,
-    var(--forest) 0%,
-    var(--forest-deep) 40%,
+    var(--forest-light) 0%,
+    var(--forest) 18%,
+    var(--plum) 50%,
     var(--lilac-deep) 80%,
     var(--lilac) 100%
   );
 }
 
-/* Booking-flow bed — purple > green > lilac. Used on the venue picker,
-   the booking + basket page, checkout, and the success confirmation. */
+/* Booking-flow bed — same green→purple→lilac flow as the rest of the
+   site, just slightly tighter so the colour change feels deliberate
+   on short forms. min-height keeps the gradient filling the viewport
+   even when there's only a few lines of content. */
 .bed-booking {
   background: linear-gradient(
     180deg,
-    var(--plum-deep) 0%,
-    var(--plum) 18%,
-    var(--forest) 50%,
+    var(--forest-light) 0%,
+    var(--forest) 18%,
+    var(--plum) 50%,
     var(--lilac-deep) 80%,
     var(--lilac) 100%
   );

@@ -73,7 +73,7 @@ export default function EventsPage() {
         image="/hackney/games/Games_4.jpg"
       />
 
-      <section className="tint-forest-to-forestDeep">
+      <section>
       <div className="mx-auto max-w-6xl px-6 py-20">
         <div className="grid gap-10 md:grid-cols-2">
           <VenueColumn

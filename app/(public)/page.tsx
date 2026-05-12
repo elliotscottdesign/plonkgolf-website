@@ -220,7 +220,7 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── PRIVATE HIRE + VOUCHERS (ember → forest) ───────────── */}
-      <section className="tint-ember-to-forest px-6 py-28">
+      <section className="px-6 py-28">
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2">
           <CtaCard
             eyebrow="Bring your people"
@@ -240,7 +240,7 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── BIG CTA FOOTER (forest → forestDeep) ───────────── */}
-      <section className="tint-forest-to-forestDeep relative overflow-hidden">
+      <section className="relative overflow-hidden">
         <div className="absolute inset-0 -z-10">
           <Image
             src="/hackney/pool/Pool_1.jpg"

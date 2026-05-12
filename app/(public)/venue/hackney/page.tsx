@@ -166,7 +166,7 @@ export default function HackneyPage() {
       />
 
       {/* Find us (plum → forest) */}
-      <section className="tint-plum-to-forest-deep px-6 py-24">
+      <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <h2 className="font-display text-4xl sm:text-5xl">Find us</h2>

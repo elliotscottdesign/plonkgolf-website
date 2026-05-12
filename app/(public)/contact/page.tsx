@@ -10,7 +10,7 @@ export default function ContactPage() {
     <main>
       <PageHero eyebrow="Get in touch" title={title} image="/hackney/venue/Interior_2.jpg" />
       {body && (
-        <section className="tint-forest-to-forestDeep">
+        <section>
           <article
             className="mx-auto max-w-3xl px-6 py-16 text-sm leading-relaxed text-cream/85 [&_a]:underline"
             dangerouslySetInnerHTML={{ __html: body }}
@@ -18,7 +18,7 @@ export default function ContactPage() {
         </section>
       )}
 
-      <section className="tint-forest-to-forestDeep">
+      <section>
       <div className="mx-auto max-w-3xl px-6 py-20">
         <p className="text-base leading-relaxed text-cream/85">
           For group bookings, partnership enquiries or anything else, drop us

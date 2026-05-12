@@ -33,7 +33,7 @@ export default function VouchersPage() {
         image="/borough/drinks/Cocktail_1.jpg"
       />
 
-      <section className="tint-forest-to-forestDeep mx-auto max-w-none px-6 py-20 text-center">
+      <section className="mx-auto max-w-none px-6 py-20 text-center">
       <div className="mx-auto max-w-3xl">
         <p className="text-base leading-relaxed text-cream/80 sm:text-lg">
           All of our vouchers are valid for twelve months from the date of
@@ -58,7 +58,7 @@ export default function VouchersPage() {
       </div>
       </section>
 
-      <section className="tint-forestDeep-to-forest">
+      <section>
         <div className="mx-auto max-w-6xl px-6 py-20">
           <div className="grid gap-8 md:grid-cols-3">
             {PERKS.map((p) => (
