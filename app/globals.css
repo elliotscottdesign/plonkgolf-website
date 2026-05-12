@@ -17,10 +17,13 @@
   --lilac-deep: #3E2A5C;
   --lilac-raised: #6B4D9C;
   --lilac-line: #7D5FB0;
-  --ember: #2C140E;
-  --ember-deep: #190805;
-  --ember-raised: #3E1C12;
-  --ember-line: #4F2818;
+  /* Borough Market used to be ember/red. Aliased to lilac so every
+     existing .tint-ember*, .bed-borough etc. flows lilac instead — no
+     need to touch every page that references them. */
+  --ember: #5A3F86;
+  --ember-deep: #3E2A5C;
+  --ember-raised: #6B4D9C;
+  --ember-line: #7D5FB0;
   --cream: #F2EBD9;
   --cream-dim: #C7BFA9;
   --pink: #ff3d8a;
