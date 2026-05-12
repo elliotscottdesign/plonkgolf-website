@@ -483,7 +483,7 @@ function CheckoutInner() {
                   </span>
                 </div>
                 <p className="text-[10px] uppercase tracking-widest text-cream/40">
-                  Inc. 20% VAT
+                  No VAT charged
                 </p>
               </div>
             </div>

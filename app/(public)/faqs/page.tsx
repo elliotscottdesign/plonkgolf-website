@@ -92,7 +92,7 @@ const SECTIONS: Section[] = [
     faqs: [
       {
         q: "Do prices include VAT?",
-        a: "Yes — every price you see at booking and checkout includes 20% VAT. There are no hidden fees.",
+        a: "No — Plonk is currently below the UK VAT registration threshold, so we don't charge VAT. The price you see is the price you pay; there are no added taxes or hidden fees.",
       },
       {
         q: "Is there a happy hour?",

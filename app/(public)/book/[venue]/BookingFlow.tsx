@@ -579,10 +579,10 @@ export default function BookingFlow({
                               <span className="line-through">
                                 {fmtMoney(t.pricePence)}
                               </span>{" "}
-                              inc. VAT
+                              No VAT charged
                             </>
                           ) : (
-                            <>{fmtMoney(t.pricePence)} inc. VAT</>
+                            <>{fmtMoney(t.pricePence)}</>
                           )}
                         </p>
                         {disabled && (
@@ -805,7 +805,7 @@ export default function BookingFlow({
                   highlight
                 />
               )}
-              <Row label="Total inc. VAT" value={fmtMoney(totalPence)} bold />
+              <Row label="Total" value={fmtMoney(totalPence)} bold />
             </div>
 
             <button

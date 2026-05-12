@@ -162,7 +162,7 @@ export default function AddonsClient() {
                 <tr className="border-b border-cream/10 text-left text-xs uppercase tracking-widest text-cream/50">
                   <th className="px-5 py-3 font-bold">Product</th>
                   <th className="px-5 py-3 font-bold">Available at</th>
-                  <th className="px-5 py-3 font-bold">Price inc. VAT</th>
+                  <th className="px-5 py-3 font-bold">Price</th>
                   <th className="px-5 py-3 font-bold">Active</th>
                   <th className="px-5 py-3 text-right font-bold"></th>
                 </tr>

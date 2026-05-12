@@ -126,7 +126,7 @@ export default function TicketsClient() {
     <>
       <AdminPageHeader
         title="Tickets & Prices"
-        description="The ticket types customers can buy at checkout. Prices include VAT. Changes go live immediately on the public booking page."
+        description="The ticket types customers can buy at checkout. Plonk is currently below the UK VAT threshold, so no VAT is charged — prices are the final amount the customer pays. Changes go live immediately on the public booking page."
       />
 
       {err && (
@@ -175,8 +175,8 @@ export default function TicketsClient() {
                       <tr className="border-b border-cream/10 text-left text-xs uppercase tracking-widest text-cream/50">
                         <th className="px-5 py-3 font-bold">Name</th>
                         <th className="px-5 py-3 font-bold">Kind</th>
-                        <th className="px-5 py-3 font-bold">Price inc. VAT</th>
-                        <th className="px-5 py-3 font-bold">VAT</th>
+                        <th className="px-5 py-3 font-bold">Price</th>
+                        <th className="px-5 py-3 font-bold">VAT %</th>
                         <th className="px-5 py-3 font-bold">Days</th>
                         <th className="px-5 py-3 font-bold">Active</th>
                         <th className="px-5 py-3 text-right font-bold"></th>
