@@ -188,11 +188,9 @@ function EditHoursModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-end justify-center bg-ink/80 p-3 sm:items-center sm:p-6"
-      onClick={onCancel}
     >
       <div
         className="w-full max-w-md rounded-2xl border border-cream/15 bg-ink p-6 shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
       >
         <h3 className="font-display text-2xl">{venue.name} — opening hours</h3>
         <div className="mt-4 space-y-2">
