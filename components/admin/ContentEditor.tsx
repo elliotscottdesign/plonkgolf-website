@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AdminCard } from "@/components/admin/AdminCard";
+import MediaPicker from "@/components/admin/MediaPicker";
 import {
   loadPageContent,
   updateContentValues,
@@ -237,6 +238,7 @@ function ImageInput({
 }) {
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const preview = value || fallback || "";
   const spec = getImageSpec(contentKey);
@@ -284,6 +286,13 @@ function ImageInput({
             }}
           />
         </label>
+        <button
+          type="button"
+          onClick={() => setPickerOpen(true)}
+          className="rounded-full border border-cream/20 px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream hover:bg-cream/5"
+        >
+          Pick from library
+        </button>
         {value && (
           <button
             type="button"
@@ -303,6 +312,15 @@ function ImageInput({
       />
       {err && (
         <p className="text-xs text-red-300">{err}</p>
+      )}
+      {pickerOpen && (
+        <MediaPicker
+          onPick={(path) => {
+            onChange(path);
+            setPickerOpen(false);
+          }}
+          onClose={() => setPickerOpen(false)}
+        />
       )}
     </div>
   );

@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/generate-media-manifest.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "media:manifest": "node scripts/generate-media-manifest.mjs"
   },
   "dependencies": {
     "@stripe/react-stripe-js": "2.8.1",
