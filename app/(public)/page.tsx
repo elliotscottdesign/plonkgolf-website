@@ -50,6 +50,28 @@ export default function HomePage() {
     "home.hero.subcopy",
     "Two original courses. Two iconic London arches. One unforgettable round — with cocktails, food and games to match.",
   );
+  const hackneyBlurb = useContent(
+    "home.venues.hackney",
+    "A short walk from Broadway Market overlooking London Fields. Our Polynesian-themed outdoor course, with a beer garden, taco kitchen, pool, retro arcade and craft cocktail bar.",
+  );
+  const boroughBlurb = useContent(
+    "home.venues.borough",
+    "Tucked into four railway arches under London Bridge. A London-themed indoor course threading past the city's monuments, surrounded by murals from London's best spray-can talent.",
+  );
+  const f1Title = useContent("home.feature1.title", FEATURES[0].title);
+  const f1Body = useContent("home.feature1.body", FEATURES[0].body);
+  const f2Title = useContent("home.feature2.title", FEATURES[1].title);
+  const f2Body = useContent("home.feature2.body", FEATURES[1].body);
+  const f3Title = useContent("home.feature3.title", FEATURES[2].title);
+  const f3Body = useContent("home.feature3.body", FEATURES[2].body);
+  const f4Title = useContent("home.feature4.title", FEATURES[3].title);
+  const f4Body = useContent("home.feature4.body", FEATURES[3].body);
+  const editableFeatures = [
+    { ...FEATURES[0], title: f1Title, body: f1Body },
+    { ...FEATURES[1], title: f2Title, body: f2Body },
+    { ...FEATURES[2], title: f3Title, body: f3Body },
+    { ...FEATURES[3], title: f4Title, body: f4Body },
+  ];
 
   return (
     <main>
@@ -122,7 +144,7 @@ export default function HomePage() {
           eyebrow="Outdoor · 9 holes · beer garden"
           image="/hackney/course/Course_1.jpg"
           imageAlt="Plonk Hackney crazy golf"
-          blurb="A short walk from Broadway Market overlooking London Fields. Our Polynesian-themed outdoor course, with a beer garden, taco kitchen, pool, retro arcade and craft cocktail bar."
+          blurb={hackneyBlurb}
           features={[
             "9-hole Polynesian course",
             "Outdoor beer garden",
@@ -138,7 +160,7 @@ export default function HomePage() {
           eyebrow="Indoor · 9 holes · under London Bridge"
           image="/borough/course/Course_2.jpg"
           imageAlt="Plonk Borough Market crazy golf"
-          blurb="Tucked into four railway arches under London Bridge. A London-themed indoor course threading past the city's monuments, surrounded by murals from London's best spray-can talent."
+          blurb={boroughBlurb}
           features={[
             "9-hole London-themed course",
             "4 covered arches",
@@ -163,8 +185,8 @@ export default function HomePage() {
           </Reveal>
 
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {FEATURES.map((f, i) => (
-              <Reveal key={f.title} delay={i * 80}>
+            {editableFeatures.map((f, i) => (
+              <Reveal key={i} delay={i * 80}>
                 <FeatureCard image={f.image} title={f.title} body={f.body} />
               </Reveal>
             ))}

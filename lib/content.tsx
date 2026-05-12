@@ -60,3 +60,43 @@ export function useContent(key: string, fallback: string): string {
 export function useImage(key: string, fallback: string): string {
   return useContent(key, fallback);
 }
+
+// Load every active image in a named gallery, with a per-call fallback
+// for when the admin hasn't populated it yet. Used by the homepage
+// features section, the about page strip, and the venue page galleries.
+export function useGallery<T extends { src: string; alt?: string | null }>(
+  galleryKey: string,
+  fallback: T[],
+): { src: string; alt?: string | null }[] {
+  const [rows, setRows] = useState<{ src: string; alt: string | null }[] | null>(
+    null,
+  );
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const { supabase } = await import("@/lib/supabase");
+        const { data, error } = await supabase()
+          .from("gallery_images")
+          .select("src, alt, sort_order, active")
+          .eq("gallery_key", galleryKey)
+          .eq("active", true)
+          .order("sort_order");
+        if (cancelled || error) return;
+        setRows(
+          ((data ?? []) as { src: string; alt: string | null }[]).map((r) => ({
+            src: r.src,
+            alt: r.alt,
+          })),
+        );
+      } catch {
+        if (!cancelled) setRows([]);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [galleryKey]);
+  if (rows && rows.length > 0) return rows;
+  return fallback;
+}

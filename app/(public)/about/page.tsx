@@ -3,7 +3,7 @@
 import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import Gallery from "@/components/Gallery";
-import { useContent } from "@/lib/content";
+import { useContent, useGallery } from "@/lib/content";
 
 const ABOUT_GALLERY = [
   { src: "/hackney/course/Course_1.jpg", alt: "Hackney Polynesian course" },
@@ -23,6 +23,10 @@ const ABOUT_GALLERY = [
 export default function AboutPage() {
   const title = useContent("about.title", "All About Plonk Golf");
   const body = useContent("about.body", "");
+  const galleryImages = useGallery("about.gallery", ABOUT_GALLERY).map((g) => ({
+    src: g.src,
+    alt: g.alt ?? "",
+  }));
   return (
     <main>
       <PageHero
@@ -96,7 +100,7 @@ export default function AboutPage() {
       <Gallery
         heading="A decade of Plonking"
         intro="Highlights from courses past and present."
-        images={ABOUT_GALLERY}
+        images={galleryImages}
         tint="tint-forest-deep"
       />
     </main>

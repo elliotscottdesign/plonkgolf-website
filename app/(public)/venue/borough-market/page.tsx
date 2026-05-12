@@ -36,6 +36,14 @@ export default function BoroughMarketPage() {
     "Tucked into four railway arches under London Bridge. A 360° gallery from London's best street artists, surrounding nine holes of London icons.",
   );
   const heroImage = useImage("venue.borough.hero_image", "");
+  const bodyHeading = useContent(
+    "venue.borough.body_heading",
+    "London under the arches",
+  );
+  const bodyIntro = useContent(
+    "venue.borough.body_intro",
+    "Nine holes navigating Big Ben, the Tower of London, the Thames Barrier and a London phone box, painted by the city's best graffiti artists. Plus a full bar, arcade and snug pool tables.",
+  );
 
   const sliderImages = [
     "/borough/course/Course_1.jpg",
@@ -77,13 +85,10 @@ export default function BoroughMarketPage() {
                 London, in one course
               </p>
               <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-                All of London, in 9 holes
+                {bodyHeading}
               </h2>
-              <p className="mt-6 text-base leading-relaxed text-cream/80 sm:text-lg">
-                Putt past a red phone box ramp, roll around the Thames Barrier,
-                hop into the Tower of London, loop the London Eye and stride
-                down Tower Bridge — all under London Bridge itself, surrounded
-                by murals from the city's best spray-can talent.
+              <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-cream/80 sm:text-lg">
+                {bodyIntro}
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link

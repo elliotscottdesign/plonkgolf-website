@@ -34,6 +34,14 @@ export default function HackneyPage() {
     "Our perfectly positioned games bar and golf spot is just a short walk from Broadway Market and looks across London Fields.",
   );
   const heroImage = useImage("venue.hackney.hero_image", "");
+  const bodyHeading = useContent(
+    "venue.hackney.body_heading",
+    "A Polynesian putting paradise",
+  );
+  const bodyIntro = useContent(
+    "venue.hackney.body_intro",
+    "Our Hackney course has been rebuilt — bigger, brighter and bolder than ever. Volcano canyons, a tiki forest, golf gods to appease, a stone circle to navigate and octopuses to dodge under the sea — all now fully covered and out of the rain.",
+  );
 
   // When the admin uploads a single replacement image we use that;
   // otherwise we keep the existing eight-photo slider.
@@ -66,13 +74,10 @@ export default function HackneyPage() {
                 We've glown up
               </p>
               <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-                A Polynesian putting paradise
+                {bodyHeading}
               </h2>
-              <p className="mt-6 text-base leading-relaxed text-cream/80 sm:text-lg">
-                Our Hackney course has been rebuilt — bigger, brighter and
-                bolder than ever. Volcano canyons, a tiki forest, golf gods to
-                appease, a stone circle to navigate and octopuses to dodge
-                under the sea — all now fully covered and out of the rain.
+              <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-cream/80 sm:text-lg">
+                {bodyIntro}
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
