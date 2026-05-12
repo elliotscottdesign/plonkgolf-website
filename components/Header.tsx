@@ -49,13 +49,20 @@ export default function Header() {
           </Link>
         </nav>
 
-        <button
-          type="button"
-          aria-label="Toggle menu"
-          aria-expanded={open}
-          className="md:hidden p-2 text-cream"
-          onClick={() => setOpen((v) => !v)}
-        >
+        <div className="flex items-center gap-2 md:hidden">
+          <Link
+            href="/book"
+            className="rounded-full bg-plonkPink px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
+          >
+            Book Now
+          </Link>
+          <button
+            type="button"
+            aria-label="Toggle menu"
+            aria-expanded={open}
+            className="p-2 text-cream"
+            onClick={() => setOpen((v) => !v)}
+          >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             {open ? (
               <>
@@ -70,7 +77,8 @@ export default function Header() {
               </>
             )}
           </svg>
-        </button>
+          </button>
+        </div>
       </div>
 
       {open && (
