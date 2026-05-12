@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import HeroBookingWidget from "@/components/HeroBookingWidget";
+import { useContent, useImage } from "@/lib/content";
 
 const PRESS = [
   { name: "Evening Standard", src: "/images/London-Evening-Standard-logo.jpg" },
@@ -36,6 +39,18 @@ const FEATURES = [
 ];
 
 export default function HomePage() {
+  // Every useContent / useImage call passes the current hardcoded value as
+  // its fallback, so the page renders identically when nothing's been edited
+  // in the admin. Saved values override the fallback on hydration.
+  const heroImage = useImage("home.hero.image", "/borough/course/Course_1.jpg");
+  const heroEyebrow = useContent("home.hero.eyebrow", "Hackney · Borough Market");
+  const heroLine1 = useContent("home.hero.headline_1", "Crazy Golf Creations");
+  const heroLine2 = useContent("home.hero.headline_2", "Across the Capital");
+  const heroSubcopy = useContent(
+    "home.hero.subcopy",
+    "Two original courses. Two iconic London arches. One unforgettable round — with cocktails, food and games to match.",
+  );
+
   return (
     <main>
       {/* ───────────── HERO (forest) ───────────── */}
@@ -46,12 +61,13 @@ export default function HomePage() {
             just below the sticky header. */}
         <div className="relative w-full bg-forest aspect-[3/2] max-h-[80vh] min-h-[360px] overflow-hidden">
           <Image
-            src="/borough/course/Course_1.jpg"
+            src={heroImage}
             alt=""
             fill
             priority
             className="object-cover"
             sizes="100vw"
+            unoptimized={heroImage.startsWith("http")}
           />
           <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-forestDeep/55 to-transparent" />
 
@@ -69,20 +85,19 @@ export default function HomePage() {
         <div className="bg-forest px-6 pb-20 pt-10 text-center">
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              Hackney · Borough Market
+              {heroEyebrow}
             </p>
           </Reveal>
           <Reveal delay={120}>
             <h1 className="mt-5 font-display text-5xl leading-[1.05] sm:text-6xl md:text-7xl lg:text-[80px]">
-              Crazy Golf Creations
+              {heroLine1}
               <br />
-              <span className="italic text-plonkYellow">Across the Capital</span>
+              <span className="italic text-plonkYellow">{heroLine2}</span>
             </h1>
           </Reveal>
           <Reveal delay={240}>
             <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-cream/85 sm:text-lg">
-              Two original courses. Two iconic London arches. One unforgettable
-              round — with cocktails, food and games to match.
+              {heroSubcopy}
             </p>
           </Reveal>
 

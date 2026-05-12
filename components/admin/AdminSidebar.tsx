@@ -10,6 +10,8 @@ const NAV: { label: string; href: string; group?: string }[] = [
   { label: "Calendar", href: "/admin/bookings/calendar", group: "Overview" },
   { label: "Customers", href: "/admin/customers", group: "Overview" },
 
+  { label: "Site Content", href: "/admin/content", group: "Site" },
+
   { label: "Tickets & Prices", href: "/admin/tickets", group: "Catalogue" },
   { label: "Add-ons", href: "/admin/addons", group: "Catalogue" },
 
@@ -24,7 +26,14 @@ const NAV: { label: string; href: string; group?: string }[] = [
   { label: "Email Templates", href: "/admin/emails", group: "Operations" },
 ];
 
-const GROUPS = ["Overview", "Catalogue", "Availability", "Discounts", "Operations"];
+const GROUPS = [
+  "Overview",
+  "Site",
+  "Catalogue",
+  "Availability",
+  "Discounts",
+  "Operations",
+];
 
 export default function AdminSidebar() {
   const pathname = usePathname() || "";

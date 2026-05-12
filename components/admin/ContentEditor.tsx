@@ -1,0 +1,294 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { AdminCard } from "@/components/admin/AdminCard";
+import {
+  loadPageContent,
+  updateContentValues,
+  type DbContentRow,
+  type FieldKind,
+} from "@/lib/db/content";
+import { uploadImage } from "@/lib/db/media";
+
+function describe(err: unknown, fallback: string) {
+  if (err instanceof Error) return err.message;
+  if (err && typeof err === "object" && "message" in err) {
+    const m = (err as { message: unknown }).message;
+    if (typeof m === "string") return m;
+  }
+  return fallback;
+}
+
+// Renders an admin edit form for every page_content row whose `page`
+// matches the prop. One generic component for every editable page — each
+// route under /admin/content/* is a thin wrapper that calls this with a
+// different `page` string.
+export default function ContentEditor({
+  page,
+  fallbacks,
+}: {
+  page: string;
+  // Optional map of fallback values (the hardcoded defaults from the
+  // public page) so the admin form shows current copy as placeholder
+  // text rather than just an empty field. Saved value still wins.
+  fallbacks?: Record<string, string>;
+}) {
+  const [rows, setRows] = useState<DbContentRow[]>([]);
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [savedFlash, setSavedFlash] = useState(false);
+
+  async function reload() {
+    setLoading(true);
+    setErr("");
+    try {
+      const list = await loadPageContent(page);
+      setRows(list);
+      const next: Record<string, string> = {};
+      for (const r of list) next[r.key] = r.value;
+      setDrafts(next);
+    } catch (e) {
+      setErr(describe(e, "Failed to load page content"));
+    } finally {
+      setLoading(false);
+    }
+  }
+  useEffect(() => {
+    reload();
+  }, [page]);
+
+  function setDraft(key: string, value: string) {
+    setDrafts((d) => ({ ...d, [key]: value }));
+  }
+
+  function isDirty(): boolean {
+    return rows.some((r) => (drafts[r.key] ?? "") !== r.value);
+  }
+
+  async function save() {
+    setSaving(true);
+    setErr("");
+    setSavedFlash(false);
+    try {
+      const patches = rows
+        .filter((r) => (drafts[r.key] ?? "") !== r.value)
+        .map((r) => ({ key: r.key, value: drafts[r.key] ?? "" }));
+      if (patches.length === 0) return;
+      await updateContentValues(patches);
+      await reload();
+      setSavedFlash(true);
+      setTimeout(() => setSavedFlash(false), 2500);
+    } catch (e) {
+      setErr(describe(e, "Save failed"));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) return <p className="text-sm text-cream/60">Loading…</p>;
+
+  if (rows.length === 0) {
+    return (
+      <AdminCard>
+        <p className="px-5 py-8 text-sm text-cream/60">
+          No editable fields registered for <code>{page}</code>. (Re-run{" "}
+          <code>supabase/migrations/004-page-content.sql</code> in the SQL Editor
+          to seed them.)
+        </p>
+      </AdminCard>
+    );
+  }
+
+  return (
+    <div className="space-y-5">
+      {err && (
+        <div className="rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
+          {err}
+        </div>
+      )}
+
+      {rows.map((row) => (
+        <FieldEditor
+          key={row.key}
+          row={row}
+          fallback={fallbacks?.[row.key]}
+          value={drafts[row.key] ?? ""}
+          onChange={(v) => setDraft(row.key, v)}
+        />
+      ))}
+
+      <div className="sticky bottom-4 z-10 flex items-center justify-end gap-3 rounded-2xl border border-cream/15 bg-ink/95 px-5 py-3 shadow-2xl backdrop-blur">
+        {savedFlash && (
+          <span className="text-sm text-plonkTeal">Saved.</span>
+        )}
+        <button
+          onClick={save}
+          disabled={!isDirty() || saving}
+          className="rounded-full bg-plonkPink px-6 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-plonkPink/90 disabled:opacity-40"
+        >
+          {saving ? "Saving…" : "Save changes"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// One row of the form — picks the right input based on field_kind.
+function FieldEditor({
+  row,
+  value,
+  onChange,
+  fallback,
+}: {
+  row: DbContentRow;
+  value: string;
+  onChange: (v: string) => void;
+  fallback?: string;
+}) {
+  return (
+    <AdminCard>
+      <div className="px-5 py-4">
+        <div className="mb-2 flex items-baseline justify-between">
+          <h3 className="text-sm font-bold text-cream">{row.label}</h3>
+          <code className="text-[10px] text-cream/35">{row.key}</code>
+        </div>
+        {row.helper && (
+          <p className="mb-3 text-xs text-cream/55">{row.helper}</p>
+        )}
+        <KindInput
+          kind={row.field_kind}
+          value={value}
+          onChange={onChange}
+          fallback={fallback}
+        />
+        {value === "" && fallback && (
+          <p className="mt-2 text-xs text-cream/45">
+            Currently showing default: <span className="text-cream/70">{fallback.slice(0, 90)}{fallback.length > 90 ? "…" : ""}</span>
+          </p>
+        )}
+      </div>
+    </AdminCard>
+  );
+}
+
+function KindInput({
+  kind,
+  value,
+  onChange,
+  fallback,
+}: {
+  kind: FieldKind;
+  value: string;
+  onChange: (v: string) => void;
+  fallback?: string;
+}) {
+  const placeholder = fallback ? `Default: ${fallback.slice(0, 60)}${fallback.length > 60 ? "…" : ""}` : "";
+
+  if (kind === "image") {
+    return <ImageInput value={value} onChange={onChange} fallback={fallback} />;
+  }
+  if (kind === "textarea" || kind === "html") {
+    return (
+      <textarea
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        rows={kind === "html" ? 12 : 5}
+        className={`w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-3 text-sm text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none ${
+          kind === "html" ? "font-mono text-xs leading-relaxed" : ""
+        }`}
+      />
+    );
+  }
+  return (
+    <input
+      type={kind === "url" ? "url" : "text"}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className="w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-2.5 text-sm text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none"
+    />
+  );
+}
+
+function ImageInput({
+  value,
+  onChange,
+  fallback,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  fallback?: string;
+}) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const preview = value || fallback || "";
+
+  async function handleFile(file: File) {
+    setBusy(true);
+    setErr("");
+    try {
+      const { public_url } = await uploadImage(file);
+      onChange(public_url);
+    } catch (e) {
+      setErr(describe(e, "Upload failed"));
+    } finally {
+      setBusy(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  }
+
+  return (
+    <div className="space-y-3">
+      {preview && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={preview}
+          alt=""
+          className="aspect-[3/2] w-full max-w-md rounded-lg border border-cream/10 bg-ink/30 object-cover"
+        />
+      )}
+      <div className="flex flex-wrap items-center gap-2">
+        <label
+          className={`cursor-pointer rounded-full border border-cream/20 bg-cream/5 px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream hover:bg-cream/10 ${
+            busy ? "pointer-events-none opacity-50" : ""
+          }`}
+        >
+          {busy ? "Uploading…" : preview ? "Replace image" : "Upload image"}
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) handleFile(f);
+            }}
+          />
+        </label>
+        {value && (
+          <button
+            type="button"
+            onClick={() => onChange("")}
+            className="rounded-full border border-cream/15 px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream/70 hover:bg-cream/5"
+          >
+            Revert to default
+          </button>
+        )}
+      </div>
+      <input
+        type="url"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="…or paste a direct image URL"
+        className="w-full rounded-lg border border-cream/15 bg-ink/40 px-3 py-2 text-xs text-cream/85 placeholder:text-cream/30 focus:border-plonkPink focus:outline-none"
+      />
+      {err && (
+        <p className="text-xs text-red-300">{err}</p>
+      )}
+    </div>
+  );
+}
