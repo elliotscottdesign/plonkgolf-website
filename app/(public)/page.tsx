@@ -97,35 +97,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ───────────── MISSION (forest → plum) ───────────── */}
-      <section className="tint-forest-to-plum relative overflow-hidden px-6 py-28 md:py-40">
-        <div className="glow-blob relative mx-auto max-w-4xl text-center">
-          <Reveal>
-            <p className="relative z-10 text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              Original. Independent. London-made.
-            </p>
-          </Reveal>
-          <Reveal delay={120}>
-            <h2 className="relative z-10 mt-8 font-display text-4xl leading-tight sm:text-5xl md:text-6xl">
-              We don't do off-the-shelf.
-              <br />
-              <span className="text-cream/60">
-                Every hole, every cocktail, every tile —
-              </span>
-              <br />
-              built in-house, in London.
-            </h2>
-          </Reveal>
-          <Reveal delay={240}>
-            <p className="relative z-10 mx-auto mt-10 max-w-2xl text-base leading-relaxed text-cream/70 sm:text-lg">
-              Plonk has been London's original crazy golf bar since 2014.
-              Independent, family-run, and still designing every course
-              ourselves. No franchises. No imitators.
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
       {/* ───────────── VENUES (plum) ───────────── */}
       <section id="venues" className="tint-plum relative overflow-hidden">
         <div className="glow-blob-plum pointer-events-none absolute inset-x-0 top-0 h-[40vh]" />
