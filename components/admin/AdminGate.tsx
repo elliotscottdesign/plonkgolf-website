@@ -43,8 +43,31 @@ export async function logout() {
   await supabase().auth.signOut();
 }
 
+// Simple usernames map to real Supabase Auth email addresses behind
+// the scenes. The user types "ADMIN" / their password; we send the
+// real email + password to Supabase. That way the admin still goes
+// through proper authenticated-role auth (so RLS policies on every
+// table keep working), but the human only has to remember a
+// username, not the underlying email.
+//
+// To add another login (e.g. a manager), create the Supabase user
+// in Authentication → Users, then add a line here:
+//   "manager": "manager@plonkgolf.co.uk",
+const USERNAME_TO_EMAIL: Record<string, string> = {
+  admin: "admin@plonkgolf.co.uk",
+};
+
+function resolveEmail(input: string): string {
+  const cleaned = input.trim().toLowerCase();
+  if (USERNAME_TO_EMAIL[cleaned]) return USERNAME_TO_EMAIL[cleaned];
+  // If they typed a full email, accept it as-is (lets the original
+  // elliotscottdesign@gmail.com backup login keep working).
+  if (cleaned.includes("@")) return cleaned;
+  return cleaned;
+}
+
 function LoginForm() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [pw, setPw] = useState("");
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);
@@ -53,12 +76,15 @@ function LoginForm() {
     e.preventDefault();
     setBusy(true);
     setErr("");
+    const email = resolveEmail(username);
     const { error } = await supabase().auth.signInWithPassword({
-      email: email.trim().toLowerCase(),
+      email,
       password: pw,
     });
     if (error) {
-      setErr(error.message);
+      // Mask the Supabase-specific "Invalid login credentials" wording
+      // so it doesn't tell an attacker whether the username exists.
+      setErr("Username or password is wrong.");
       setBusy(false);
     }
     // On success, onAuthStateChange in the parent flips signedIn -> true.
@@ -76,15 +102,16 @@ function LoginForm() {
         </p>
 
         <label className="mt-6 block text-xs font-bold uppercase tracking-widest text-plonkYellow">
-          Email
+          Username
         </label>
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           autoFocus
-          autoComplete="email"
-          className="mt-2 w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-3 text-sm text-cream outline-none focus:border-plonkPink"
+          autoComplete="username"
+          placeholder="ADMIN"
+          className="mt-2 w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-3 text-sm text-cream placeholder:text-cream/30 outline-none focus:border-plonkPink"
         />
 
         <label className="mt-4 block text-xs font-bold uppercase tracking-widest text-plonkYellow">
@@ -102,15 +129,16 @@ function LoginForm() {
 
         <button
           type="submit"
-          disabled={busy || !email || !pw}
+          disabled={busy || !username || !pw}
           className="mt-6 w-full rounded-full bg-plonkPink py-3 text-sm font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {busy ? "Signing in…" : "Sign in"}
         </button>
 
         <p className="mt-6 text-xs leading-relaxed text-cream/55">
-          Admin accounts are created in the Supabase dashboard under
-          Authentication → Users.
+          New users are created in the Supabase dashboard under
+          Authentication → Users — then add the username → email mapping
+          in <code className="text-cream/85">components/admin/AdminGate.tsx</code>.
         </p>
       </form>
     </div>
