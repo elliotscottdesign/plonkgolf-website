@@ -1,15 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import BigEmailCta from "@/components/BigEmailCta";
-
-export const metadata: Metadata = {
-  title: "Private Hire — Plonk Golf",
-  description:
-    "Private hire at Plonk Golf. Corporate events, birthdays, Christmas parties, weddings — full venue takeover at Plonk Hackney or Plonk Borough Market.",
-};
+import { useContent } from "@/lib/content";
 
 const VENUES = [
   {
@@ -54,12 +50,17 @@ const REASONS = [
 ];
 
 export default function PrivateHirePage() {
+  const title = useContent("privatehire.title", "Take Over Plonk");
+  const intro = useContent(
+    "privatehire.intro",
+    "Two London venues, one unforgettable party. Take over a course, an arch, or the whole place.",
+  );
   return (
     <main>
       <PageHero
         eyebrow="Parties · Corporate · Christmas · Weddings"
-        title="Take Over Plonk"
-        intro="Two London venues, one unforgettable party. Take over a course, an arch, or the whole place."
+        title={title}
+        intro={intro}
         image="/borough/course/Course_3.jpg"
       />
 

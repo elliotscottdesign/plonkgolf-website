@@ -1,14 +1,10 @@
+"use client";
+
 import Link from "next/link";
-import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import BigEmailCta from "@/components/BigEmailCta";
-
-export const metadata: Metadata = {
-  title: "Private Hire — Plonk Borough Market",
-  description:
-    "Private hire fact sheet for Plonk Borough Market. Capacities, catering, licences, room features and house rules for full-venue takeovers under London Bridge.",
-};
+import { useContent } from "@/lib/content";
 
 const POPULAR_FOR = [
   "Birthday party",
@@ -36,11 +32,15 @@ const WELCOMES = [
 ];
 
 export default function BoroughPrivateHirePage() {
+  const title = useContent(
+    "privatehire.borough.title",
+    "Take Over Plonk Borough",
+  );
   return (
     <main>
       <PageHero
         eyebrow="Private hire · Plonk Borough Market"
-        title="Take Over Plonk Borough"
+        title={title}
         intro="Four railway arches under London Bridge — yours for the night."
         image="/borough/course/Course_4.jpg"
       />

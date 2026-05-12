@@ -1,9 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Gallery from "@/components/Gallery";
 import Reveal from "@/components/Reveal";
+import { useContent, useImage } from "@/lib/content";
 
 const BOROUGH_GALLERY = [
   { src: "/borough/course/Course_2.jpg", alt: "Plonk Borough course" },
@@ -20,29 +22,39 @@ const BOROUGH_GALLERY = [
   { src: "/borough/games/Games_6.jpg", alt: "Borough arcade detail" },
 ];
 
-export const metadata: Metadata = {
-  title: "Plonk Borough Market — Crazy Golf at London Bridge",
-  description:
-    "London-themed indoor crazy golf under London Bridge in Borough Market. Phone boxes, the Thames Barrier, the Tower of London — across 4 railway arches.",
-};
+// metadata moved — client components can't export it; tab title is
+// handled by the parent group's layout.
 
 export default function BoroughMarketPage() {
+  const eyebrow = useContent(
+    "venue.borough.eyebrow",
+    "Borough Market · Indoor · 9 holes",
+  );
+  const title = useContent("venue.borough.title", "Crazy Golf at London Bridge");
+  const intro = useContent(
+    "venue.borough.intro",
+    "Tucked into four railway arches under London Bridge. A 360° gallery from London's best street artists, surrounding nine holes of London icons.",
+  );
+  const heroImage = useImage("venue.borough.hero_image", "");
+
+  const sliderImages = [
+    "/borough/course/Course_1.jpg",
+    "/borough/course/Course_3.jpg",
+    "/borough/games/Games_1.jpg",
+    "/borough/drinks/Cocktail_1.jpg",
+    "/borough/course/Course_4.jpg",
+    "/borough/games/Games_3.jpg",
+    "/borough/drinks/Beer_1.jpg",
+    "/borough/venue/Venue_1.jpg",
+  ];
+
   return (
     <main>
       <PageHero
-        eyebrow="Borough Market · Indoor · 9 holes"
-        title="Crazy Golf at London Bridge"
-        intro="Tucked into four railway arches under London Bridge. A 360° gallery from London's best street artists, surrounding nine holes of London icons."
-        image={[
-          "/borough/course/Course_1.jpg",
-          "/borough/course/Course_3.jpg",
-          "/borough/games/Games_1.jpg",
-          "/borough/drinks/Cocktail_1.jpg",
-          "/borough/course/Course_4.jpg",
-          "/borough/games/Games_3.jpg",
-          "/borough/drinks/Beer_1.jpg",
-          "/borough/venue/Venue_1.jpg",
-        ]}
+        eyebrow={eyebrow}
+        title={title}
+        intro={intro}
+        image={heroImage || sliderImages}
       />
 
       {/* London course intro (forest → ember) */}

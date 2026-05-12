@@ -1,7 +1,9 @@
+"use client";
+
 import Image from "next/image";
-import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Gallery from "@/components/Gallery";
+import { useContent } from "@/lib/content";
 
 const ABOUT_GALLERY = [
   { src: "/hackney/course/Course_1.jpg", alt: "Hackney Polynesian course" },
@@ -18,21 +20,26 @@ const ABOUT_GALLERY = [
   { src: "/borough/course/Course_5.jpg", alt: "Borough course" },
 ];
 
-export const metadata: Metadata = {
-  title: "About — Plonk Golf",
-  description:
-    "Plonk Crazy Golf was founded in 2014 by a troop of set designers from the film industry. We design, build, install and manage every course ourselves.",
-};
-
 export default function AboutPage() {
+  const title = useContent("about.title", "All About Plonk Golf");
+  const body = useContent("about.body", "");
   return (
     <main>
       <PageHero
         eyebrow="About Plonk"
-        title="All About Plonk Golf"
+        title={title}
         intro="Founded by a troop of set designers from the film industry, banded together to create the greatest crazy golf courses imaginable and plonk them down around the Capital."
         image="/hackney/garden/Garden_2.jpg"
       />
+
+      {body && (
+        <section className="tint-forest-to-forestDeep">
+          <article
+            className="mx-auto max-w-3xl px-6 py-16 text-base leading-relaxed text-cream/85 [&_a]:underline [&_h2]:mt-8 [&_h2]:font-display [&_h2]:text-2xl [&_p+p]:mt-4"
+            dangerouslySetInnerHTML={{ __html: body }}
+          />
+        </section>
+      )}
 
       <section className="tint-forest-to-forestDeep">
       <article className="mx-auto max-w-3xl px-6 py-20 text-base leading-relaxed text-cream/85">

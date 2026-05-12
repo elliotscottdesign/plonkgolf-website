@@ -1,20 +1,22 @@
-import type { Metadata } from "next";
-import PageHero from "@/components/PageHero";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Contact — Plonk Golf",
-  description:
-    "Get in touch with Plonk Golf. Group bookings, partnerships, venue ideas — drop us a line at info@plonkgolf.co.uk.",
-};
+import PageHero from "@/components/PageHero";
+import { useContent } from "@/lib/content";
 
 export default function ContactPage() {
+  const title = useContent("contact.title", "Say Hello");
+  const body = useContent("contact.body", "");
   return (
     <main>
-      <PageHero
-        eyebrow="Get in touch"
-        title="Say Hello"
-        image="/hackney/venue/Interior_2.jpg"
-      />
+      <PageHero eyebrow="Get in touch" title={title} image="/hackney/venue/Interior_2.jpg" />
+      {body && (
+        <section className="tint-forest-to-forestDeep">
+          <article
+            className="mx-auto max-w-3xl px-6 py-16 text-sm leading-relaxed text-cream/85 [&_a]:underline"
+            dangerouslySetInnerHTML={{ __html: body }}
+          />
+        </section>
+      )}
 
       <section className="tint-forest-to-forestDeep">
       <div className="mx-auto max-w-3xl px-6 py-20">

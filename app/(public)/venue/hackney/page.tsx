@@ -1,9 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import EventsScroller from "@/components/EventsScroller";
 import Reveal from "@/components/Reveal";
+import { useContent, useImage } from "@/lib/content";
 
 const EVENT_POSTERS = [
   { src: "/hackney/events/Happy_Hour.jpg", alt: "Happy Hour at No Dice" },
@@ -17,29 +19,42 @@ const EVENT_POSTERS = [
   { src: "/hackney/events/Pingers.jpg", alt: "Pingers — ping pong night" },
 ];
 
-export const metadata: Metadata = {
-  title: "Plonk Hackney — Crazy Golf in East London",
-  description:
-    "Polynesian-themed crazy golf in Hackney, a short walk from Broadway Market. Retro arcade, pool tables, craft cocktails, tacos and a beer garden.",
-};
+// metadata moved to layout for client components; the title in the
+// browser tab is set by the parent route group.
 
 export default function HackneyPage() {
+  // Hero fields editable from /admin/content/venue/hackney
+  const eyebrow = useContent("venue.hackney.eyebrow", "Outdoors & covered");
+  const title = useContent(
+    "venue.hackney.title",
+    "Plonk Hackney at No Dice Games Bar",
+  );
+  const intro = useContent(
+    "venue.hackney.intro",
+    "Our perfectly positioned games bar and golf spot is just a short walk from Broadway Market and looks across London Fields.",
+  );
+  const heroImage = useImage("venue.hackney.hero_image", "");
+
+  // When the admin uploads a single replacement image we use that;
+  // otherwise we keep the existing eight-photo slider.
+  const sliderImages = [
+    "/hackney/course/Course_1.jpg",
+    "/hackney/garden/Garden_1.jpg",
+    "/hackney/course/Course_3.jpg",
+    "/hackney/pool/Pool_1.jpg",
+    "/hackney/drinks/Drinks_3.jpg",
+    "/hackney/games/Games_2.jpg",
+    "/hackney/venue/Interior_2.jpg",
+    "/hackney/course/Course_5.jpg",
+  ];
+
   return (
     <main>
       <PageHero
-        eyebrow="Outdoors & covered"
-        title="Plonk Hackney at No Dice Games Bar"
-        intro="Our perfectly positioned games bar and golf spot is just a short walk from Broadway Market and looks across London Fields."
-        image={[
-          "/hackney/course/Course_1.jpg",
-          "/hackney/garden/Garden_1.jpg",
-          "/hackney/course/Course_3.jpg",
-          "/hackney/pool/Pool_1.jpg",
-          "/hackney/drinks/Drinks_3.jpg",
-          "/hackney/games/Games_2.jpg",
-          "/hackney/venue/Interior_2.jpg",
-          "/hackney/course/Course_5.jpg",
-        ]}
+        eyebrow={eyebrow}
+        title={title}
+        intro={intro}
+        image={heroImage || sliderImages}
       />
 
       {/* Polynesian intro (forest → plum) */}

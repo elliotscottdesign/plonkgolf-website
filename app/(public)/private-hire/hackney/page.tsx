@@ -1,14 +1,10 @@
+"use client";
+
 import Link from "next/link";
-import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import BigEmailCta from "@/components/BigEmailCta";
-
-export const metadata: Metadata = {
-  title: "Private Hire — Plonk Hackney",
-  description:
-    "Private hire fact sheet for Plonk Hackney. Capacities, catering, licences, room features and house rules for full-venue takeovers at our London Fields outdoor venue.",
-};
+import { useContent } from "@/lib/content";
 
 const POPULAR_FOR = [
   "Birthday party",
@@ -65,11 +61,15 @@ const WELCOMES = [
 ];
 
 export default function HackneyPrivateHirePage() {
+  const title = useContent(
+    "privatehire.hackney.title",
+    "Take Over Plonk Hackney",
+  );
   return (
     <main>
       <PageHero
         eyebrow="Private hire · Plonk Hackney"
-        title="Take Over Plonk Hackney"
+        title={title}
         intro="Our nine-hole Polynesian course, beer garden, pool, arcade and tiki bar — all yours."
         image="/hackney/garden/Garden_1.jpg"
       />
