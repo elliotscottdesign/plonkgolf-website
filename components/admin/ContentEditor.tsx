@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AdminCard } from "@/components/admin/AdminCard";
 import MediaPicker from "@/components/admin/MediaPicker";
+import BlockEditor from "@/components/admin/BlockEditor";
 import {
   loadPageContent,
   updateContentValues,
@@ -201,16 +202,21 @@ function KindInput({
       />
     );
   }
-  if (kind === "textarea" || kind === "html") {
+  if (kind === "html") {
+    // HTML body fields use the structured BlockEditor — one input per
+    // heading / paragraph / image, drag handles to re-order. We still
+    // store the result as HTML so the public site keeps reading it
+    // exactly as before.
+    return <BlockEditor value={value} onChange={onChange} />;
+  }
+  if (kind === "textarea") {
     return (
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        rows={kind === "html" ? 12 : 5}
-        className={`w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-3 text-sm text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none ${
-          kind === "html" ? "font-mono text-xs leading-relaxed" : ""
-        }`}
+        rows={5}
+        className="w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-3 text-sm text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none"
       />
     );
   }
