@@ -31,7 +31,7 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="hidden items-center gap-7 md:flex">
+        <nav className="hidden items-center gap-7 lg:flex">
           {NAV.map((item) => (
             <Link
               key={item.href}
@@ -49,7 +49,7 @@ export default function Header() {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-2 md:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <Link
             href="/book"
             className="rounded-full bg-plonkPink px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
@@ -82,7 +82,7 @@ export default function Header() {
       </div>
 
       {open && (
-        <nav className="border-t border-cream/10 bg-black px-6 py-5 md:hidden">
+        <nav className="border-t border-cream/10 bg-black px-6 py-5 lg:hidden">
           <ul className="flex flex-col gap-3">
             {NAV.map((item) => (
               <li key={item.href}>
