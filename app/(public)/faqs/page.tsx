@@ -1,12 +1,10 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
-
-export const metadata: Metadata = {
-  title: "FAQs — Plonk Golf",
-  description:
-    "How Plonk Golf bookings work — slots, capacity, pricing rules, children, refunds, vouchers, and what happens on the day.",
-};
+import { useContent } from "@/lib/content";
+import { loadFaqs, groupFaqs, type DbFaq } from "@/lib/db/faqs";
 
 type FAQ = { q: string; a: React.ReactNode };
 type Section = { heading: string; faqs: FAQ[] };
@@ -264,18 +262,79 @@ const SECTIONS: Section[] = [
 ];
 
 export default function FAQsPage() {
+  const title = useContent("faqs.title", "Booking FAQs");
+  const intro = useContent(
+    "faqs.intro",
+    "Everything you need to know about how Plonk bookings work — slots, splits, prices, refunds, and what happens on the day.",
+  );
+  const [dbFaqs, setDbFaqs] = useState<DbFaq[] | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadFaqs()
+      .then((data) => {
+        if (!cancelled) setDbFaqs(data);
+      })
+      .catch(() => {
+        // Fall back to the hardcoded SECTIONS below if Supabase fails.
+        if (!cancelled) setDbFaqs([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // If the admin has added any FAQs in Supabase, use those; otherwise fall
+  // back to the hardcoded SECTIONS. Plain-text answers from the DB render
+  // as paragraphs, while the legacy SECTIONS keep their rich React content.
+  const showDb = dbFaqs && dbFaqs.length > 0;
+  const grouped = showDb ? groupFaqs(dbFaqs) : [];
+
   return (
     <main>
       <PageHero
         eyebrow="Help & info"
-        title="Booking FAQs"
-        intro="Everything you need to know about how Plonk bookings work — slots, splits, prices, refunds, and what happens on the day."
+        title={title}
+        intro={intro}
         image="/hackney/games/Games_2.jpg"
       />
 
       <section className="bed-info">
       <div className="mx-auto max-w-3xl px-6 py-20">
-        {SECTIONS.map((section) => (
+        {showDb
+          ? grouped.map((section) => (
+              <div key={section.section} className="mb-10 last:mb-0">
+                <h2 className="mb-4 font-display text-2xl text-plonkYellow">
+                  {section.section}
+                </h2>
+                <ul className="space-y-3">
+                  {section.items.map((item) => (
+                    <li
+                      key={item.id}
+                      className="rounded-2xl border border-cream/10 bg-black/20 backdrop-blur"
+                    >
+                      <details className="group p-5">
+                        <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
+                          <span className="font-display text-base sm:text-lg">
+                            {item.question}
+                          </span>
+                          <span
+                            className="text-plonkYellow transition group-open:rotate-45"
+                            aria-hidden
+                          >
+                            +
+                          </span>
+                        </summary>
+                        <div className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/80">
+                          {item.answer}
+                        </div>
+                      </details>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))
+          : SECTIONS.map((section) => (
           <div key={section.heading} className="mb-10 last:mb-0">
             <h2 className="mb-4 font-display text-2xl text-plonkYellow">
               {section.heading}

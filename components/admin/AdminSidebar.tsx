@@ -11,6 +11,7 @@ const NAV: { label: string; href: string; group?: string }[] = [
   { label: "Customers", href: "/admin/customers", group: "Overview" },
 
   { label: "Site Content", href: "/admin/content", group: "Site" },
+  { label: "Galleries", href: "/admin/content/galleries", group: "Site" },
 
   { label: "Tickets & Prices", href: "/admin/tickets", group: "Catalogue" },
   { label: "Add-ons", href: "/admin/addons", group: "Catalogue" },

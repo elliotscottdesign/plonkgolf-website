@@ -77,9 +77,16 @@ const PAGES: { label: string; href: string; description: string; group: string }
     href: "/admin/content/info/privacy",
     description: "Copy on /privacy.",
   },
+
+  {
+    group: "Media",
+    label: "Galleries",
+    href: "/admin/content/galleries",
+    description: "Photo grids on the homepage, about page and venue pages. Upload, reorder, replace.",
+  },
 ];
 
-const GROUPS = ["Marketing", "Private hire", "Info pages"];
+const GROUPS = ["Marketing", "Private hire", "Info pages", "Media"];
 
 export default function ContentLandingPage() {
   return (
