@@ -4,6 +4,7 @@ import Image from "next/image";
 import HeroSlider from "./HeroSlider";
 import { Editable, DisplayImage } from "./Editable";
 import { useGallery } from "@/lib/content";
+import ManageGalleryLink from "./ManageGalleryLink";
 
 export default function PageHero({
   eyebrow,
@@ -101,6 +102,13 @@ export default function PageHero({
               intro
             )}
           </p>
+        )}
+
+        {/* In-page admin shortcut to the hero slider's gallery — only
+            visible when admin Edit mode is on, only when this hero
+            has a sliderKey wired. */}
+        {sliderKey && (
+          <ManageGalleryLink galleryKey={sliderKey} label="Manage hero slider images / order" />
         )}
       </div>
     </section>

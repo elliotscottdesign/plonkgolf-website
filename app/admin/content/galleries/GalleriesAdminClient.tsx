@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import { AdminCard } from "@/components/admin/AdminCard";
 import { uploadImage } from "@/lib/db/media";
@@ -137,7 +138,29 @@ function describe(err: unknown, fallback: string) {
 
 export default function GalleriesAdminClient() {
   const [all, setAll] = useState<DbGalleryImage[]>([]);
-  const [activeKey, setActiveKey] = useState<string>(KNOWN_GALLERIES[0].key);
+  // Optional ?gallery=<key> query string lets us deep-link from public
+  // pages straight into the right gallery editor (used by the in-page
+  // "Manage these images" button). Falls back to the first gallery
+  // when no query string is set or the value isn't a known key.
+  const searchParams = useSearchParams();
+  const requestedKey = searchParams?.get("gallery") ?? null;
+  const initialKey =
+    requestedKey && KNOWN_GALLERIES.some((g) => g.key === requestedKey)
+      ? requestedKey
+      : KNOWN_GALLERIES[0].key;
+  const [activeKey, setActiveKey] = useState<string>(initialKey);
+  // If the query string changes (e.g. navigation between two pages
+  // that each manage a different gallery), re-select.
+  useEffect(() => {
+    if (
+      requestedKey &&
+      KNOWN_GALLERIES.some((g) => g.key === requestedKey) &&
+      requestedKey !== activeKey
+    ) {
+      setActiveKey(requestedKey);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestedKey]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
   const [busy, setBusy] = useState(false);

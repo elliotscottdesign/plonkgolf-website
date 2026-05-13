@@ -4,6 +4,7 @@ import PageHero from "@/components/PageHero";
 import Gallery from "@/components/Gallery";
 import { useContent, useImage, useGallery } from "@/lib/content";
 import { Editable, DisplayImage } from "@/components/Editable";
+import ManageGalleryLink from "@/components/ManageGalleryLink";
 
 const ABOUT_GALLERY_FALLBACK = [
   { src: "/hackney/course/Course_1.jpg", alt: "Hackney Polynesian course" },
@@ -117,6 +118,9 @@ export default function AboutPage() {
         images={galleryImages}
         tint="tint-forest-deep"
       />
+      <div className="px-6 pb-12">
+        <ManageGalleryLink galleryKey="about.gallery" />
+      </div>
     </main>
   );
 }

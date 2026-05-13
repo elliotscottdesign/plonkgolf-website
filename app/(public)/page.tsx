@@ -6,6 +6,7 @@ import Reveal from "@/components/Reveal";
 import HeroBookingWidget from "@/components/HeroBookingWidget";
 import { useContent, useImage, useGallery } from "@/lib/content";
 import { Editable, DisplayImage } from "@/components/Editable";
+import ManageGalleryLink from "@/components/ManageGalleryLink";
 
 const PRESS = [
   { name: "Evening Standard", src: "/images/London-Evening-Standard-logo.jpg" },
@@ -313,6 +314,7 @@ function PressMarquee({
           ))}
         </div>
       </div>
+      <ManageGalleryLink galleryKey="home.press" label="Manage press logos / order" />
     </section>
   );
 }

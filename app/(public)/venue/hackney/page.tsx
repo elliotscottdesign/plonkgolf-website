@@ -5,6 +5,7 @@ import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import { useContent, useImage, useGallery } from "@/lib/content";
 import { Editable, DisplayImage } from "@/components/Editable";
+import ManageGalleryLink from "@/components/ManageGalleryLink";
 
 // Default event posters used when the hackney.events gallery is empty.
 const EVENT_POSTERS_FALLBACK = [
@@ -243,6 +244,12 @@ export default function HackneyPage() {
                 </article>
               ))}
             </div>
+
+            {/* In-page admin shortcut — only visible when admin Edit
+                mode is on. One click opens the gallery editor for
+                this section so the admin can upload, reorder and
+                remove posters. */}
+            <ManageGalleryLink galleryKey="hackney.events" />
           </div>
         </section>
       )}

@@ -6,6 +6,7 @@ import Gallery from "@/components/Gallery";
 import Reveal from "@/components/Reveal";
 import { useContent, useImage, useGallery } from "@/lib/content";
 import { Editable, DisplayImage } from "@/components/Editable";
+import ManageGalleryLink from "@/components/ManageGalleryLink";
 
 const BOROUGH_GALLERY_FALLBACK = [
   { src: "/borough/course/Course_2.jpg", alt: "Plonk Borough course" },
@@ -281,6 +282,9 @@ export default function BoroughMarketPage() {
         images={galleryImages}
         tint="tint-plum-island-ember"
       />
+      <div className="px-6 -mt-4 pb-8">
+        <ManageGalleryLink galleryKey="venue.borough.gallery" />
+      </div>
 
       {/* Find us */}
       <section className="px-6 py-24">
