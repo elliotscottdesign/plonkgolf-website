@@ -19,11 +19,8 @@ const EVENT_POSTERS = [
   { src: "/hackney/events/Pingers.jpg", alt: "Pingers — ping pong night" },
 ];
 
-// metadata moved to layout for client components; the title in the
-// browser tab is set by the parent route group.
-
 export default function HackneyPage() {
-  // Hero fields editable from /admin/content/venue/hackney
+  // ---------- Hero ----------
   const eyebrow = useContent("venue.hackney.eyebrow", "Outdoors & covered");
   const title = useContent(
     "venue.hackney.title",
@@ -34,6 +31,9 @@ export default function HackneyPage() {
     "Our perfectly positioned games bar and golf spot is just a short walk from Broadway Market and looks across London Fields.",
   );
   const heroImage = useImage("venue.hackney.hero_image", "");
+
+  // ---------- Polynesian intro section ----------
+  const bodyEyebrow = useContent("venue.hackney.body_eyebrow", "We've glown up");
   const bodyHeading = useContent(
     "venue.hackney.body_heading",
     "A Polynesian putting paradise",
@@ -42,9 +42,86 @@ export default function HackneyPage() {
     "venue.hackney.body_intro",
     "Our Hackney course has been rebuilt — bigger, brighter and bolder than ever. Volcano canyons, a tiki forest, golf gods to appease, a stone circle to navigate and octopuses to dodge under the sea — all now fully covered and out of the rain.",
   );
+  const bodyImage = useImage(
+    "venue.hackney.body_image",
+    "/hackney/course/Course_3.jpg",
+  );
 
-  // When the admin uploads a single replacement image we use that;
-  // otherwise we keep the existing eight-photo slider.
+  // ---------- More than golf section ----------
+  const mtgEyebrow = useContent(
+    "venue.hackney.morethan.eyebrow",
+    "No Dice Games Bar",
+  );
+  const mtgHeading = useContent(
+    "venue.hackney.morethan.heading",
+    "More than just golf",
+  );
+  const f1Image = useImage("venue.hackney.feature1.image", "/hackney/pool/Pool_2.jpg");
+  const f1Title = useContent("venue.hackney.feature1.title", "Pool tables");
+  const f1Body = useContent(
+    "venue.hackney.feature1.body",
+    "Two 7ft American pool tables, £5 for 30 minutes. Perfect rematch if you don't fare so well on the course. Over-16s only.",
+  );
+  const f2Image = useImage("venue.hackney.feature2.image", "/hackney/games/Games_2.jpg");
+  const f2Title = useContent("venue.hackney.feature2.title", "Retro arcade");
+  const f2Body = useContent(
+    "venue.hackney.feature2.body",
+    "Pinball, retro multi-game cabinets, shoot-'em-ups, skee-ball and foosball. Hit 270 on the skee-ball and the cocktail's on us.",
+  );
+  const f3Image = useImage("venue.hackney.feature3.image", "/hackney/drinks/Drinks_3.jpg");
+  const f3Title = useContent("venue.hackney.feature3.title", "No Dice Bar");
+  const f3Body = useContent(
+    "venue.hackney.feature3.body",
+    "Fully loaded bar stocked with draught beers, craft cans, speciality ciders, house and classic cocktails, natural wines and a wide range of soft drinks.",
+  );
+  const f4Image = useImage("venue.hackney.feature4.image", "/hackney/garden/Garden_2.jpg");
+  const f4Title = useContent("venue.hackney.feature4.title", "Beer garden");
+  const f4Body = useContent(
+    "venue.hackney.feature4.body",
+    "When the sun's out — kick back with top-of-the-line ping pong tables to keep the competition going outside.",
+  );
+  const f5Image = useImage("venue.hackney.feature5.image", "/hackney/snack_bar/Snack_bar_1.jpg");
+  const f5Title = useContent("venue.hackney.feature5.title", "Snack Bar");
+  const f5Body = useContent(
+    "venue.hackney.feature5.body",
+    "Smash burgers, BBQ chicken, loaded chips. BBQ meat supplied by Smokoloko of Spitalfields.",
+  );
+  const f6Image = useImage("venue.hackney.feature6.image", "/hackney/games/Games_6.jpg");
+  const f6Title = useContent("venue.hackney.feature6.title", "Doubles pool tournament");
+  const f6Body = useContent(
+    "venue.hackney.feature6.body",
+    "2nd and 4th Wednesday of the month. £200+ in bar tabs, medals, beer and Tees. Eight slots — always sells out.",
+  );
+
+  // ---------- Events ----------
+  const eventsHeading = useContent(
+    "venue.hackney.events.heading",
+    "Events at No Dice",
+  );
+  const eventsIntro = useContent(
+    "venue.hackney.events.intro",
+    "DJs, pool tournaments, parties, pop-ups — what's on at the games bar.",
+  );
+
+  // ---------- Find us ----------
+  const findusHeading = useContent("venue.hackney.findus.heading", "Find us");
+  const findusAddressLabel = useContent(
+    "venue.hackney.findus.address_label",
+    "Address",
+  );
+  const findusAddress = useContent(
+    "venue.hackney.findus.address",
+    "Arch 407, Mentmore Terrace\nLondon E8 3PP\nMain entrance on Parkside",
+  );
+  const findusTransportLabel = useContent(
+    "venue.hackney.findus.transport_label",
+    "Getting here",
+  );
+  const findusTransport = useContent(
+    "venue.hackney.findus.transport",
+    "2 mins from London Fields Overground\n5 mins from Broadway Market\n10 mins from Hackney Central Overground",
+  );
+
   const sliderImages = [
     "/hackney/course/Course_1.jpg",
     "/hackney/garden/Garden_1.jpg",
@@ -65,13 +142,13 @@ export default function HackneyPage() {
         image={heroImage || sliderImages}
       />
 
-      {/* Polynesian intro (forest → plum) */}
-      <section className="tint-forest-to-plum relative overflow-hidden px-6 py-20 md:py-28">
+      {/* Polynesian intro */}
+      <section className="relative overflow-hidden px-6 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16">
           <Reveal>
             <div>
               <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                We've glown up
+                {bodyEyebrow}
               </p>
               <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
                 {bodyHeading}
@@ -98,7 +175,7 @@ export default function HackneyPage() {
           <Reveal delay={120}>
             <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumDeep">
               <Image
-                src="/hackney/course/Course_3.jpg"
+                src={bodyImage}
                 alt="Polynesian course detail"
                 fill
                 sizes="(min-width: 768px) 50vw, 100vw"
@@ -109,99 +186,74 @@ export default function HackneyPage() {
         </div>
       </section>
 
-      {/* More than golf (stays in plum) */}
-      <section className="tint-plum relative overflow-hidden px-6 py-24">
+      {/* More than golf */}
+      <section className="relative overflow-hidden px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              No Dice Games Bar
+              {mtgEyebrow}
             </p>
             <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
-              More than just golf
+              {mtgHeading}
             </h2>
           </Reveal>
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <FeatureCard image={f1Image} title={f1Title} body={f1Body} />
+            <FeatureCard image={f2Image} title={f2Title} body={f2Body} />
+            <FeatureCard image={f3Image} title={f3Title} body={f3Body} />
+            <FeatureCard image={f4Image} title={f4Title} body={f4Body} />
             <FeatureCard
-              image="/hackney/pool/Pool_2.jpg"
-              title="Pool tables"
-              body="Two 7ft American pool tables, £5 for 30 minutes. Perfect rematch if you don't fare so well on the course. Over-16s only."
-            />
-            <FeatureCard
-              image="/hackney/games/Games_2.jpg"
-              title="Retro arcade"
-              body="Pinball, retro multi-game cabinets, shoot-'em-ups, skee-ball and foosball. Hit 270 on the skee-ball and the cocktail's on us."
-            />
-            <FeatureCard
-              image="/hackney/drinks/Drinks_3.jpg"
-              title="No Dice Bar"
-              body="Fully loaded bar stocked with draught beers, craft cans, speciality ciders, house and classic cocktails, natural wines and a wide range of soft drinks."
-            />
-            <FeatureCard
-              image="/hackney/garden/Garden_2.jpg"
-              title="Beer garden"
-              body="When the sun's out — kick back with top-of-the-line ping pong tables to keep the competition going outside."
-            />
-            <FeatureCard
-              image="/hackney/snack_bar/Snack_bar_1.jpg"
-              title="Snack Bar"
-              body="Smash burgers, BBQ chicken, loaded chips. BBQ meat supplied by Smokoloko of Spitalfields."
+              image={f5Image}
+              title={f5Title}
+              body={f5Body}
               href="/snack-bar"
               hrefLabel="See the menu"
-              external
             />
-            <FeatureCard
-              image="/hackney/games/Games_6.jpg"
-              title="Doubles pool tournament"
-              body="2nd and 4th Wednesday of the month. £200+ in bar tabs, medals, beer and Tees. Eight slots — always sells out."
-            />
+            <FeatureCard image={f6Image} title={f6Title} body={f6Body} />
           </div>
         </div>
       </section>
 
       <EventsScroller
-        heading="Events at No Dice"
-        intro="DJs, pool tournaments, parties, pop-ups — what's on at the games bar."
+        heading={eventsHeading}
+        intro={eventsIntro}
         posters={EVENT_POSTERS}
-        tint="tint-plum-island-ember"
+        tint=""
       />
 
-      {/* Find us (plum → forest) */}
+      {/* Find us */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
-            <h2 className="font-display text-4xl sm:text-5xl">Find us</h2>
+            <h2 className="font-display text-4xl sm:text-5xl">{findusHeading}</h2>
           </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <Reveal>
               <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                  Address
+                  {findusAddressLabel}
                 </p>
-                <address className="mt-3 not-italic text-base leading-relaxed text-cream/90">
-                  Arch 407, Mentmore Terrace<br />
-                  London E8 3PP<br />
-                  <span className="text-cream/60">Main entrance on Parkside</span>
+                <address className="mt-3 whitespace-pre-line not-italic text-base leading-relaxed text-cream/90">
+                  {findusAddress}
                 </address>
               </div>
             </Reveal>
             <Reveal delay={100}>
               <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                  Getting here
+                  {findusTransportLabel}
                 </p>
                 <ul className="mt-3 space-y-2 text-sm text-cream/80">
-                  <li className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-plonkYellow" />
-                    2 mins from London Fields Overground
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-plonkYellow" />
-                    5 mins from Broadway Market
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="h-1.5 w-1.5 rounded-full bg-plonkYellow" />
-                    10 mins from Hackney Central Overground
-                  </li>
+                  {findusTransport
+                    .split("\n")
+                    .map((line) => line.trim())
+                    .filter(Boolean)
+                    .map((line, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <span className="h-1.5 w-1.5 rounded-full bg-plonkYellow" />
+                        {line}
+                      </li>
+                    ))}
                 </ul>
               </div>
             </Reveal>
