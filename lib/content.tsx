@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 // Map of editable-slot key → saved value (only slots the admin has
@@ -9,6 +9,12 @@ import { supabase } from "@/lib/supabase";
 type ContentMap = Map<string, string>;
 
 const ContentContext = createContext<ContentMap>(new Map());
+
+// Separate context so the in-place editors can push a freshly-saved
+// value back into the live map without a full reload from Supabase.
+const ContentSetterContext = createContext<(key: string, value: string) => void>(
+  () => {},
+);
 
 // Mounted once near the top of the public layout. Fetches every
 // page_content row from Supabase, ignores blanks (so the consumer's
@@ -89,9 +95,29 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     return out;
   })();
 
+  // Called by in-place editors after they persist a value, so the
+  // page re-renders with the new content immediately instead of
+  // waiting for a manual reload.
+  const applyLocalEdit = useCallback((key: string, value: string) => {
+    setSaved((prev) => {
+      const next = new Map(prev);
+      if (value && value.trim()) next.set(key, value);
+      else next.delete(key);
+      return next;
+    });
+  }, []);
+
   return (
-    <ContentContext.Provider value={merged}>{children}</ContentContext.Provider>
+    <ContentSetterContext.Provider value={applyLocalEdit}>
+      <ContentContext.Provider value={merged}>{children}</ContentContext.Provider>
+    </ContentSetterContext.Provider>
   );
+}
+
+// Used by Editable / EditableImage to push a freshly-saved value
+// straight into the in-memory map.
+export function useApplyContentEdit() {
+  return useContext(ContentSetterContext);
 }
 
 // Returns the Supabase value for a key if the admin has edited it,

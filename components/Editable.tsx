@@ -21,6 +21,7 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useEditMode } from "@/lib/editMode";
+import { useApplyContentEdit } from "@/lib/content";
 
 export function Editable({
   k,
@@ -34,6 +35,7 @@ export function Editable({
   children: React.ReactNode;
 }) {
   const editing = useEditMode();
+  const applyEdit = useApplyContentEdit();
   const ref = useRef<HTMLSpanElement | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -67,6 +69,9 @@ export function Editable({
         .from("page_content")
         .update({ value: next })
         .eq("key", k);
+      // Patch the in-memory content map so the page re-renders with
+      // the new value immediately, without waiting for a reload.
+      applyEdit(k, next);
       setSaved(true);
       // Notify parent admin (if we're inside the preview iframe)
       // so it can update its drafts map without a full reload.
@@ -145,6 +150,7 @@ export function EditableImage({
   children: React.ReactNode;
 }) {
   const editing = useEditMode();
+  const applyEdit = useApplyContentEdit();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -155,6 +161,7 @@ export function EditableImage({
         .from("page_content")
         .update({ value: path })
         .eq("key", k);
+      applyEdit(k, path);
       try {
         if (window.parent !== window) {
           window.parent.postMessage(
