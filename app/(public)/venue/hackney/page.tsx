@@ -2,22 +2,9 @@
 
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
-import EventsScroller from "@/components/EventsScroller";
 import Reveal from "@/components/Reveal";
-import { useContent, useImage, useGallery } from "@/lib/content";
+import { useContent, useImage } from "@/lib/content";
 import { Editable, DisplayImage } from "@/components/Editable";
-
-const EVENT_POSTERS = [
-  { src: "/hackney/events/Happy_Hour.jpg", alt: "Happy Hour at No Dice" },
-  { src: "/hackney/events/No_Dice_Mondays.jpg", alt: "No Dice Mondays" },
-  { src: "/hackney/events/Burger_Deal.jpg", alt: "Burger deal at Snack Bar" },
-  { src: "/hackney/events/Fun_of_the_Fair.jpg", alt: "Fun of the Fair" },
-  { src: "/hackney/events/Cue.jpg", alt: "Cue — pool night" },
-  { src: "/hackney/events/Martini_Fries.jpg", alt: "Martini & Fries — every Thursday at No Dice" },
-  { src: "/hackney/events/Rolling_Bones.jpg", alt: "Rolling Bones" },
-  { src: "/hackney/events/Fun_Club.jpg", alt: "Fun Club" },
-  { src: "/hackney/events/Pingers.jpg", alt: "Pingers — ping pong night" },
-];
 
 export default function HackneyPage() {
   // ---------- Hero ----------
@@ -95,15 +82,11 @@ export default function HackneyPage() {
     "venue.hackney.events.intro",
     "DJs, pool tournaments, parties, pop-ups — what's on at the games bar.",
   );
-  // Events posters live in the `hackney.events` gallery — manage them at
-  // /admin/content/galleries/. If the admin hasn't added any yet, fall
-  // back to the hardcoded EVENT_POSTERS so the section is never empty.
-  // When admin uploads come in, they serve from Supabase Storage (different
-  // host) which sidesteps any browser-cache trouble on this domain.
-  const eventsPosters = useGallery("hackney.events", EVENT_POSTERS).map((p) => ({
-    src: p.src,
-    alt: p.alt ?? "",
-  }));
+  // (Events scroller removed pending a full rebuild — see git log.)
+  // The eventsHeading + eventsIntro fields stay registered so the new
+  // section can wire straight back into them.
+  void eventsHeading;
+  void eventsIntro;
 
   // ---------- Find us ----------
   const findusHeading = useContent("venue.hackney.findus.heading", "Find us");
@@ -208,12 +191,9 @@ export default function HackneyPage() {
         </div>
       </section>
 
-      <EventsScroller
-        heading={eventsHeading}
-        intro={eventsIntro}
-        posters={eventsPosters}
-        tint=""
-      />
+      {/* Events section removed — see commit log. Will be rebuilt as a
+          fully-editable section once the audit-and-convert pass below
+          reaches it. */}
 
       {/* Find us */}
       <section className="px-6 py-24">
