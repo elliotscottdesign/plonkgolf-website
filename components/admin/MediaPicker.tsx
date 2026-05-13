@@ -13,6 +13,7 @@
 // =============================================================
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { listRecentMedia, uploadImage, type DbMediaRow } from "@/lib/db/media";
 
 type MediaItem = {
@@ -148,7 +149,14 @@ export default function MediaPicker({
     if (f) handleUpload(f);
   }
 
-  return (
+  // Portal to document.body so the modal always anchors to the
+  // viewport, not whichever Reveal/transform/filter ancestor we
+  // happen to be nested inside. Without this, parent transforms
+  // create a new containing block and the modal gets trapped
+  // inside the image's box.
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <div
       className="fixed inset-0 z-[80] flex items-stretch justify-center bg-ink/90 p-2 sm:p-6"
       // The click-outside-closes target — only on the backdrop, not
@@ -278,6 +286,7 @@ export default function MediaPicker({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
