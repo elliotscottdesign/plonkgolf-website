@@ -414,15 +414,14 @@ function CtaCard({
       href={href}
       className="group relative overflow-hidden rounded-2xl border border-plumLine/60 transition hover:border-plonkYellow/60"
     >
-      <div className="relative aspect-[16/10]">
+      <div className="relative aspect-[16/10] overflow-hidden">
         <Image
           src={image}
           alt=""
           fill
           sizes="(min-width: 768px) 50vw, 100vw"
-          className="object-contain transition duration-700 group-hover:scale-105"
+          className="object-cover transition duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-plumDeep via-plumDeep/40 to-transparent" />
       </div>
       <div className="p-8">
         <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
