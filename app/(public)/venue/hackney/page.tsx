@@ -229,7 +229,7 @@ export default function HackneyPage() {
           </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <Reveal>
-              <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
+              <div className="h-full rounded-2xl p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   <Editable k="venue.hackney.findus.address_label">{findusAddressLabel}</Editable>
                 </p>
@@ -239,7 +239,7 @@ export default function HackneyPage() {
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
+              <div className="h-full rounded-2xl p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   <Editable k="venue.hackney.findus.transport_label">{findusTransportLabel}</Editable>
                 </p>
@@ -282,7 +282,7 @@ function FeatureCard({
 }) {
   return (
     <Reveal>
-      <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-plumRaised transition hover:border-plonkYellow/40">
+      <article className="group flex h-full flex-col overflow-hidden rounded-2xl transition">
         <EditableImage k={kImage}>
           <div className="relative aspect-[5/3] overflow-hidden">
             <Image
