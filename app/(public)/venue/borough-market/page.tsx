@@ -203,7 +203,7 @@ export default function BoroughMarketPage() {
       <section className="tint-forest-to-plum relative overflow-hidden px-6 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16">
           <Reveal>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/20 backdrop-blur-sm md:order-2">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl md:order-2">
               <Image
                 src="/borough/course/Course_2.jpg"
                 alt="Borough London-themed course"
@@ -292,7 +292,7 @@ export default function BoroughMarketPage() {
 
           <div className="mt-6 grid gap-6 md:grid-cols-2">
             <Reveal>
-              <div className="h-full rounded-2xl border border-plumLine/60 bg-black/15 backdrop-blur-sm p-7">
+              <div className="h-full rounded-2xl border border-plumLine/60 p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   Address
                 </p>
@@ -307,7 +307,7 @@ export default function BoroughMarketPage() {
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <div className="h-full rounded-2xl border border-plumLine/60 bg-black/15 backdrop-blur-sm p-7">
+              <div className="h-full rounded-2xl border border-plumLine/60 p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   {findusAccessHeading}
                 </p>
@@ -337,8 +337,8 @@ function FeatureCard({
   const image = useImage(kImage, fallbackImage);
   return (
     <Reveal>
-      <article className="group h-full overflow-hidden rounded-2xl border border-plumLine/50 bg-black/15 backdrop-blur-sm transition hover:border-plonkYellow/40">
-        <div className="relative aspect-[5/3] overflow-hidden bg-black/20 backdrop-blur-sm">
+      <article className="group h-full overflow-hidden rounded-2xl border border-plumLine/50 transition hover:border-plonkYellow/40">
+        <div className="relative aspect-[5/3] overflow-hidden">
           <Image
             src={image}
             alt=""

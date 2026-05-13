@@ -139,7 +139,7 @@ export default function SnackBarMenuPage() {
               {/* Extras-style flat rows for sections whose items have no
                   body copy; full cards otherwise. */}
               {row.items.every((i) => !i.body) ? (
-                <ul className="divide-y divide-plumLine/40 rounded-2xl border border-plumLine/60 bg-black/15 backdrop-blur-sm">
+                <ul className="divide-y divide-plumLine/40 rounded-2xl border border-plumLine/60">
                   {row.items.map((e) => (
                     <li
                       key={e.title}
@@ -213,7 +213,7 @@ function MenuRow({
   body: string;
 }) {
   return (
-    <article className="rounded-2xl border border-plumLine/60 bg-black/15 backdrop-blur-sm p-5">
+    <article className="rounded-2xl border border-plumLine/60 p-5">
       <div className="flex items-baseline justify-between gap-4">
         <h3 className="font-display text-xl sm:text-2xl">{title}</h3>
         <span className="font-display text-xl text-plonkYellow sm:text-2xl">

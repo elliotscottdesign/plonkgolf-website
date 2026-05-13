@@ -124,7 +124,7 @@ function VenueColumn({
             className={`rounded-2xl p-6 ${
               e.featured
                 ? "border border-plonkPink/40 bg-gradient-to-br from-plonkPink/15 to-forestDeep"
-                : "border border-plumLine/60 bg-black/15 backdrop-blur-sm"
+                : "border border-plumLine/60"
             }`}
           >
             {e.featured && (
