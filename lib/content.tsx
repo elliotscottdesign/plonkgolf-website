@@ -29,29 +29,42 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   const [saved, setSaved] = useState<ContentMap>(new Map());
   const [drafts, setDrafts] = useState<ContentMap>(new Map());
 
-  // Initial load from Supabase.
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const { data, error } = await supabase()
-          .from("page_content")
-          .select("key, value");
-        if (cancelled || error) return;
-        const next: ContentMap = new Map();
-        for (const row of (data ?? []) as { key: string; value: string }[]) {
-          if (row.value && row.value.trim()) next.set(row.key, row.value);
-        }
-        setSaved(next);
-      } catch {
-        // Network/auth glitches just leave us with the defaults — that's
-        // still the correct site, so we don't surface anything to the user.
+  // Pulls every page_content row, ignores blanks, and replaces the
+  // saved map. Re-used by the initial mount AND by post-save
+  // refreshes so in-place edits show up immediately even if
+  // optimistic local patching missed something.
+  const refetch = useCallback(async () => {
+    try {
+      const { data, error } = await supabase()
+        .from("page_content")
+        .select("key, value");
+      if (error) return;
+      const next: ContentMap = new Map();
+      for (const row of (data ?? []) as { key: string; value: string }[]) {
+        if (row.value && row.value.trim()) next.set(row.key, row.value);
       }
-    })();
-    return () => {
-      cancelled = true;
-    };
+      setSaved(next);
+    } catch {
+      /* Network blips just leave us with the existing values. */
+    }
   }, []);
+
+  // Initial load.
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  // After any in-place save anywhere on the page, refetch so the
+  // map is guaranteed to be current. Components dispatch this
+  // CustomEvent at the end of their save flow.
+  useEffect(() => {
+    function onChange() {
+      refetch();
+    }
+    window.addEventListener("plonk:content-changed", onChange as EventListener);
+    return () =>
+      window.removeEventListener("plonk:content-changed", onChange as EventListener);
+  }, [refetch]);
 
   // Live-preview channel — only active when this page is embedded
   // in another window from the same origin (the admin editor).

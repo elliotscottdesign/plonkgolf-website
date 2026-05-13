@@ -72,6 +72,14 @@ export function Editable({
       // Patch the in-memory content map so the page re-renders with
       // the new value immediately, without waiting for a reload.
       applyEdit(k, next);
+      // Fallback safety net: ask ContentProvider to refetch from
+      // Supabase so we converge on the source of truth even if the
+      // optimistic patch missed something.
+      try {
+        window.dispatchEvent(new CustomEvent("plonk:content-changed"));
+      } catch {
+        /* ignore */
+      }
       setSaved(true);
       // Notify parent admin (if we're inside the preview iframe)
       // so it can update its drafts map without a full reload.
@@ -162,6 +170,11 @@ export function EditableImage({
         .update({ value: path })
         .eq("key", k);
       applyEdit(k, path);
+      try {
+        window.dispatchEvent(new CustomEvent("plonk:content-changed"));
+      } catch {
+        /* ignore */
+      }
       try {
         if (window.parent !== window) {
           window.parent.postMessage(
