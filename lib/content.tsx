@@ -143,10 +143,90 @@ export function useContent(key: string, fallback: string): string {
   return map.get(key) ?? fallback;
 }
 
-// Same shape, but with a useful default of "" when there's no fallback —
-// keeps consumer code that conditionally renders images cleaner.
+// ---------------------------------------------------------------
+// Image values can be stored two ways:
+//   - Plain URL string         "/hackney/course/Course_3.jpg"
+//   - JSON for crop/position   '{"src":"/foo.jpg","fit":"cover","x":50,"y":40,"zoom":1.2}'
+// Either way, useImage() returns just the URL so old callers keep
+// working. useImageDisplay() returns the full record (url + CSS
+// values) for the new EditableImage rendering path.
+// ---------------------------------------------------------------
+export type ImageDisplay = {
+  src: string;
+  fit: "cover" | "contain";
+  // Percentage offsets used by CSS object-position. 0–100.
+  x: number;
+  y: number;
+  // 1 = natural fit, >1 zooms further in.
+  zoom: number;
+};
+
+export function parseImageValue(raw: string, fallbackSrc = ""): ImageDisplay {
+  const def: ImageDisplay = {
+    src: fallbackSrc,
+    fit: "cover",
+    x: 50,
+    y: 50,
+    zoom: 1,
+  };
+  if (!raw) return def;
+  const trimmed = raw.trim();
+  if (trimmed.startsWith("{")) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      return {
+        src: typeof parsed.src === "string" ? parsed.src : def.src,
+        fit: parsed.fit === "contain" ? "contain" : "cover",
+        x: typeof parsed.x === "number" ? clamp(parsed.x, 0, 100) : 50,
+        y: typeof parsed.y === "number" ? clamp(parsed.y, 0, 100) : 50,
+        zoom: typeof parsed.zoom === "number" ? clamp(parsed.zoom, 1, 4) : 1,
+      };
+    } catch {
+      // Fall through and treat as a plain URL.
+    }
+  }
+  return { ...def, src: trimmed };
+}
+
+function clamp(n: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, n));
+}
+
+// Serialise back to what we store in page_content.value. If the
+// image is just a URL with default positioning, keep the plain
+// string form so the DB stays readable.
+export function serialiseImageValue(d: ImageDisplay): string {
+  const isDefault =
+    d.fit === "cover" && d.x === 50 && d.y === 50 && d.zoom === 1;
+  if (isDefault) return d.src;
+  return JSON.stringify({
+    src: d.src,
+    fit: d.fit,
+    x: round1(d.x),
+    y: round1(d.y),
+    zoom: round2(d.zoom),
+  });
+}
+
+function round1(n: number) {
+  return Math.round(n * 10) / 10;
+}
+function round2(n: number) {
+  return Math.round(n * 100) / 100;
+}
+
+// Same shape as useContent, but always returns just the URL so old
+// callers keep working. Strips off any crop/position JSON wrapper.
 export function useImage(key: string, fallback: string): string {
-  return useContent(key, fallback);
+  const raw = useContent(key, fallback);
+  return parseImageValue(raw, fallback).src;
+}
+
+// Returns the full image record (url + crop/position) so the
+// renderer can apply object-fit, object-position and scale.
+export function useImageDisplay(key: string, fallback: string): ImageDisplay {
+  const raw = useContent(key, fallback);
+  return parseImageValue(raw, fallback);
 }
 
 // Load every active image in a named gallery, with a per-call fallback

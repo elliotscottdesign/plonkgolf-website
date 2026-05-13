@@ -15,6 +15,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { listRecentMedia, uploadImage, type DbMediaRow } from "@/lib/db/media";
+import ImagePositioner from "@/components/admin/ImagePositioner";
+import type { ImageDisplay } from "@/lib/content";
 
 type MediaItem = {
   path: string;
@@ -32,10 +34,25 @@ type Manifest = {
 export default function MediaPicker({
   onPick,
   onClose,
+  aspect,
+  initial,
 }: {
-  onPick: (path: string) => void;
+  // Backwards-compatible callback. New callers should also pass
+  // `aspect` so the positioner step can show the right slot shape.
+  onPick: (value: string | ImageDisplay) => void;
   onClose: () => void;
+  // Aspect ratio of the destination slot, e.g. "4/5". When provided,
+  // the picker shows a positioner screen after a thumbnail is
+  // chosen so the admin can fine-tune crop and zoom.
+  aspect?: string;
+  // Starting transform when re-opening the picker on an existing
+  // image — lets the admin tweak rather than restart.
+  initial?: Partial<ImageDisplay>;
 }) {
+  // When the admin clicks a thumbnail (or finishes an upload) we
+  // first land them on the positioner. Skip it entirely when the
+  // caller didn't pass an aspect (legacy mode).
+  const [staged, setStaged] = useState<string | null>(null);
   const [repoImages, setRepoImages] = useState<MediaItem[]>([]);
   const [uploads, setUploads] = useState<MediaItem[]>([]);
   const [err, setErr] = useState("");
@@ -124,15 +141,23 @@ export default function MediaPicker({
         { path: public_url, filename, folder: "Uploads", source: "upload" },
         ...prev,
       ]);
-      // Auto-pick the just-uploaded file so the editor immediately
-      // gets the new image — saves the extra click.
-      onPick(public_url);
+      // Take the admin to the positioner (or save directly if no
+      // aspect was supplied).
+      handlePick(public_url);
     } catch (e) {
       setErr(
         e instanceof Error ? `Upload failed: ${e.message}` : "Upload failed.",
       );
     } finally {
       setUploading(false);
+    }
+  }
+
+  function handlePick(path: string) {
+    if (aspect) {
+      setStaged(path);
+    } else {
+      onPick(path);
     }
   }
 
@@ -179,10 +204,15 @@ export default function MediaPicker({
         {/* Header */}
         <div className="flex items-center justify-between gap-3 border-b border-cream/10 px-5 py-4">
           <div className="min-w-0">
-            <h3 className="font-display text-2xl">Media library</h3>
+            <h3 className="font-display text-2xl">
+              {staged ? "Position image" : "Media library"}
+            </h3>
             <p className="truncate text-xs text-cream/55">
-              {repoImages.length + uploads.length} images
-              {uploads.length > 0 ? ` (${uploads.length} uploaded)` : ""}
+              {staged
+                ? "Drag to reposition · zoom to enlarge · save when happy."
+                : `${repoImages.length + uploads.length} images${
+                    uploads.length > 0 ? ` (${uploads.length} uploaded)` : ""
+                  }`}
             </p>
           </div>
           <button
@@ -193,6 +223,26 @@ export default function MediaPicker({
             Close
           </button>
         </div>
+
+        {/* Positioner — takes over the body when an image is staged. */}
+        {staged && aspect && (
+          <div className="flex-1 overflow-y-auto">
+            <ImagePositioner
+              src={staged}
+              aspect={aspect}
+              initial={initial}
+              onCancel={() => setStaged(null)}
+              onSave={(d) => {
+                onPick(d);
+                setStaged(null);
+              }}
+            />
+          </div>
+        )}
+
+        {staged && aspect ? null : (
+        <>
+          {/* Picker toolbar + grid only show when nothing is staged */}
 
         {/* Toolbar: upload + search + filter */}
         <div className="flex flex-col gap-3 border-b border-cream/10 px-5 py-4 sm:flex-row sm:items-center">
@@ -257,7 +307,7 @@ export default function MediaPicker({
               <button
                 key={img.path}
                 type="button"
-                onClick={() => onPick(img.path)}
+                onClick={() => handlePick(img.path)}
                 className="group relative flex flex-col overflow-hidden rounded-lg border border-cream/10 bg-ink/40 text-left transition hover:border-plonkPink hover:shadow-lg"
                 title={img.path}
               >
@@ -285,6 +335,8 @@ export default function MediaPicker({
             ))}
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>,
     document.body,

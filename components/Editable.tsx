@@ -21,7 +21,14 @@
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useEditMode } from "@/lib/editMode";
-import { useApplyContentEdit } from "@/lib/content";
+import {
+  useApplyContentEdit,
+  useContent,
+  useImageDisplay,
+  serialiseImageValue,
+  parseImageValue,
+  type ImageDisplay,
+} from "@/lib/content";
 
 export function Editable({
   k,
@@ -149,9 +156,18 @@ function renderChildrenToText(children: React.ReactNode): string {
 // ----------------------------------------------------------------
 export function EditableImage({
   k,
+  aspect,
+  currentValue,
   children,
 }: {
   k: string;
+  // Aspect ratio of the destination slot (e.g. "4/5"). When passed,
+  // the media picker shows the positioner step so the admin can
+  // crop / zoom / reposition before saving.
+  aspect?: string;
+  // The currently-stored raw value (may be JSON with crop info).
+  // Used to seed the positioner with the existing transform.
+  currentValue?: string;
   // Render-prop so the caller controls how the resolved src is
   // displayed (e.g. inside a next/image, a div bg, etc.). We just
   // need to know the current src in case we want to highlight it.
@@ -162,14 +178,17 @@ export function EditableImage({
   const [pickerOpen, setPickerOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  async function pick(path: string) {
+  async function pick(value: string | ImageDisplay) {
     setSaving(true);
     try {
+      // Accept either a plain path (legacy callers) or the full
+      // positioned ImageDisplay record from the positioner.
+      const stored = typeof value === "string" ? value : serialiseImageValue(value);
       await supabase()
         .from("page_content")
-        .update({ value: path })
+        .update({ value: stored })
         .eq("key", k);
-      applyEdit(k, path);
+      applyEdit(k, stored);
       try {
         window.dispatchEvent(new CustomEvent("plonk:content-changed"));
       } catch {
@@ -178,7 +197,7 @@ export function EditableImage({
       try {
         if (window.parent !== window) {
           window.parent.postMessage(
-            { type: "plonk:edited", key: k, value: path },
+            { type: "plonk:edited", key: k, value: stored },
             window.location.origin,
           );
         }
@@ -193,6 +212,10 @@ export function EditableImage({
       setPickerOpen(false);
     }
   }
+
+  const initialTransform: Partial<ImageDisplay> | undefined = currentValue
+    ? parseImageValue(currentValue)
+    : undefined;
 
   if (!editing) return <>{children}</>;
 
@@ -217,6 +240,8 @@ export function EditableImage({
         <EditableImagePicker
           onPick={pick}
           onClose={() => setPickerOpen(false)}
+          aspect={aspect}
+          initial={initialTransform}
         />
       )}
     </span>
@@ -227,13 +252,19 @@ export function EditableImage({
 function EditableImagePicker({
   onPick,
   onClose,
+  aspect,
+  initial,
 }: {
-  onPick: (path: string) => void;
+  onPick: (value: string | ImageDisplay) => void;
   onClose: () => void;
+  aspect?: string;
+  initial?: Partial<ImageDisplay>;
 }) {
   const [Picker, setPicker] = useState<React.ComponentType<{
-    onPick: (path: string) => void;
+    onPick: (value: string | ImageDisplay) => void;
     onClose: () => void;
+    aspect?: string;
+    initial?: Partial<ImageDisplay>;
   }> | null>(null);
   useEffect(() => {
     let cancelled = false;
@@ -245,5 +276,73 @@ function EditableImagePicker({
     };
   }, []);
   if (!Picker) return null;
-  return <Picker onPick={onPick} onClose={onClose} />;
+  return (
+    <Picker onPick={onPick} onClose={onClose} aspect={aspect} initial={initial} />
+  );
+}
+
+// ----------------------------------------------------------------
+// DisplayImage — convenience wrapper that:
+//   1. Reads the saved image record for a key (URL + crop/position).
+//   2. Renders it at the supplied aspect ratio with object-fit /
+//      object-position / scale applied from the saved record.
+//   3. Lights it up as editable when the admin toggles edit mode,
+//      passing aspect through to the positioner.
+//
+// Use this on public pages so every image slot picks up positioner
+// edits automatically:
+//
+//   <DisplayImage
+//     k="venue.hackney.body_image"
+//     fallback="/hackney/course/Course_3.jpg"
+//     aspect="4/5"
+//     alt="Polynesian course detail"
+//     rounded
+//   />
+// ----------------------------------------------------------------
+export function DisplayImage({
+  k,
+  fallback,
+  aspect,
+  alt,
+  rounded,
+  className,
+}: {
+  k: string;
+  fallback: string;
+  aspect: string;
+  alt?: string;
+  rounded?: boolean;
+  className?: string;
+}) {
+  const display = useImageDisplay(k, fallback);
+  // We also need the raw stored value so the positioner can pre-seed
+  // itself with the current transform when the admin re-opens it.
+  const raw = useContent(k, fallback);
+
+  return (
+    <EditableImage k={k} aspect={aspect} currentValue={raw}>
+      <div
+        className={`relative w-full overflow-hidden ${
+          rounded ? "rounded-2xl" : ""
+        } ${className ?? ""}`}
+        style={{ aspectRatio: aspect }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={display.src}
+          alt={alt ?? ""}
+          draggable={false}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: display.fit,
+            objectPosition: `${display.x}% ${display.y}%`,
+            transform: display.zoom !== 1 ? `scale(${display.zoom})` : undefined,
+            transformOrigin: `${display.x}% ${display.y}%`,
+          }}
+        />
+      </div>
+    </EditableImage>
+  );
 }

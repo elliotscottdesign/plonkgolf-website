@@ -1,12 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import EventsScroller from "@/components/EventsScroller";
 import Reveal from "@/components/Reveal";
 import { useContent, useImage } from "@/lib/content";
-import { Editable, EditableImage } from "@/components/Editable";
+import { Editable, DisplayImage } from "@/components/Editable";
 
 const EVENT_POSTERS = [
   { src: "/hackney/events/Happy_Hour.jpg", alt: "Happy Hour at No Dice" },
@@ -43,10 +42,8 @@ export default function HackneyPage() {
     "venue.hackney.body_intro",
     "Our Hackney course has been rebuilt — bigger, brighter and bolder than ever. Volcano canyons, a tiki forest, golf gods to appease, a stone circle to navigate and octopuses to dodge under the sea — all now fully covered and out of the rain.",
   );
-  const bodyImage = useImage(
-    "venue.hackney.body_image",
-    "/hackney/course/Course_3.jpg",
-  );
+  // body_image is rendered + edited by the DisplayImage component
+  // below; no need to also resolve the URL here.
 
   // ---------- More than golf ----------
   const mtgEyebrow = useContent(
@@ -58,37 +55,31 @@ export default function HackneyPage() {
     "More than just golf",
   );
 
-  const f1Image = useImage("venue.hackney.feature1.image", "/hackney/pool/Pool_2.jpg");
   const f1Title = useContent("venue.hackney.feature1.title", "Pool tables");
   const f1Body = useContent(
     "venue.hackney.feature1.body",
     "Two 7ft American pool tables, £5 for 30 minutes. Perfect rematch if you don't fare so well on the course. Over-16s only.",
   );
-  const f2Image = useImage("venue.hackney.feature2.image", "/hackney/games/Games_2.jpg");
   const f2Title = useContent("venue.hackney.feature2.title", "Retro arcade");
   const f2Body = useContent(
     "venue.hackney.feature2.body",
     "Pinball, retro multi-game cabinets, shoot-'em-ups, skee-ball and foosball. Hit 270 on the skee-ball and the cocktail's on us.",
   );
-  const f3Image = useImage("venue.hackney.feature3.image", "/hackney/drinks/Drinks_3.jpg");
   const f3Title = useContent("venue.hackney.feature3.title", "No Dice Bar");
   const f3Body = useContent(
     "venue.hackney.feature3.body",
     "Fully loaded bar stocked with draught beers, craft cans, speciality ciders, house and classic cocktails, natural wines and a wide range of soft drinks.",
   );
-  const f4Image = useImage("venue.hackney.feature4.image", "/hackney/garden/Garden_2.jpg");
   const f4Title = useContent("venue.hackney.feature4.title", "Beer garden");
   const f4Body = useContent(
     "venue.hackney.feature4.body",
     "When the sun's out — kick back with top-of-the-line ping pong tables to keep the competition going outside.",
   );
-  const f5Image = useImage("venue.hackney.feature5.image", "/hackney/snack_bar/Snack_bar_1.jpg");
   const f5Title = useContent("venue.hackney.feature5.title", "Snack Bar");
   const f5Body = useContent(
     "venue.hackney.feature5.body",
     "Smash burgers, BBQ chicken, loaded chips. BBQ meat supplied by Smokoloko of Spitalfields.",
   );
-  const f6Image = useImage("venue.hackney.feature6.image", "/hackney/games/Games_6.jpg");
   const f6Title = useContent("venue.hackney.feature6.title", "Doubles pool tournament");
   const f6Body = useContent(
     "venue.hackney.feature6.body",
@@ -175,17 +166,13 @@ export default function HackneyPage() {
             </div>
           </Reveal>
           <Reveal delay={120}>
-            <EditableImage k="venue.hackney.body_image">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
-                <Image
-                  src={bodyImage}
-                  alt="Polynesian course detail"
-                  fill
-                  sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-contain"
-                />
-              </div>
-            </EditableImage>
+            <DisplayImage
+              k="venue.hackney.body_image"
+              fallback="/hackney/course/Course_3.jpg"
+              aspect="4/5"
+              alt="Polynesian course detail"
+              rounded
+            />
           </Reveal>
         </div>
       </section>
@@ -202,12 +189,12 @@ export default function HackneyPage() {
             </h2>
           </Reveal>
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <FeatureCard kImage="venue.hackney.feature1.image" kTitle="venue.hackney.feature1.title" kBody="venue.hackney.feature1.body" image={f1Image} title={f1Title} body={f1Body} />
-            <FeatureCard kImage="venue.hackney.feature2.image" kTitle="venue.hackney.feature2.title" kBody="venue.hackney.feature2.body" image={f2Image} title={f2Title} body={f2Body} />
-            <FeatureCard kImage="venue.hackney.feature3.image" kTitle="venue.hackney.feature3.title" kBody="venue.hackney.feature3.body" image={f3Image} title={f3Title} body={f3Body} />
-            <FeatureCard kImage="venue.hackney.feature4.image" kTitle="venue.hackney.feature4.title" kBody="venue.hackney.feature4.body" image={f4Image} title={f4Title} body={f4Body} />
-            <FeatureCard kImage="venue.hackney.feature5.image" kTitle="venue.hackney.feature5.title" kBody="venue.hackney.feature5.body" image={f5Image} title={f5Title} body={f5Body} href="/snack-bar" hrefLabel="See the menu" />
-            <FeatureCard kImage="venue.hackney.feature6.image" kTitle="venue.hackney.feature6.title" kBody="venue.hackney.feature6.body" image={f6Image} title={f6Title} body={f6Body} />
+            <FeatureCard kImage="venue.hackney.feature1.image" fallbackImage="/hackney/pool/Pool_2.jpg" kTitle="venue.hackney.feature1.title" kBody="venue.hackney.feature1.body" title={f1Title} body={f1Body} />
+            <FeatureCard kImage="venue.hackney.feature2.image" fallbackImage="/hackney/games/Games_2.jpg" kTitle="venue.hackney.feature2.title" kBody="venue.hackney.feature2.body" title={f2Title} body={f2Body} />
+            <FeatureCard kImage="venue.hackney.feature3.image" fallbackImage="/hackney/drinks/Drinks_3.jpg" kTitle="venue.hackney.feature3.title" kBody="venue.hackney.feature3.body" title={f3Title} body={f3Body} />
+            <FeatureCard kImage="venue.hackney.feature4.image" fallbackImage="/hackney/garden/Garden_2.jpg" kTitle="venue.hackney.feature4.title" kBody="venue.hackney.feature4.body" title={f4Title} body={f4Body} />
+            <FeatureCard kImage="venue.hackney.feature5.image" fallbackImage="/hackney/snack_bar/Snack_bar_1.jpg" kTitle="venue.hackney.feature5.title" kBody="venue.hackney.feature5.body" title={f5Title} body={f5Body} href="/snack-bar" hrefLabel="See the menu" />
+            <FeatureCard kImage="venue.hackney.feature6.image" fallbackImage="/hackney/games/Games_6.jpg" kTitle="venue.hackney.feature6.title" kBody="venue.hackney.feature6.body" title={f6Title} body={f6Body} />
           </div>
         </div>
       </section>
@@ -263,18 +250,18 @@ export default function HackneyPage() {
 
 function FeatureCard({
   kImage,
+  fallbackImage,
   kTitle,
   kBody,
-  image,
   title,
   body,
   href,
   hrefLabel,
 }: {
   kImage: string;
+  fallbackImage: string;
   kTitle: string;
   kBody: string;
-  image: string;
   title: string;
   body: string;
   href?: string;
@@ -283,17 +270,11 @@ function FeatureCard({
   return (
     <Reveal>
       <article className="group flex h-full flex-col overflow-hidden rounded-2xl transition">
-        <EditableImage k={kImage}>
-          <div className="relative aspect-[5/3] overflow-hidden">
-            <Image
-              src={image}
-              alt=""
-              fill
-              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-              className="object-contain transition duration-700 group-hover:scale-105"
-            />
-          </div>
-        </EditableImage>
+        <DisplayImage
+          k={kImage}
+          fallback={fallbackImage}
+          aspect="5/3"
+        />
         <div className="flex flex-1 flex-col p-6">
           <h3 className="font-display text-2xl">
             <Editable k={kTitle}>{title}</Editable>
