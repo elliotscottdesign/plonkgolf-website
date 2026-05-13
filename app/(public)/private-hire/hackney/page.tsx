@@ -239,7 +239,7 @@ export default function HackneyPrivateHirePage() {
 function FactPanel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <Reveal>
-      <div className="rounded-3xl border border-plumLine/60 bg-plumRaised p-7 sm:p-9">
+      <div className="rounded-3xl border border-plumLine/60 bg-black/15 backdrop-blur-sm p-7 sm:p-9">
         <h3 className="font-display text-2xl text-plonkYellow sm:text-3xl">{title}</h3>
         <div className="mt-6">{children}</div>
       </div>

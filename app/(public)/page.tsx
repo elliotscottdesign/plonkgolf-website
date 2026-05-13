@@ -333,7 +333,7 @@ function VenueSpotlight({
         }`}
       >
         <Reveal>
-          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumDeep">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/20 backdrop-blur-sm">
             <Image
               src={image}
               alt={imageAlt}
@@ -402,9 +402,9 @@ function CtaCard({
   return (
     <Link
       href={href}
-      className="group relative overflow-hidden rounded-2xl border border-plumLine/60 bg-plumRaised transition hover:border-plonkYellow/60"
+      className="group relative overflow-hidden rounded-2xl border border-plumLine/60 bg-black/15 backdrop-blur-sm transition hover:border-plonkYellow/60"
     >
-      <div className="relative aspect-[16/10] bg-plumDeep">
+      <div className="relative aspect-[16/10] bg-black/20 backdrop-blur-sm">
         <Image
           src={image}
           alt=""
@@ -438,8 +438,8 @@ function FeatureCard({
   body: string;
 }) {
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-plumRaised transition hover:border-plonkYellow/40">
-      <div className="relative aspect-[5/3] overflow-hidden bg-plumDeep">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-black/15 backdrop-blur-sm transition hover:border-plonkYellow/40">
+      <div className="relative aspect-[5/3] overflow-hidden bg-black/20 backdrop-blur-sm">
         <Image
           src={image}
           alt=""

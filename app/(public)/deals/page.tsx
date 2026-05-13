@@ -77,7 +77,7 @@ export default function DealsPage() {
             {deals.map((d) => (
               <article
                 key={d.id}
-                className="rounded-2xl border border-plumLine/60 bg-plumRaised p-6"
+                className="rounded-2xl border border-plumLine/60 bg-black/15 backdrop-blur-sm p-6"
               >
                 <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
                   {d.day}
@@ -92,7 +92,7 @@ export default function DealsPage() {
           </div>
 
           {(ctaHeading || ctaLabel) && (
-            <div className="mt-16 rounded-2xl border border-plumLine/60 bg-plumRaised p-8 text-center">
+            <div className="mt-16 rounded-2xl border border-plumLine/60 bg-black/15 backdrop-blur-sm p-8 text-center">
               {ctaHeading && (
                 <p className="text-base text-cream/80">{ctaHeading}</p>
               )}

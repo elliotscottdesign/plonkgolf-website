@@ -111,7 +111,7 @@ export default function PrivateHirePage() {
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {reasons.map((r, i) => (
               <Reveal key={i} delay={i * 100}>
-                <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
+                <div className="h-full rounded-2xl border border-plumLine/60 bg-black/15 backdrop-blur-sm p-7">
                   <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                     0{i + 1}
                   </p>
@@ -146,7 +146,7 @@ export default function PrivateHirePage() {
               <Reveal key={v.slug} delay={i * 100}>
                 <Link
                   href={v.href}
-                  className="group block h-full overflow-hidden rounded-3xl border border-plumLine/60 bg-plumRaised transition hover:border-plonkYellow/60"
+                  className="group block h-full overflow-hidden rounded-3xl border border-plumLine/60 bg-black/15 backdrop-blur-sm transition hover:border-plonkYellow/60"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <Image
