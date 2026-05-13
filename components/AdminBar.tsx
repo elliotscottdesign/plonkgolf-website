@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { useEditModeControls } from "@/lib/editMode";
 
 // Map a public-site pathname to the matching /admin/content/* route.
 // Order matters — most-specific patterns first.
@@ -92,6 +93,7 @@ export default function AdminBar() {
   }, []);
 
   const target = useMemo(() => pathToAdminContent(pathname), [pathname]);
+  const { editing, toggle } = useEditModeControls();
 
   function hide() {
     try {
@@ -149,11 +151,23 @@ export default function AdminBar() {
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={toggle}
+          className={`rounded-full px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider transition ${
+            editing
+              ? "bg-plonkTeal text-ink hover:brightness-110"
+              : "bg-plonkYellow text-ink hover:brightness-110"
+          }`}
+          title="Toggle in-place editing — click any text or image on the page to edit it"
+        >
+          {editing ? "✓ Editing — click text to edit" : "Edit on page"}
+        </button>
         <Link
           href={target.href}
           className="rounded-full bg-plonkPink px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
         >
-          Edit this page → {target.label}
+          Open editor → {target.label}
         </Link>
         <Link
           href="/admin"

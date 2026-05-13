@@ -6,6 +6,7 @@ import PageHero from "@/components/PageHero";
 import EventsScroller from "@/components/EventsScroller";
 import Reveal from "@/components/Reveal";
 import { useContent, useImage } from "@/lib/content";
+import { Editable, EditableImage } from "@/components/Editable";
 
 const EVENT_POSTERS = [
   { src: "/hackney/events/Happy_Hour.jpg", alt: "Happy Hour at No Dice" },
@@ -32,7 +33,7 @@ export default function HackneyPage() {
   );
   const heroImage = useImage("venue.hackney.hero_image", "");
 
-  // ---------- Polynesian intro section ----------
+  // ---------- Polynesian intro ----------
   const bodyEyebrow = useContent("venue.hackney.body_eyebrow", "We've glown up");
   const bodyHeading = useContent(
     "venue.hackney.body_heading",
@@ -47,7 +48,7 @@ export default function HackneyPage() {
     "/hackney/course/Course_3.jpg",
   );
 
-  // ---------- More than golf section ----------
+  // ---------- More than golf ----------
   const mtgEyebrow = useContent(
     "venue.hackney.morethan.eyebrow",
     "No Dice Games Bar",
@@ -56,6 +57,7 @@ export default function HackneyPage() {
     "venue.hackney.morethan.heading",
     "More than just golf",
   );
+
   const f1Image = useImage("venue.hackney.feature1.image", "/hackney/pool/Pool_2.jpg");
   const f1Title = useContent("venue.hackney.feature1.title", "Pool tables");
   const f1Body = useContent(
@@ -148,13 +150,13 @@ export default function HackneyPage() {
           <Reveal>
             <div>
               <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                {bodyEyebrow}
+                <Editable k="venue.hackney.body_eyebrow">{bodyEyebrow}</Editable>
               </p>
               <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-                {bodyHeading}
+                <Editable k="venue.hackney.body_heading">{bodyHeading}</Editable>
               </h2>
               <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-cream/80 sm:text-lg">
-                {bodyIntro}
+                <Editable k="venue.hackney.body_intro" multiline>{bodyIntro}</Editable>
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
@@ -173,15 +175,17 @@ export default function HackneyPage() {
             </div>
           </Reveal>
           <Reveal delay={120}>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumDeep">
-              <Image
-                src={bodyImage}
-                alt="Polynesian course detail"
-                fill
-                sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-contain"
-              />
-            </div>
+            <EditableImage k="venue.hackney.body_image">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumDeep">
+                <Image
+                  src={bodyImage}
+                  alt="Polynesian course detail"
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
+                  className="object-contain"
+                />
+              </div>
+            </EditableImage>
           </Reveal>
         </div>
       </section>
@@ -191,25 +195,19 @@ export default function HackneyPage() {
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              {mtgEyebrow}
+              <Editable k="venue.hackney.morethan.eyebrow">{mtgEyebrow}</Editable>
             </p>
             <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
-              {mtgHeading}
+              <Editable k="venue.hackney.morethan.heading">{mtgHeading}</Editable>
             </h2>
           </Reveal>
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <FeatureCard image={f1Image} title={f1Title} body={f1Body} />
-            <FeatureCard image={f2Image} title={f2Title} body={f2Body} />
-            <FeatureCard image={f3Image} title={f3Title} body={f3Body} />
-            <FeatureCard image={f4Image} title={f4Title} body={f4Body} />
-            <FeatureCard
-              image={f5Image}
-              title={f5Title}
-              body={f5Body}
-              href="/snack-bar"
-              hrefLabel="See the menu"
-            />
-            <FeatureCard image={f6Image} title={f6Title} body={f6Body} />
+            <FeatureCard kImage="venue.hackney.feature1.image" kTitle="venue.hackney.feature1.title" kBody="venue.hackney.feature1.body" image={f1Image} title={f1Title} body={f1Body} />
+            <FeatureCard kImage="venue.hackney.feature2.image" kTitle="venue.hackney.feature2.title" kBody="venue.hackney.feature2.body" image={f2Image} title={f2Title} body={f2Body} />
+            <FeatureCard kImage="venue.hackney.feature3.image" kTitle="venue.hackney.feature3.title" kBody="venue.hackney.feature3.body" image={f3Image} title={f3Title} body={f3Body} />
+            <FeatureCard kImage="venue.hackney.feature4.image" kTitle="venue.hackney.feature4.title" kBody="venue.hackney.feature4.body" image={f4Image} title={f4Title} body={f4Body} />
+            <FeatureCard kImage="venue.hackney.feature5.image" kTitle="venue.hackney.feature5.title" kBody="venue.hackney.feature5.body" image={f5Image} title={f5Title} body={f5Body} href="/snack-bar" hrefLabel="See the menu" />
+            <FeatureCard kImage="venue.hackney.feature6.image" kTitle="venue.hackney.feature6.title" kBody="venue.hackney.feature6.body" image={f6Image} title={f6Title} body={f6Body} />
           </div>
         </div>
       </section>
@@ -225,36 +223,35 @@ export default function HackneyPage() {
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
-            <h2 className="font-display text-4xl sm:text-5xl">{findusHeading}</h2>
+            <h2 className="font-display text-4xl sm:text-5xl">
+              <Editable k="venue.hackney.findus.heading">{findusHeading}</Editable>
+            </h2>
           </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             <Reveal>
               <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                  {findusAddressLabel}
+                  <Editable k="venue.hackney.findus.address_label">{findusAddressLabel}</Editable>
                 </p>
                 <address className="mt-3 whitespace-pre-line not-italic text-base leading-relaxed text-cream/90">
-                  {findusAddress}
+                  <Editable k="venue.hackney.findus.address" multiline>{findusAddress}</Editable>
                 </address>
               </div>
             </Reveal>
             <Reveal delay={100}>
               <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                  {findusTransportLabel}
+                  <Editable k="venue.hackney.findus.transport_label">{findusTransportLabel}</Editable>
                 </p>
-                <ul className="mt-3 space-y-2 text-sm text-cream/80">
-                  {findusTransport
-                    .split("\n")
-                    .map((line) => line.trim())
-                    .filter(Boolean)
-                    .map((line, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-plonkYellow" />
-                        {line}
-                      </li>
-                    ))}
-                </ul>
+                <div className="mt-3 text-sm text-cream/80">
+                  <Editable k="venue.hackney.findus.transport" multiline>
+                    {findusTransport
+                      .split("\n")
+                      .map((line) => "• " + line.trim())
+                      .filter((line) => line !== "• ")
+                      .join("\n")}
+                  </Editable>
+                </div>
               </div>
             </Reveal>
           </div>
@@ -265,55 +262,55 @@ export default function HackneyPage() {
 }
 
 function FeatureCard({
+  kImage,
+  kTitle,
+  kBody,
   image,
   title,
   body,
   href,
   hrefLabel,
-  external,
 }: {
+  kImage: string;
+  kTitle: string;
+  kBody: string;
   image: string;
   title: string;
   body: string;
   href?: string;
   hrefLabel?: string;
-  external?: boolean;
 }) {
-  const inner = (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-plumRaised transition hover:border-plonkYellow/40">
-      <div className="relative aspect-[5/3] overflow-hidden bg-plumDeep">
-        <Image
-          src={image}
-          alt=""
-          fill
-          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-          className="object-contain transition duration-700 group-hover:scale-105"
-        />
-      </div>
-      <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-display text-2xl">{title}</h3>
-        <p className="mt-3 text-sm leading-relaxed text-cream/75">{body}</p>
-        {href && (
-          <span className="mt-4 inline-block text-xs font-bold uppercase tracking-wider text-plonkYellow transition group-hover:text-cream">
-            {hrefLabel ?? "Find out more"} →
-          </span>
-        )}
-      </div>
-    </article>
-  );
-
-  if (!href) return <Reveal>{inner}</Reveal>;
-
   return (
     <Reveal>
-      <a
-        href={href}
-        target={external ? "_blank" : undefined}
-        rel={external ? "noopener noreferrer" : undefined}
-        className="block h-full focus:outline-none focus-visible:ring-2 focus-visible:ring-plonkYellow/60"
-      >
-        {inner}
-      </a>
+      <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-plumRaised transition hover:border-plonkYellow/40">
+        <EditableImage k={kImage}>
+          <div className="relative aspect-[5/3] overflow-hidden bg-plumDeep">
+            <Image
+              src={image}
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+              className="object-contain transition duration-700 group-hover:scale-105"
+            />
+          </div>
+        </EditableImage>
+        <div className="flex flex-1 flex-col p-6">
+          <h3 className="font-display text-2xl">
+            <Editable k={kTitle}>{title}</Editable>
+          </h3>
+          <p className="mt-3 text-sm leading-relaxed text-cream/75">
+            <Editable k={kBody} multiline>{body}</Editable>
+          </p>
+          {href && (
+            <a
+              href={href}
+              className="mt-4 inline-block text-xs font-bold uppercase tracking-wider text-plonkYellow transition hover:text-cream"
+            >
+              {hrefLabel ?? "Find out more"} →
+            </a>
+          )}
+        </div>
+      </article>
     </Reveal>
   );
 }
