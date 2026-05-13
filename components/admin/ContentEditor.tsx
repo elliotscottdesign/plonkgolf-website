@@ -13,6 +13,7 @@ import {
 } from "@/lib/db/content";
 import { uploadImage } from "@/lib/db/media";
 import { getImageSpec, specCaption } from "@/lib/imageSpecs";
+import { serialiseImageValue, type ImageDisplay } from "@/lib/content";
 
 function describe(err: unknown, fallback: string) {
   if (err instanceof Error) return err.message;
@@ -365,8 +366,16 @@ function ImageInput({
       )}
       {pickerOpen && (
         <MediaPicker
-          onPick={(path) => {
-            onChange(path);
+          // Derive ratio from the spec's pixel dimensions — robust to
+          // labels that aren't a tidy "X:Y" (e.g. "wide").
+          aspect={`${spec.width}/${spec.height}`}
+          onPick={(picked: string | ImageDisplay) => {
+            // MediaPicker hands back either a plain path (legacy) or
+            // the full positioned record. Store the serialised form
+            // so DisplayImage on the public page can apply crop/zoom.
+            const stored =
+              typeof picked === "string" ? picked : serialiseImageValue(picked);
+            onChange(stored);
             setPickerOpen(false);
           }}
           onClose={() => setPickerOpen(false)}
