@@ -5,6 +5,7 @@ import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import BigEmailCta from "@/components/BigEmailCta";
 import { useContent, useImage } from "@/lib/content";
+import { Editable } from "@/components/Editable";
 
 function lines(s: string): string[] {
   return s
@@ -100,7 +101,7 @@ export default function BoroughPrivateHirePage() {
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              {popularHeading}
+              <Editable k="privatehire.borough.popular_heading">{popularHeading}</Editable>
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {popularList.map((t) => (
@@ -116,14 +117,12 @@ export default function BoroughPrivateHirePage() {
 
           <Reveal delay={120}>
             <h2 className="mt-12 font-display text-3xl leading-tight sm:text-4xl">
-              {aboutHeading}
+              <Editable k="privatehire.borough.about_heading">{aboutHeading}</Editable>
             </h2>
-            <div className="mt-6 space-y-4 text-base leading-relaxed text-cream/85 sm:text-lg">
-              {aboutBody.split(/\n\n+/).map((para, i) => (
-                <p key={i} className="whitespace-pre-line">
-                  {para}
-                </p>
-              ))}
+            <div className="mt-6 text-base leading-relaxed text-cream/85 sm:text-lg">
+              <p className="whitespace-pre-line">
+                <Editable k="privatehire.borough.about_body" multiline>{aboutBody}</Editable>
+              </p>
             </div>
           </Reveal>
         </div>
@@ -156,13 +155,13 @@ export default function BoroughPrivateHirePage() {
 
           <FactPanel title="Catering">
             <p className="whitespace-pre-line text-sm leading-relaxed text-cream/85 sm:text-base">
-              {catering}
+              <Editable k="privatehire.borough.catering" multiline>{catering}</Editable>
             </p>
           </FactPanel>
 
           <FactPanel title="Licences">
             <p className="whitespace-pre-line text-sm leading-relaxed text-cream/85 sm:text-base">
-              {licences}
+              <Editable k="privatehire.borough.licences" multiline>{licences}</Editable>
             </p>
           </FactPanel>
 
@@ -179,14 +178,14 @@ export default function BoroughPrivateHirePage() {
 
           <FactPanel title="House rules">
             <p className="whitespace-pre-line text-sm leading-relaxed text-cream/85 sm:text-base">
-              {houseRules}
+              <Editable k="privatehire.borough.house_rules" multiline>{houseRules}</Editable>
             </p>
           </FactPanel>
 
           {testimonial && (
             <FactPanel title="Testimonial">
               <blockquote className="whitespace-pre-line text-base leading-relaxed text-cream/90 sm:text-lg">
-                {testimonial}
+                <Editable k="privatehire.borough.testimonial" multiline>{testimonial}</Editable>
               </blockquote>
             </FactPanel>
           )}

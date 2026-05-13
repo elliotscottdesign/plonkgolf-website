@@ -5,6 +5,7 @@ import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import BigEmailCta from "@/components/BigEmailCta";
 import { useContent, useImage } from "@/lib/content";
+import { Editable } from "@/components/Editable";
 
 // Split a textarea value (one item per line) into a clean list of
 // strings — used everywhere a fact panel renders bullets.
@@ -117,7 +118,7 @@ export default function HackneyPrivateHirePage() {
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              {popularHeading}
+              <Editable k="privatehire.hackney.popular_heading">{popularHeading}</Editable>
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {popularList.map((t) => (
@@ -133,14 +134,12 @@ export default function HackneyPrivateHirePage() {
 
           <Reveal delay={120}>
             <h2 className="mt-12 font-display text-3xl leading-tight sm:text-4xl">
-              {aboutHeading}
+              <Editable k="privatehire.hackney.about_heading">{aboutHeading}</Editable>
             </h2>
-            <div className="mt-6 space-y-4 text-base leading-relaxed text-cream/85 sm:text-lg">
-              {aboutBody.split(/\n\n+/).map((para, i) => (
-                <p key={i} className="whitespace-pre-line">
-                  {para}
-                </p>
-              ))}
+            <div className="mt-6 text-base leading-relaxed text-cream/85 sm:text-lg">
+              <p className="whitespace-pre-line">
+                <Editable k="privatehire.hackney.about_body" multiline>{aboutBody}</Editable>
+              </p>
             </div>
           </Reveal>
         </div>
@@ -199,7 +198,7 @@ export default function HackneyPrivateHirePage() {
 
           <FactPanel title="Licences">
             <p className="whitespace-pre-line text-sm leading-relaxed text-cream/85 sm:text-base">
-              {licences}
+              <Editable k="privatehire.hackney.licences" multiline>{licences}</Editable>
             </p>
           </FactPanel>
 
@@ -216,7 +215,7 @@ export default function HackneyPrivateHirePage() {
 
           <FactPanel title="House rules">
             <p className="whitespace-pre-line text-sm leading-relaxed text-cream/85 sm:text-base">
-              {houseRules}
+              <Editable k="privatehire.hackney.house_rules" multiline>{houseRules}</Editable>
             </p>
           </FactPanel>
 

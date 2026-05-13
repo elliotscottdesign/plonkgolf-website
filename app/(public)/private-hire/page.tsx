@@ -6,6 +6,7 @@ import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import BigEmailCta from "@/components/BigEmailCta";
 import { useContent, useImage } from "@/lib/content";
+import { Editable } from "@/components/Editable";
 
 const VENUES = [
   {
@@ -102,10 +103,10 @@ export default function PrivateHirePage() {
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              {reasonsEyebrow}
+              <Editable k="privatehire.reasons.eyebrow">{reasonsEyebrow}</Editable>
             </p>
             <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
-              {reasonsHeading}
+              <Editable k="privatehire.reasons.heading">{reasonsHeading}</Editable>
             </h2>
           </Reveal>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
@@ -115,9 +116,11 @@ export default function PrivateHirePage() {
                   <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                     0{i + 1}
                   </p>
-                  <h3 className="mt-3 font-display text-2xl">{r.title}</h3>
+                  <h3 className="mt-3 font-display text-2xl">
+                    <Editable k={`privatehire.reason${i + 1}.title`}>{r.title}</Editable>
+                  </h3>
                   <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/75">
-                    {r.body}
+                    <Editable k={`privatehire.reason${i + 1}.body`} multiline>{r.body}</Editable>
                   </p>
                 </div>
               </Reveal>
@@ -131,13 +134,13 @@ export default function PrivateHirePage() {
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              {venuesEyebrow}
+              <Editable k="privatehire.venues.eyebrow">{venuesEyebrow}</Editable>
             </p>
             <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
-              {venuesHeading}
+              <Editable k="privatehire.venues.heading">{venuesHeading}</Editable>
             </h2>
             <p className="mx-auto mt-6 whitespace-pre-line max-w-2xl text-center text-base leading-relaxed text-cream/75">
-              {venuesIntro}
+              <Editable k="privatehire.venues.intro" multiline>{venuesIntro}</Editable>
             </p>
           </Reveal>
 
