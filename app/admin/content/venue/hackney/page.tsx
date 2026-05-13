@@ -20,7 +20,7 @@ export default function VenueHackneyContentPage() {
           </a>
         }
       />
-      <ContentEditor page="venue.hackney" />
+      <ContentEditor page="venue.hackney" previewPath="/venue/hackney" />
     </>
   );
 }

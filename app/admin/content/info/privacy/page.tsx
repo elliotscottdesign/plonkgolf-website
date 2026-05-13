@@ -20,7 +20,7 @@ export default function PrivacyContentPage() {
           </a>
         }
       />
-      <ContentEditor page="info.privacy" />
+      <ContentEditor page="info.privacy" previewPath="/privacy" />
     </>
   );
 }

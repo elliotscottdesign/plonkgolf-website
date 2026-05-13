@@ -20,7 +20,7 @@ export default function PrivateHireContentPage() {
           </a>
         }
       />
-      <ContentEditor page="privatehire" />
+      <ContentEditor page="privatehire" previewPath="/private-hire" />
     </>
   );
 }

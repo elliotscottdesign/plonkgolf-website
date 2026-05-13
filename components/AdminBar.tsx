@@ -115,6 +115,9 @@ export default function AdminBar() {
   }
 
   if (!ready || !email) return null;
+  // Inside the admin's live-preview iframe — skip the bar so the
+  // preview is a clean reflection of what visitors will see.
+  if (typeof window !== "undefined" && window.parent !== window) return null;
 
   // When hidden, show only a small pill in the corner to bring it back.
   if (hidden) {

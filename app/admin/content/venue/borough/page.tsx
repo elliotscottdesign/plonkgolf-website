@@ -20,7 +20,7 @@ export default function VenueBoroughContentPage() {
           </a>
         }
       />
-      <ContentEditor page="venue.borough" />
+      <ContentEditor page="venue.borough" previewPath="/venue/borough-market" />
     </>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { AdminCard } from "@/components/admin/AdminCard";
 import MediaPicker from "@/components/admin/MediaPicker";
 import BlockEditor from "@/components/admin/BlockEditor";
+import LivePreview from "@/components/admin/LivePreview";
 import {
   loadPageContent,
   updateContentValues,
@@ -29,12 +30,17 @@ function describe(err: unknown, fallback: string) {
 export default function ContentEditor({
   page,
   fallbacks,
+  previewPath,
 }: {
   page: string;
   // Optional map of fallback values (the hardcoded defaults from the
   // public page) so the admin form shows current copy as placeholder
   // text rather than just an empty field. Saved value still wins.
   fallbacks?: Record<string, string>;
+  // Optional public-site path to render in the side-by-side live
+  // preview pane (e.g. "/", "/venue/hackney"). When set, the editor
+  // mounts an iframe of the page and pipes drafts to it as you type.
+  previewPath?: string;
 }) {
   const [rows, setRows] = useState<DbContentRow[]>([]);
   const [drafts, setDrafts] = useState<Record<string, string>>({});
@@ -104,36 +110,51 @@ export default function ContentEditor({
     );
   }
 
+  // The drafts map we hand to the preview is the current row values
+  // (saved value or draft, whichever's freshest). Pre-fill with saved
+  // values so the iframe shows them even before the editor is dirty.
+  const previewDrafts: Record<string, string> = {};
+  for (const r of rows) previewDrafts[r.key] = drafts[r.key] ?? r.value;
+
   return (
-    <div className="space-y-5">
-      {err && (
-        <div className="rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
-          {err}
-        </div>
-      )}
-
-      {rows.map((row) => (
-        <FieldEditor
-          key={row.key}
-          row={row}
-          fallback={fallbacks?.[row.key]}
-          value={drafts[row.key] ?? ""}
-          onChange={(v) => setDraft(row.key, v)}
-        />
-      ))}
-
-      <div className="sticky bottom-4 z-10 flex items-center justify-end gap-3 rounded-2xl border border-cream/15 bg-ink/95 px-5 py-3 shadow-2xl backdrop-blur">
-        {savedFlash && (
-          <span className="text-sm text-plonkTeal">Saved.</span>
+    // When previewPath is set on a desktop viewport, the LivePreview
+    // pane occupies the right 44vw — we reserve that space here so
+    // the form doesn't sit underneath it.
+    <div className={previewPath ? "lg:pr-[46vw]" : ""}>
+      <div className="space-y-5">
+        {err && (
+          <div className="rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">
+            {err}
+          </div>
         )}
-        <button
-          onClick={save}
-          disabled={!isDirty() || saving}
-          className="rounded-full bg-plonkPink px-6 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-plonkPink/90 disabled:opacity-40"
-        >
-          {saving ? "Saving…" : "Save changes"}
-        </button>
+
+        {rows.map((row) => (
+          <FieldEditor
+            key={row.key}
+            row={row}
+            fallback={fallbacks?.[row.key]}
+            value={drafts[row.key] ?? ""}
+            onChange={(v) => setDraft(row.key, v)}
+          />
+        ))}
+
+        <div className="sticky bottom-4 z-10 flex items-center justify-end gap-3 rounded-2xl border border-cream/15 bg-ink/95 px-5 py-3 shadow-2xl backdrop-blur">
+          {savedFlash && (
+            <span className="text-sm text-plonkTeal">Saved.</span>
+          )}
+          <button
+            onClick={save}
+            disabled={!isDirty() || saving}
+            className="rounded-full bg-plonkPink px-6 py-2 text-xs font-bold uppercase tracking-wider text-white hover:bg-plonkPink/90 disabled:opacity-40"
+          >
+            {saving ? "Saving…" : "Save changes"}
+          </button>
+        </div>
       </div>
+
+      {previewPath && (
+        <LivePreview path={previewPath} drafts={previewDrafts} />
+      )}
     </div>
   );
 }

@@ -36,7 +36,7 @@ export default function HomeContentPage() {
           </a>
         }
       />
-      <ContentEditor page="home" fallbacks={FALLBACKS} />
+      <ContentEditor page="home" fallbacks={FALLBACKS} previewPath="/" />
     </>
   );
 }

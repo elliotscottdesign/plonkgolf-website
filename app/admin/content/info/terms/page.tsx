@@ -20,7 +20,7 @@ export default function TermsContentPage() {
           </a>
         }
       />
-      <ContentEditor page="info.terms" />
+      <ContentEditor page="info.terms" previewPath="/terms" />
     </>
   );
 }

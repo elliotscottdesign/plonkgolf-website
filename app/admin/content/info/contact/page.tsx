@@ -20,7 +20,7 @@ export default function ContactContentPage() {
           </a>
         }
       />
-      <ContentEditor page="info.contact" />
+      <ContentEditor page="info.contact" previewPath="/contact" />
     </>
   );
 }

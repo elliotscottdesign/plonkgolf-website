@@ -20,7 +20,7 @@ export default function PrivateHireBoroughContentPage() {
           </a>
         }
       />
-      <ContentEditor page="privatehire.borough" />
+      <ContentEditor page="privatehire.borough" previewPath="/private-hire/borough-market" />
     </>
   );
 }
