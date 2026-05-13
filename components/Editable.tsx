@@ -19,6 +19,7 @@
 // =============================================================
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { supabase } from "@/lib/supabase";
 import { useEditMode } from "@/lib/editMode";
 import {
@@ -175,7 +176,13 @@ export function EditableImage({
 }) {
   const editing = useEditMode();
   const applyEdit = useApplyContentEdit();
-  const [pickerOpen, setPickerOpen] = useState(false);
+  // Three states for the editor flow:
+  //   "closed"     — no modal
+  //   "chooser"    — small dialog asking Reposition vs Replace
+  //   "replace"    — full MediaPicker (browse / upload + positioner)
+  //   "reposition" — positioner-only, pre-loaded with the current image
+  type Mode = "closed" | "chooser" | "replace" | "reposition";
+  const [mode, setMode] = useState<Mode>("closed");
   const [saving, setSaving] = useState(false);
 
   async function pick(value: string | ImageDisplay) {
@@ -209,42 +216,227 @@ export function EditableImage({
       console.error("Failed to save image", k, e);
     } finally {
       setSaving(false);
-      setPickerOpen(false);
+      setMode("closed");
     }
   }
 
   const initialTransform: Partial<ImageDisplay> | undefined = currentValue
     ? parseImageValue(currentValue)
     : undefined;
+  // Reposition only makes sense when there's actually an image to
+  // reposition. The transform may be a JSON record OR a plain URL —
+  // parseImageValue handles both and always gives us a .src.
+  const currentSrc = initialTransform?.src ?? "";
 
   if (!editing) return <>{children}</>;
 
   return (
     <span
       onClick={(e) => {
+        // Only open the chooser from the resting state — if a modal
+        // is already up, ignore bubbled clicks from inside it. (React
+        // events propagate through portals along the component tree.)
+        if (mode !== "closed") return;
         e.preventDefault();
         e.stopPropagation();
-        setPickerOpen(true);
+        setMode("chooser");
       }}
       className={`group relative block cursor-pointer rounded outline outline-2 outline-dashed outline-plonkYellow/40 transition hover:outline-plonkYellow ${
         saving ? "opacity-70" : ""
       }`}
-      title={`Change ${k}`}
+      title={`Edit ${k}`}
     >
       {children}
       <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-ink/85 px-3 py-1.5 text-center text-[11px] font-bold uppercase tracking-wider text-cream opacity-0 transition group-hover:opacity-100">
-        Click to change image
+        Click to edit image
       </span>
-      {pickerOpen && (
+      {mode === "chooser" && (
+        <EditChooserModal
+          canReposition={!!currentSrc}
+          onReposition={() => setMode("reposition")}
+          onReplace={() => setMode("replace")}
+          onClose={() => setMode("closed")}
+        />
+      )}
+      {mode === "replace" && (
         // Lazy-load MediaPicker so non-admins don't pay the cost.
         <EditableImagePicker
           onPick={pick}
-          onClose={() => setPickerOpen(false)}
+          onClose={() => setMode("closed")}
           aspect={aspect}
           initial={initialTransform}
         />
       )}
+      {mode === "reposition" && currentSrc && (
+        <RepositionModal
+          src={currentSrc}
+          aspect={aspect ?? "1/1"}
+          initial={initialTransform}
+          onSave={(d) => pick(d)}
+          onCancel={() => setMode("closed")}
+        />
+      )}
     </span>
+  );
+}
+
+// Two-button chooser that appears on first click of an editable image.
+// Portal'd to document.body so it always anchors to the viewport.
+function EditChooserModal({
+  canReposition,
+  onReposition,
+  onReplace,
+  onClose,
+}: {
+  canReposition: boolean;
+  onReposition: () => void;
+  onReplace: () => void;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[80] flex items-center justify-center bg-ink/85 p-4"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+    >
+      <div className="w-full max-w-md overflow-hidden rounded-2xl border border-cream/15 bg-ink shadow-2xl">
+        <div className="flex items-center justify-between gap-3 border-b border-cream/10 px-5 py-4">
+          <h3 className="font-display text-xl text-cream">Edit image</h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-full border border-cream/20 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-cream/85 hover:bg-cream/5"
+          >
+            Close
+          </button>
+        </div>
+        <div className="space-y-2 px-5 py-5">
+          <button
+            type="button"
+            onClick={onReposition}
+            disabled={!canReposition}
+            className="block w-full rounded-xl border border-cream/15 bg-ink/40 px-4 py-4 text-left text-sm transition hover:border-plonkYellow hover:bg-plonkYellow/5 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            <span className="block text-xs font-bold uppercase tracking-wider text-plonkYellow">
+              Reposition this image
+            </span>
+            <span className="mt-1 block text-cream/75">
+              Crop, zoom or slide the image you already have.
+            </span>
+          </button>
+          <button
+            type="button"
+            onClick={onReplace}
+            className="block w-full rounded-xl border border-cream/15 bg-ink/40 px-4 py-4 text-left text-sm transition hover:border-plonkPink hover:bg-plonkPink/5"
+          >
+            <span className="block text-xs font-bold uppercase tracking-wider text-plonkPink">
+              Replace with a different image
+            </span>
+            <span className="mt-1 block text-cream/75">
+              Open the media library to pick or upload a new file.
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+// Reposition-only modal — wraps ImagePositioner in the same chrome
+// MediaPicker uses, but skips the library/upload entirely. Lazy-loads
+// the positioner so non-admins don't pay the cost.
+function RepositionModal({
+  src,
+  aspect,
+  initial,
+  onSave,
+  onCancel,
+}: {
+  src: string;
+  aspect: string;
+  initial?: Partial<ImageDisplay>;
+  onSave: (d: ImageDisplay) => void;
+  onCancel: () => void;
+}) {
+  const [Positioner, setPositioner] = useState<React.ComponentType<{
+    src: string;
+    aspect: string;
+    initial?: Partial<ImageDisplay>;
+    onSave: (d: ImageDisplay) => void;
+    onCancel: () => void;
+  }> | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    import("@/components/admin/ImagePositioner").then((mod) => {
+      if (!cancelled) setPositioner(() => mod.default);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onCancel();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onCancel]);
+
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 z-[80] flex items-stretch justify-center bg-ink/90 p-2 sm:p-6"
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onCancel();
+      }}
+    >
+      <div className="flex h-full w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-cream/15 bg-ink shadow-2xl">
+        <div className="flex items-center justify-between gap-3 border-b border-cream/10 px-5 py-4">
+          <div className="min-w-0">
+            <h3 className="font-display text-2xl">Position image</h3>
+            <p className="truncate text-xs text-cream/55">
+              Drag to reposition · zoom to enlarge · save when happy.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-full border border-cream/20 px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream/85 hover:bg-cream/5"
+          >
+            Close
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          {Positioner ? (
+            <Positioner
+              src={src}
+              aspect={aspect}
+              initial={initial}
+              onSave={onSave}
+              onCancel={onCancel}
+            />
+          ) : (
+            <p className="px-5 py-8 text-sm text-cream/60">Loading positioner…</p>
+          )}
+        </div>
+      </div>
+    </div>,
+    document.body,
   );
 }
 
