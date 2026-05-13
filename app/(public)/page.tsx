@@ -5,6 +5,7 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import HeroBookingWidget from "@/components/HeroBookingWidget";
 import { useContent, useImage, useGallery } from "@/lib/content";
+import { Editable, DisplayImage } from "@/components/Editable";
 
 const PRESS = [
   { name: "Evening Standard", src: "/images/London-Evening-Standard-logo.jpg" },
@@ -107,19 +108,21 @@ export default function HomePage() {
         <div className="bg-forest px-6 pb-20 pt-10 text-center">
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              {heroEyebrow}
+              <Editable k="home.hero.eyebrow">{heroEyebrow}</Editable>
             </p>
           </Reveal>
           <Reveal delay={120}>
             <h1 className="mt-5 font-display text-5xl leading-[1.05] sm:text-6xl md:text-7xl lg:text-[80px]">
-              {heroLine1}
+              <Editable k="home.hero.headline_1">{heroLine1}</Editable>
               <br />
-              <span className="italic text-plonkYellow">{heroLine2}</span>
+              <span className="italic text-plonkYellow">
+                <Editable k="home.hero.headline_2">{heroLine2}</Editable>
+              </span>
             </h1>
           </Reveal>
           <Reveal delay={240}>
             <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-cream/85 sm:text-lg">
-              {heroSubcopy}
+              <Editable k="home.hero.subcopy" multiline>{heroSubcopy}</Editable>
             </p>
           </Reveal>
 
@@ -144,7 +147,9 @@ export default function HomePage() {
           eyebrow="Outdoor · 9 holes · beer garden"
           image="/hackney/course/Course_1.jpg"
           imageAlt="Plonk Hackney crazy golf"
+          imageKey="home.venues.hackney_image"
           blurb={hackneyBlurb}
+          blurbKey="home.venues.hackney"
           features={[
             "9-hole Polynesian course",
             "Outdoor beer garden",
@@ -160,7 +165,9 @@ export default function HomePage() {
           eyebrow="Indoor · 9 holes · under London Bridge"
           image="/borough/course/Course_2.jpg"
           imageAlt="Plonk Borough Market crazy golf"
+          imageKey="home.venues.borough_image"
           blurb={boroughBlurb}
+          blurbKey="home.venues.borough"
           features={[
             "9-hole London-themed course",
             "4 covered arches",
@@ -177,17 +184,24 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              Inside every Plonk
+              <Editable k="home.features.eyebrow">{useContent("home.features.eyebrow", "Inside every Plonk")}</Editable>
             </p>
             <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
-              More than mini golf.
+              <Editable k="home.features.heading">{useContent("home.features.heading", "More than mini golf.")}</Editable>
             </h2>
           </Reveal>
 
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {editableFeatures.map((f, i) => (
               <Reveal key={i} delay={i * 80}>
-                <FeatureCard image={f.image} title={f.title} body={f.body} />
+                <FeatureCard
+                  imageKey={`home.feature${i + 1}.image`}
+                  titleKey={`home.feature${i + 1}.title`}
+                  bodyKey={`home.feature${i + 1}.body`}
+                  image={f.image}
+                  title={f.title}
+                  body={f.body}
+                />
               </Reveal>
             ))}
           </div>
@@ -310,7 +324,9 @@ function VenueSpotlight({
   eyebrow,
   image,
   imageAlt,
+  imageKey,
   blurb,
+  blurbKey,
   features,
   align,
 }: {
@@ -320,7 +336,9 @@ function VenueSpotlight({
   eyebrow: string;
   image: string;
   imageAlt: string;
+  imageKey: string;
   blurb: string;
+  blurbKey: string;
   features: string[];
   align: "left" | "right";
 }) {
@@ -333,15 +351,7 @@ function VenueSpotlight({
         }`}
       >
         <Reveal>
-          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
-            <Image
-              src={image}
-              alt={imageAlt}
-              fill
-              sizes="(min-width: 768px) 50vw, 100vw"
-              className="object-contain"
-            />
-          </div>
+          <DisplayImage k={imageKey} fallback={image} aspect="4/5" alt={imageAlt} rounded />
         </Reveal>
 
         <Reveal delay={120}>
@@ -353,7 +363,7 @@ function VenueSpotlight({
               {name}
             </h3>
             <p className="mt-6 text-base leading-relaxed text-cream/75 sm:text-lg">
-              {blurb}
+              <Editable k={blurbKey} multiline>{blurb}</Editable>
             </p>
 
             <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-3 text-sm text-cream/80">
@@ -429,28 +439,30 @@ function CtaCard({
 }
 
 function FeatureCard({
+  imageKey,
+  titleKey,
+  bodyKey,
   image,
   title,
   body,
 }: {
+  imageKey: string;
+  titleKey: string;
+  bodyKey: string;
   image: string;
   title: string;
   body: string;
 }) {
   return (
     <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 transition hover:border-plonkYellow/40">
-      <div className="relative aspect-[5/3] overflow-hidden">
-        <Image
-          src={image}
-          alt=""
-          fill
-          sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-          className="object-contain transition duration-700 group-hover:scale-105"
-        />
-      </div>
+      <DisplayImage k={imageKey} fallback={image} aspect="5/3" />
       <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-display text-2xl">{title}</h3>
-        <p className="mt-3 text-sm leading-relaxed text-cream/75">{body}</p>
+        <h3 className="font-display text-2xl">
+          <Editable k={titleKey}>{title}</Editable>
+        </h3>
+        <p className="mt-3 text-sm leading-relaxed text-cream/75">
+          <Editable k={bodyKey} multiline>{body}</Editable>
+        </p>
       </div>
     </article>
   );
