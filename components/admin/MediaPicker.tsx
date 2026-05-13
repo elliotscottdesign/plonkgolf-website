@@ -153,12 +153,13 @@ export default function MediaPicker({
     }
   }
 
+  // Default to a square slot if the caller didn't tell us a specific
+  // aspect — better to always give the admin a crop/zoom step than
+  // silently save without one.
+  const effectiveAspect = aspect ?? "1/1";
+
   function handlePick(path: string) {
-    if (aspect) {
-      setStaged(path);
-    } else {
-      onPick(path);
-    }
+    setStaged(path);
   }
 
   function onFileChosen(e: React.ChangeEvent<HTMLInputElement>) {
@@ -225,11 +226,11 @@ export default function MediaPicker({
         </div>
 
         {/* Positioner — takes over the body when an image is staged. */}
-        {staged && aspect && (
+        {staged && (
           <div className="flex-1 overflow-y-auto">
             <ImagePositioner
               src={staged}
-              aspect={aspect}
+              aspect={effectiveAspect}
               initial={initial}
               onCancel={() => setStaged(null)}
               onSave={(d) => {
@@ -240,7 +241,7 @@ export default function MediaPicker({
           </div>
         )}
 
-        {staged && aspect ? null : (
+        {staged ? null : (
         <>
           {/* Picker toolbar + grid only show when nothing is staged */}
 
