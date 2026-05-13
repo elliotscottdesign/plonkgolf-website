@@ -120,7 +120,7 @@ export default function ContentEditor({
     // When previewPath is set on a desktop viewport, the LivePreview
     // pane occupies the right 44vw — we reserve that space here so
     // the form doesn't sit underneath it.
-    <div className={previewPath ? "lg:pr-[46vw]" : ""}>
+    <div className={previewPath ? "md:pr-[50vw]" : ""}>
       <div className="space-y-5">
         {err && (
           <div className="rounded-xl border border-red-400/30 bg-red-400/5 px-4 py-3 text-sm text-red-300">

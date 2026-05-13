@@ -73,7 +73,7 @@ export default function LivePreview({ path, drafts }: LivePreviewProps) {
 
   return (
     <aside
-      className="fixed right-0 top-0 z-40 hidden h-screen w-[44vw] max-w-[640px] flex-col border-l border-cream/10 bg-ink shadow-2xl lg:flex"
+      className="fixed right-0 top-0 z-40 hidden h-screen w-[48vw] max-w-[720px] flex-col border-l border-cream/10 bg-ink shadow-2xl md:flex"
       aria-label="Live preview"
     >
       <div className="flex items-center justify-between border-b border-cream/10 px-4 py-2.5">
