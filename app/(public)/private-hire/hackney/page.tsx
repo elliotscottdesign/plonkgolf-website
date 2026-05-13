@@ -4,85 +4,123 @@ import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import BigEmailCta from "@/components/BigEmailCta";
-import { useContent } from "@/lib/content";
+import { useContent, useImage } from "@/lib/content";
 
-const POPULAR_FOR = [
-  "Birthday party",
-  "Christmas party",
-  "Corporate event",
-  "Outdoor space",
-  "Parkside location",
-  "Unusual space",
-];
+// Split a textarea value (one item per line) into a clean list of
+// strings — used everywhere a fact panel renders bullets.
+function lines(s: string): string[] {
+  return s
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+}
 
-const CAPACITIES = [
-  { label: "Standing", value: "65" },
-  { label: "Dining", value: "40" },
-  { label: "Cabaret", value: "30" },
-];
+// For lines like "Label: Value" — used by the Capacity panel.
+function pairs(s: string): { label: string; value: string }[] {
+  return lines(s).map((line) => {
+    const idx = line.indexOf(":");
+    if (idx < 0) return { label: line, value: "" };
+    return {
+      label: line.slice(0, idx).trim(),
+      value: line.slice(idx + 1).trim(),
+    };
+  });
+}
 
-const ROOM_FEATURES = [
-  "9-hole crazy golf",
-  "Retro arcade",
-  "Pool tables",
-  "Pinball + board games",
-  "Outdoor beer garden",
-  "Tiki cocktail bar",
-  "Snack Bar kitchen",
-  "Natural light",
-  "Wi-Fi",
-  "Storage space",
-  "Step-free access",
-];
+// Catering rows can be prefixed with "no:" / "n:" to mark them as
+// strikethrough (the "we don't do this" column). Anything else is
+// rendered with a tick. Lets the admin manage both lists from one
+// textarea without us needing two separate fields.
+function cateringRows(s: string): { yes: string[]; no: string[] } {
+  const yes: string[] = [];
+  const no: string[] = [];
+  for (const line of lines(s)) {
+    if (/^no:\s*/i.test(line)) no.push(line.replace(/^no:\s*/i, ""));
+    else if (/^n:\s*/i.test(line)) no.push(line.replace(/^n:\s*/i, ""));
+    else yes.push(line);
+  }
+  return { yes, no };
+}
 
-const CATERING_YES = [
-  "In-house catering",
-  "Approved caterers only",
-  "We provide alcohol",
-  "Kitchen facilities available",
-  "Halal available",
-  "Kosher available",
-  "Complimentary water",
-  "Extensive vegan menu",
-  "Extensive gluten-free menu",
-  "Buyout fee for external catering",
-];
-const CATERING_NO = [
-  "External catering (general)",
-  "BYOB alcohol",
-  "Complimentary tea & coffee",
-];
-
-const WELCOMES = [
-  "Games competitions / tournaments",
-  "VIP events",
-  "Private parties",
-  "Own music equipment / DJ",
-];
+const DEFAULTS = {
+  hero_image: "/hackney/garden/Garden_1.jpg",
+  eyebrow: "Private hire · Plonk Hackney",
+  title: "Take Over Plonk Hackney",
+  intro: "Our nine-hole Polynesian course, beer garden, pool, arcade and tiki bar — all yours.",
+  popular_heading: "Plonk Hackney is popular for",
+  popular_list:
+    "Birthday party\nChristmas party\nCorporate event\nOutdoor space\nParkside location\nUnusual space",
+  about_heading: "About this venue",
+  about_body:
+    "This isn't just another nine-hole mini golf course — it's a full games bar with a wide range of options to keep you and your guests entertained for hours. We're ready to host your party or event. You bring the people, and we'll provide them with a fantastic selection of drinks from our cocktail bar, alongside Snack Bar burgers from the kitchen.\n\nOur Hackney venue features a full nine-hole Polynesian course, two pool tables, retro arcade machines, modern pinball and a big selection of board games. We can accommodate up to 65 people for private hires.",
+  capacity:
+    "Standing: 65\nDining: 40\nCabaret: 30",
+  features:
+    "9-hole crazy golf\nRetro arcade\nPool tables\nPinball + board games\nOutdoor beer garden\nTiki cocktail bar\nSnack Bar kitchen\nNatural light\nWi-Fi\nStorage space\nStep-free access",
+  catering:
+    "In-house catering\nApproved caterers only\nWe provide alcohol\nKitchen facilities available\nHalal available\nKosher available\nComplimentary water\nExtensive vegan menu\nExtensive gluten-free menu\nBuyout fee for external catering\nno: External catering (general)\nno: BYOB alcohol\nno: Complimentary tea & coffee",
+  licences:
+    "Alcohol licence until 23:00. Later licenses can be applied for with notice.",
+  welcomes:
+    "Games competitions / tournaments\nVIP events\nPrivate parties\nOwn music equipment / DJ",
+  house_rules: "No outside catering. No BYOB. Background music only.",
+};
 
 export default function HackneyPrivateHirePage() {
-  const title = useContent(
-    "privatehire.hackney.title",
-    "Take Over Plonk Hackney",
+  const heroImage = useImage("privatehire.hackney.hero_image", DEFAULTS.hero_image);
+  const eyebrow = useContent("privatehire.hackney.eyebrow", DEFAULTS.eyebrow);
+  const title = useContent("privatehire.hackney.title", DEFAULTS.title);
+  const intro = useContent("privatehire.hackney.intro", DEFAULTS.intro);
+
+  const popularHeading = useContent(
+    "privatehire.hackney.popular_heading",
+    DEFAULTS.popular_heading,
   );
+  const popularList = lines(
+    useContent("privatehire.hackney.popular_list", DEFAULTS.popular_list),
+  );
+  const aboutHeading = useContent(
+    "privatehire.hackney.about_heading",
+    DEFAULTS.about_heading,
+  );
+  const aboutBody = useContent("privatehire.hackney.about_body", DEFAULTS.about_body);
+
+  const capacities = pairs(
+    useContent("privatehire.hackney.capacity", DEFAULTS.capacity),
+  );
+  const features = lines(
+    useContent("privatehire.hackney.features", DEFAULTS.features),
+  );
+  const { yes: cateringYes, no: cateringNo } = cateringRows(
+    useContent("privatehire.hackney.catering", DEFAULTS.catering),
+  );
+  const licences = useContent("privatehire.hackney.licences", DEFAULTS.licences);
+  const welcomes = lines(
+    useContent("privatehire.hackney.welcomes", DEFAULTS.welcomes),
+  );
+  const houseRules = useContent(
+    "privatehire.hackney.house_rules",
+    DEFAULTS.house_rules,
+  );
+
   return (
     <main>
       <PageHero
-        eyebrow="Private hire · Plonk Hackney"
+        eyebrow={eyebrow}
         title={title}
-        intro="Our nine-hole Polynesian course, beer garden, pool, arcade and tiki bar — all yours."
-        image="/hackney/garden/Garden_1.jpg"
+        intro={intro}
+        image={heroImage}
       />
 
-      {/* Popular for + about (forest → ember) */}
+      {/* Popular for + about */}
       <section className="tint-forest-to-emberDeep px-6 py-24">
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              Plonk Hackney is popular for
+              {popularHeading}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              {POPULAR_FOR.map((t) => (
+              {popularList.map((t) => (
                 <span
                   key={t}
                   className="rounded-full border border-emberLine/80 bg-emberDeep/60 px-4 py-1.5 text-sm text-cream/90"
@@ -95,34 +133,25 @@ export default function HackneyPrivateHirePage() {
 
           <Reveal delay={120}>
             <h2 className="mt-12 font-display text-3xl leading-tight sm:text-4xl">
-              About this venue
+              {aboutHeading}
             </h2>
-            <p className="mt-6 text-base leading-relaxed text-cream/85 sm:text-lg">
-              This isn't just another nine-hole mini golf course — it's a full
-              games bar with a wide range of options to keep you and your
-              guests entertained for hours. We're ready to host your party or
-              event. You bring the people, and we'll provide them with a
-              fantastic selection of drinks from our cocktail bar, alongside
-              Snack Bar burgers from the kitchen.
-            </p>
-            <p className="mt-4 text-base leading-relaxed text-cream/85 sm:text-lg">
-              Our Hackney venue features a full nine-hole Polynesian course,
-              two pool tables, retro arcade machines, modern pinball and a big
-              selection of board games. We can accommodate up to{" "}
-              <strong className="text-cream">65 people</strong> for private
-              hires.
-            </p>
+            <div className="mt-6 space-y-4 text-base leading-relaxed text-cream/85 sm:text-lg">
+              {aboutBody.split(/\n\n+/).map((para, i) => (
+                <p key={i} className="whitespace-pre-line">
+                  {para}
+                </p>
+              ))}
+            </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Fact sheet (ember) */}
+      {/* Fact sheet */}
       <section className="tint-emberDeep-to-ember px-6 py-24">
         <div className="mx-auto max-w-6xl space-y-12">
-          {/* Capacity */}
           <FactPanel title="Capacity">
             <div className="grid gap-4 sm:grid-cols-3">
-              {CAPACITIES.map((c) => (
+              {capacities.map((c) => (
                 <div
                   key={c.label}
                   className="rounded-2xl border border-emberLine/80 bg-emberDeep/60 p-6 text-center"
@@ -130,18 +159,15 @@ export default function HackneyPrivateHirePage() {
                   <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                     {c.label}
                   </p>
-                  <p className="mt-3 font-display text-5xl text-cream">
-                    {c.value}
-                  </p>
+                  <p className="mt-3 font-display text-5xl text-cream">{c.value}</p>
                 </div>
               ))}
             </div>
           </FactPanel>
 
-          {/* Room features */}
           <FactPanel title="Room features">
             <ul className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
-              {ROOM_FEATURES.map((f) => (
+              {features.map((f) => (
                 <li key={f} className="flex items-center gap-3 text-sm text-cream/90">
                   <Check />
                   {f}
@@ -150,11 +176,10 @@ export default function HackneyPrivateHirePage() {
             </ul>
           </FactPanel>
 
-          {/* Catering */}
           <FactPanel title="Catering">
             <div className="grid gap-x-10 gap-y-3 md:grid-cols-2">
               <ul className="space-y-3">
-                {CATERING_YES.map((c) => (
+                {cateringYes.map((c) => (
                   <li key={c} className="flex items-start gap-3 text-sm text-cream/90">
                     <Check />
                     {c}
@@ -162,11 +187,8 @@ export default function HackneyPrivateHirePage() {
                 ))}
               </ul>
               <ul className="space-y-3">
-                {CATERING_NO.map((c) => (
-                  <li
-                    key={c}
-                    className="flex items-start gap-3 text-sm text-cream/60"
-                  >
+                {cateringNo.map((c) => (
+                  <li key={c} className="flex items-start gap-3 text-sm text-cream/60">
                     <Cross />
                     {c}
                   </li>
@@ -175,18 +197,15 @@ export default function HackneyPrivateHirePage() {
             </div>
           </FactPanel>
 
-          {/* Licences */}
           <FactPanel title="Licences">
-            <p className="text-sm leading-relaxed text-cream/85 sm:text-base">
-              Alcohol licence until <strong className="text-cream">23:00</strong>.
-              Later licenses can be applied for with notice.
+            <p className="whitespace-pre-line text-sm leading-relaxed text-cream/85 sm:text-base">
+              {licences}
             </p>
           </FactPanel>
 
-          {/* Venue welcomes */}
           <FactPanel title="Venue welcomes">
             <ul className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
-              {WELCOMES.map((w) => (
+              {welcomes.map((w) => (
                 <li key={w} className="flex items-center gap-3 text-sm text-cream/90">
                   <Check />
                   {w}
@@ -195,10 +214,9 @@ export default function HackneyPrivateHirePage() {
             </ul>
           </FactPanel>
 
-          {/* Rules */}
           <FactPanel title="House rules">
-            <p className="text-sm leading-relaxed text-cream/85 sm:text-base">
-              No outside catering. No BYOB. Background music only.
+            <p className="whitespace-pre-line text-sm leading-relaxed text-cream/85 sm:text-base">
+              {houseRules}
             </p>
           </FactPanel>
 
@@ -218,19 +236,11 @@ export default function HackneyPrivateHirePage() {
   );
 }
 
-function FactPanel({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function FactPanel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <Reveal>
       <div className="rounded-3xl border border-emberLine/60 bg-emberRaised p-7 sm:p-9">
-        <h3 className="font-display text-2xl text-plonkYellow sm:text-3xl">
-          {title}
-        </h3>
+        <h3 className="font-display text-2xl text-plonkYellow sm:text-3xl">{title}</h3>
         <div className="mt-6">{children}</div>
       </div>
     </Reveal>

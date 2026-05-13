@@ -5,9 +5,9 @@ import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Gallery from "@/components/Gallery";
 import Reveal from "@/components/Reveal";
-import { useContent, useImage } from "@/lib/content";
+import { useContent, useImage, useGallery } from "@/lib/content";
 
-const BOROUGH_GALLERY = [
+const BOROUGH_GALLERY_FALLBACK = [
   { src: "/borough/course/Course_2.jpg", alt: "Plonk Borough course" },
   { src: "/borough/course/Course_3.jpg", alt: "Borough London-themed course" },
   { src: "/borough/venue/Venue_1.jpg", alt: "Borough arches interior" },
@@ -22,10 +22,69 @@ const BOROUGH_GALLERY = [
   { src: "/borough/games/Games_6.jpg", alt: "Borough arcade detail" },
 ];
 
-// metadata moved — client components can't export it; tab title is
-// handled by the parent group's layout.
+// Six fixed feature card "slots". The image / title / body for each slot
+// is editable from /admin/content/venue/borough — the slot positions are
+// kept stable so links don't reshuffle when the admin edits text. The
+// fallbacks here are what shipped originally.
+const FEATURES = [
+  {
+    keyPrefix: "venue.borough.feature1",
+    fallback: {
+      image: "/borough/games/Games_1.jpg",
+      title: "Retro arcade",
+      body:
+        "Shooters, button-bashers, foosball, ping pong, plus one of London's biggest pinball collections. Buy tokens at the bar — no booking needed.",
+    },
+  },
+  {
+    keyPrefix: "venue.borough.feature2",
+    fallback: {
+      image: "/borough/games/Games_2.jpg",
+      title: "Pool tables",
+      body:
+        "Two brand-new British 7ft pool tables, bookable at £5 for 30 minutes. Please note: under-18s aren't permitted to play.",
+    },
+  },
+  {
+    keyPrefix: "venue.borough.feature3",
+    fallback: {
+      image: "/borough/drinks/Cocktail_3.jpg",
+      title: "Cocktails & craft",
+      body:
+        "Fully licensed bar — signature cocktails, classics, wines, cold craft beers and non-alcoholic drinks. Open till 11pm: drink while you putt, or push on into the night.",
+    },
+  },
+  {
+    keyPrefix: "venue.borough.feature4",
+    fallback: {
+      image: "/borough/drinks/Beer_2.png",
+      title: "Local beer on tap",
+      body:
+        "Rotating local kegs alongside our regulars. Whatever's on, it'll be cold and properly poured.",
+    },
+  },
+  {
+    keyPrefix: "venue.borough.feature5",
+    fallback: {
+      image: "/borough/course/Course_6.jpg",
+      title: "Murals & street art",
+      body:
+        "A 360° gallery on the walls, ceiling and floor — painted by some of London's most renowned spray-can talent. The course is the start; the arches are the show.",
+    },
+  },
+  {
+    keyPrefix: "venue.borough.feature6",
+    fallback: {
+      image: "/borough/games/Games_5.jpg",
+      title: "Doubles pool tournament",
+      body:
+        "3rd Wednesday of the month. £200+ in bar tabs, medals, beer cases and Tees. Eight slots — always sells out.",
+    },
+  },
+];
 
 export default function BoroughMarketPage() {
+  // Hero
   const eyebrow = useContent(
     "venue.borough.eyebrow",
     "Borough Market · Indoor · 9 holes",
@@ -36,13 +95,88 @@ export default function BoroughMarketPage() {
     "Tucked into four railway arches under London Bridge. A 360° gallery from London's best street artists, surrounding nine holes of London icons.",
   );
   const heroImage = useImage("venue.borough.hero_image", "");
+
+  const bodyEyebrow = useContent(
+    "venue.borough.body_eyebrow",
+    "London, in one course",
+  );
   const bodyHeading = useContent(
     "venue.borough.body_heading",
-    "London under the arches",
+    "All of London, in 9 holes",
   );
   const bodyIntro = useContent(
     "venue.borough.body_intro",
-    "Nine holes navigating Big Ben, the Tower of London, the Thames Barrier and a London phone box, painted by the city's best graffiti artists. Plus a full bar, arcade and snug pool tables.",
+    "Putt past a red phone box ramp, roll around the Thames Barrier, hop into the Tower of London, loop the London Eye and stride down Tower Bridge — all under London Bridge itself, surrounded by murals from the city's best spray-can talent.",
+  );
+
+  // Features section
+  const featuresEyebrow = useContent(
+    "venue.borough.features.eyebrow",
+    "Across four arches",
+  );
+  const featuresHeading = useContent(
+    "venue.borough.features.heading",
+    "What's under the arches",
+  );
+
+  // Each feature card — title + body resolved via useContent below, image
+  // resolved inside FeatureCard via useImage.
+  const f1Title = useContent(FEATURES[0].keyPrefix + ".title", FEATURES[0].fallback.title);
+  const f1Body = useContent(FEATURES[0].keyPrefix + ".body", FEATURES[0].fallback.body);
+  const f2Title = useContent(FEATURES[1].keyPrefix + ".title", FEATURES[1].fallback.title);
+  const f2Body = useContent(FEATURES[1].keyPrefix + ".body", FEATURES[1].fallback.body);
+  const f3Title = useContent(FEATURES[2].keyPrefix + ".title", FEATURES[2].fallback.title);
+  const f3Body = useContent(FEATURES[2].keyPrefix + ".body", FEATURES[2].fallback.body);
+  const f4Title = useContent(FEATURES[3].keyPrefix + ".title", FEATURES[3].fallback.title);
+  const f4Body = useContent(FEATURES[3].keyPrefix + ".body", FEATURES[3].fallback.body);
+  const f5Title = useContent(FEATURES[4].keyPrefix + ".title", FEATURES[4].fallback.title);
+  const f5Body = useContent(FEATURES[4].keyPrefix + ".body", FEATURES[4].fallback.body);
+  const f6Title = useContent(FEATURES[5].keyPrefix + ".title", FEATURES[5].fallback.title);
+  const f6Body = useContent(FEATURES[5].keyPrefix + ".body", FEATURES[5].fallback.body);
+  const editableFeatures = [
+    { ...FEATURES[0], title: f1Title, body: f1Body },
+    { ...FEATURES[1], title: f2Title, body: f2Body },
+    { ...FEATURES[2], title: f3Title, body: f3Body },
+    { ...FEATURES[3], title: f4Title, body: f4Body },
+    { ...FEATURES[4], title: f5Title, body: f5Body },
+    { ...FEATURES[5], title: f6Title, body: f6Body },
+  ];
+
+  // Gallery
+  const galleryHeading = useContent(
+    "venue.borough.gallery_heading",
+    "Inside Plonk Borough",
+  );
+  const galleryIntro = useContent(
+    "venue.borough.gallery_intro",
+    "The London-themed course, the arcade, the bar — all under London Bridge.",
+  );
+  const galleryImages = useGallery(
+    "venue.borough.gallery",
+    BOROUGH_GALLERY_FALLBACK,
+  ).map((g) => ({ src: g.src, alt: g.alt ?? "" }));
+
+  // Find us
+  const findusHeading = useContent("venue.borough.findus.heading", "Find us");
+  const findusCallout = useContent(
+    "venue.borough.findus.callout",
+    "Don't follow the postcode. We're in the arches under Borough High Street, just off Green Dragon Court. Search \"Plonk Borough\" on Google Maps rather than the address.",
+  );
+  const findusAddress = useContent(
+    "venue.borough.findus.address",
+    "Arches B, C, D & E Montague Close\nOff Green Dragon Court\nLondon SE1 9DA",
+  );
+  const findusEntrance = useContent(
+    "venue.borough.findus.entrance",
+    "The entrance is in a courtyard just below street level, directly next door to Boro Bistro.",
+  );
+  const findusAccessHeading = useContent(
+    "venue.borough.findus.access_heading",
+    "Accessibility",
+  );
+  const findusAccessBody = useContent(
+    "venue.borough.findus.access_body",
+    "Plonk Borough is accessible — there are step-free ways down to our courtyard. If you need help finding the easiest route, get in touch before your visit at info@plonkgolf.co.uk.",
   );
 
   const sliderImages = [
@@ -82,7 +216,7 @@ export default function BoroughMarketPage() {
           <Reveal delay={120}>
             <div className="md:order-1">
               <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                London, in one course
+                {bodyEyebrow}
               </p>
               <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
                 {bodyHeading}
@@ -109,74 +243,52 @@ export default function BoroughMarketPage() {
         </div>
       </section>
 
-      {/* What's under the arches (stays in ember) */}
+      {/* What's under the arches */}
       <section className="tint-ember relative overflow-hidden px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              Across four arches
+              {featuresEyebrow}
             </p>
             <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
-              What's under the arches
+              {featuresHeading}
             </h2>
           </Reveal>
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <FeatureCard
-              image="/borough/games/Games_1.jpg"
-              title="Retro arcade"
-              body="Shooters, button-bashers, foosball, ping pong, plus one of London's biggest pinball collections. Buy tokens at the bar — no booking needed."
-            />
-            <FeatureCard
-              image="/borough/games/Games_2.jpg"
-              title="Pool tables"
-              body="Two brand-new British 7ft pool tables, bookable at £5 for 30 minutes. Please note: under-18s aren't permitted to play."
-            />
-            <FeatureCard
-              image="/borough/drinks/Cocktail_3.jpg"
-              title="Cocktails & craft"
-              body="Fully licensed bar — signature cocktails, classics, wines, cold craft beers and non-alcoholic drinks. Open till 11pm: drink while you putt, or push on into the night."
-            />
-            <FeatureCard
-              image="/borough/drinks/Beer_2.png"
-              title="Local beer on tap"
-              body="Rotating local kegs alongside our regulars. Whatever's on, it'll be cold and properly poured."
-            />
-            <FeatureCard
-              image="/borough/course/Course_6.jpg"
-              title="Murals & street art"
-              body="A 360° gallery on the walls, ceiling and floor — painted by some of London's most renowned spray-can talent. The course is the start; the arches are the show."
-            />
-            <FeatureCard
-              image="/borough/games/Games_5.jpg"
-              title="Doubles pool tournament"
-              body="3rd Wednesday of the month. £200+ in bar tabs, medals, beer cases and Tees. Eight slots — always sells out."
-            />
+            {editableFeatures.map((f, i) => (
+              <FeatureCard
+                key={i}
+                kImage={f.keyPrefix + ".image"}
+                fallbackImage={f.fallback.image}
+                title={f.title}
+                body={f.body}
+              />
+            ))}
           </div>
         </div>
       </section>
 
       <Gallery
-        heading="Inside Plonk Borough"
-        intro="The London-themed course, the arcade, the bar — all under London Bridge."
-        images={BOROUGH_GALLERY}
+        heading={galleryHeading}
+        intro={galleryIntro}
+        images={galleryImages}
         tint="tint-ember-island-plum"
       />
 
-      {/* Find us (ember → forest) */}
+      {/* Find us */}
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
-            <h2 className="font-display text-4xl sm:text-5xl">Find us</h2>
+            <h2 className="font-display text-4xl sm:text-5xl">{findusHeading}</h2>
           </Reveal>
 
-          <Reveal delay={100}>
-            <div className="mt-6 rounded-2xl border border-plonkYellow/40 bg-plonkYellow/10 p-5 text-sm leading-relaxed text-plonkYellow">
-              <strong className="font-bold">Don't follow the postcode.</strong>{" "}
-              We're in the arches under Borough High Street, just off Green
-              Dragon Court. Search "Plonk Borough" on Google Maps rather than
-              the address.
-            </div>
-          </Reveal>
+          {findusCallout && (
+            <Reveal delay={100}>
+              <div className="mt-6 whitespace-pre-line rounded-2xl border border-plonkYellow/40 bg-plonkYellow/10 p-5 text-sm leading-relaxed text-plonkYellow">
+                {findusCallout}
+              </div>
+            </Reveal>
+          )}
 
           <div className="mt-6 grid gap-6 md:grid-cols-2">
             <Reveal>
@@ -184,33 +296,23 @@ export default function BoroughMarketPage() {
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   Address
                 </p>
-                <address className="mt-3 not-italic text-base leading-relaxed text-cream/90">
-                  Arches B, C, D & E Montague Close<br />
-                  Off Green Dragon Court<br />
-                  London SE1 9DA
+                <address className="mt-3 whitespace-pre-line not-italic text-base leading-relaxed text-cream/90">
+                  {findusAddress}
                 </address>
-                <p className="mt-3 text-sm text-cream/65">
-                  The entrance is in a courtyard just below street level,
-                  directly next door to Boro Bistro.
-                </p>
+                {findusEntrance && (
+                  <p className="mt-3 whitespace-pre-line text-sm text-cream/65">
+                    {findusEntrance}
+                  </p>
+                )}
               </div>
             </Reveal>
             <Reveal delay={100}>
               <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                  Accessibility
+                  {findusAccessHeading}
                 </p>
-                <p className="mt-3 text-sm leading-relaxed text-cream/80">
-                  Plonk Borough is accessible — there are step-free ways down
-                  to our courtyard. If you need help finding the easiest
-                  route, get in touch before your visit at{" "}
-                  <a
-                    href="mailto:info@plonkgolf.co.uk"
-                    className="underline underline-offset-4 hover:text-cream"
-                  >
-                    info@plonkgolf.co.uk
-                  </a>
-                  .
+                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/80">
+                  {findusAccessBody}
                 </p>
               </div>
             </Reveal>
@@ -222,14 +324,17 @@ export default function BoroughMarketPage() {
 }
 
 function FeatureCard({
-  image,
+  kImage,
+  fallbackImage,
   title,
   body,
 }: {
-  image: string;
+  kImage: string;
+  fallbackImage: string;
   title: string;
   body: string;
 }) {
+  const image = useImage(kImage, fallbackImage);
   return (
     <Reveal>
       <article className="group h-full overflow-hidden rounded-2xl border border-emberLine/50 bg-ember transition hover:border-plonkYellow/40">
@@ -240,11 +345,14 @@ function FeatureCard({
             fill
             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
             className="object-contain transition duration-700 group-hover:scale-105"
+            unoptimized={image.startsWith("http")}
           />
         </div>
         <div className="p-6">
           <h3 className="font-display text-2xl">{title}</h3>
-          <p className="mt-3 text-sm leading-relaxed text-cream/75">{body}</p>
+          <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/75">
+            {body}
+          </p>
         </div>
       </article>
     </Reveal>

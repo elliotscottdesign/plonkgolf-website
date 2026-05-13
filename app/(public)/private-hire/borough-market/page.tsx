@@ -4,56 +4,106 @@ import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import BigEmailCta from "@/components/BigEmailCta";
-import { useContent } from "@/lib/content";
+import { useContent, useImage } from "@/lib/content";
 
-const POPULAR_FOR = [
-  "Birthday party",
-  "Christmas party",
-  "Corporate event",
-  "Unusual space",
-];
+function lines(s: string): string[] {
+  return s
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean);
+}
 
-const ROOM_FEATURES = [
-  "9-hole crazy golf",
-  "Full arcade",
-  "Cocktail bar",
-  "Pool tables",
-  "Pinball & ping pong",
-  "Street-art murals",
-  "Storage space",
-  "Step-free access",
-];
-
-const WELCOMES = [
-  "Games competitions / tournaments",
-  "VIP events",
-  "Private parties",
-  "Own music playlists",
-];
+const DEFAULTS = {
+  hero_image: "/borough/course/Course_4.jpg",
+  eyebrow: "Private hire · Plonk Borough Market",
+  title: "Take Over Plonk Borough",
+  intro: "Four railway arches under London Bridge — yours for the night.",
+  popular_heading: "Plonk Borough is popular for",
+  popular_list:
+    "Birthday party\nChristmas party\nCorporate event\nUnusual space",
+  about_heading: "About this venue",
+  about_body:
+    "Plonk at Borough Market is a celebration of all things London. A crew of London's best muralists and street artists have created a 360° gallery on the walls, ceiling and floor of the arches underneath London Bridge. This festival of street art wraps a nine-hole golf course that showcases the city's most famous monuments, sights and traditions — and some of our best ever obstacles.\n\nWith a full-service cocktail bar and a packed arcade — shooters, fighters, button-bashers, air hockey, ping pong, foosball and pinball — there's something here for every kind of guest. We can accommodate up to 100 people for private hires.",
+  capacity:
+    "Standing: 100\n— Perfect for smaller takeovers — and ideal to combine with a meal out in the market afterwards.",
+  features:
+    "9-hole crazy golf\nFull arcade\nCocktail bar\nPool tables\nPinball & ping pong\nStreet-art murals\nStorage space\nStep-free access",
+  catering:
+    "We offer sharing platters and boards at Borough Market — vegetarian boards, charcuterie sharers, and dip selections.",
+  licences:
+    "Alcohol licence until 20:00. Temporary Events Notice for later licence may be available on request.",
+  welcomes:
+    "Games competitions / tournaments\nVIP events\nPrivate parties\nOwn music playlists",
+  house_rules: "No outside catering. Background music only.",
+  testimonial:
+    "\"Thank you for hosting our 2019 Summer Intern event — the feedback from the group has been great, they really enjoyed themselves.\"\n— Brad",
+};
 
 export default function BoroughPrivateHirePage() {
-  const title = useContent(
-    "privatehire.borough.title",
-    "Take Over Plonk Borough",
+  const heroImage = useImage("privatehire.borough.hero_image", DEFAULTS.hero_image);
+  const eyebrow = useContent("privatehire.borough.eyebrow", DEFAULTS.eyebrow);
+  const title = useContent("privatehire.borough.title", DEFAULTS.title);
+  const intro = useContent("privatehire.borough.intro", DEFAULTS.intro);
+
+  const popularHeading = useContent(
+    "privatehire.borough.popular_heading",
+    DEFAULTS.popular_heading,
   );
+  const popularList = lines(
+    useContent("privatehire.borough.popular_list", DEFAULTS.popular_list),
+  );
+  const aboutHeading = useContent(
+    "privatehire.borough.about_heading",
+    DEFAULTS.about_heading,
+  );
+  const aboutBody = useContent("privatehire.borough.about_body", DEFAULTS.about_body);
+
+  const capacity = useContent("privatehire.borough.capacity", DEFAULTS.capacity);
+  const features = lines(
+    useContent("privatehire.borough.features", DEFAULTS.features),
+  );
+  const catering = useContent("privatehire.borough.catering", DEFAULTS.catering);
+  const licences = useContent("privatehire.borough.licences", DEFAULTS.licences);
+  const welcomes = lines(
+    useContent("privatehire.borough.welcomes", DEFAULTS.welcomes),
+  );
+  const houseRules = useContent(
+    "privatehire.borough.house_rules",
+    DEFAULTS.house_rules,
+  );
+  const testimonial = useContent(
+    "privatehire.borough.testimonial",
+    DEFAULTS.testimonial,
+  );
+
+  // Capacity textarea: first line "Standing: 100", optional further
+  // lines render as small print under the big number.
+  const capacityLines = capacity.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const capacityHead = capacityLines[0] ?? "";
+  const capacityIdx = capacityHead.indexOf(":");
+  const capacityLabel =
+    capacityIdx >= 0 ? capacityHead.slice(0, capacityIdx).trim() : capacityHead;
+  const capacityValue =
+    capacityIdx >= 0 ? capacityHead.slice(capacityIdx + 1).trim() : "";
+  const capacitySmall = capacityLines.slice(1).join(" ").replace(/^—\s*/, "");
+
   return (
     <main>
       <PageHero
-        eyebrow="Private hire · Plonk Borough Market"
+        eyebrow={eyebrow}
         title={title}
-        intro="Four railway arches under London Bridge — yours for the night."
-        image="/borough/course/Course_4.jpg"
+        intro={intro}
+        image={heroImage}
       />
 
-      {/* Popular for + about (forest → ember) */}
       <section className="tint-forest-to-emberDeep px-6 py-24">
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              Plonk Borough is popular for
+              {popularHeading}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
-              {POPULAR_FOR.map((t) => (
+              {popularList.map((t) => (
                 <span
                   key={t}
                   className="rounded-full border border-emberLine/80 bg-emberDeep/60 px-4 py-1.5 text-sm text-cream/90"
@@ -66,50 +116,36 @@ export default function BoroughPrivateHirePage() {
 
           <Reveal delay={120}>
             <h2 className="mt-12 font-display text-3xl leading-tight sm:text-4xl">
-              About this venue
+              {aboutHeading}
             </h2>
-            <p className="mt-6 text-base leading-relaxed text-cream/85 sm:text-lg">
-              Plonk at Borough Market is a celebration of all things London.
-              A crew of London's best muralists and street artists have
-              created a 360° gallery on the walls, ceiling and floor of the
-              arches underneath London Bridge. This festival of street art
-              wraps a nine-hole golf course that showcases the city's most
-              famous monuments, sights and traditions — and some of our best
-              ever obstacles.
-            </p>
-            <p className="mt-4 text-base leading-relaxed text-cream/85 sm:text-lg">
-              With a full-service cocktail bar and a packed arcade — shooters,
-              fighters, button-bashers, air hockey, ping pong, foosball and
-              pinball — there's something here for every kind of guest. We
-              can accommodate up to{" "}
-              <strong className="text-cream">100 people</strong> for private
-              hires.
-            </p>
+            <div className="mt-6 space-y-4 text-base leading-relaxed text-cream/85 sm:text-lg">
+              {aboutBody.split(/\n\n+/).map((para, i) => (
+                <p key={i} className="whitespace-pre-line">
+                  {para}
+                </p>
+              ))}
+            </div>
           </Reveal>
         </div>
       </section>
 
-      {/* Fact sheet (ember) */}
       <section className="tint-emberDeep-to-ember px-6 py-24">
         <div className="mx-auto max-w-6xl space-y-12">
-          {/* Capacity */}
           <FactPanel title="Capacity">
             <div className="rounded-2xl border border-emberLine/80 bg-emberDeep/60 p-8 text-center">
               <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                Standing
+                {capacityLabel}
               </p>
-              <p className="mt-3 font-display text-6xl text-cream">100</p>
-              <p className="mt-4 text-sm text-cream/65">
-                Perfect for smaller takeovers — and ideal to combine with a
-                meal out in the market afterwards.
-              </p>
+              <p className="mt-3 font-display text-6xl text-cream">{capacityValue}</p>
+              {capacitySmall && (
+                <p className="mt-4 text-sm text-cream/65">{capacitySmall}</p>
+              )}
             </div>
           </FactPanel>
 
-          {/* Room features */}
           <FactPanel title="Room features">
             <ul className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
-              {ROOM_FEATURES.map((f) => (
+              {features.map((f) => (
                 <li key={f} className="flex items-center gap-3 text-sm text-cream/90">
                   <Check />
                   {f}
@@ -118,27 +154,21 @@ export default function BoroughPrivateHirePage() {
             </ul>
           </FactPanel>
 
-          {/* Catering */}
           <FactPanel title="Catering">
-            <p className="text-sm leading-relaxed text-cream/85 sm:text-base">
-              We offer sharing platters and boards at Borough Market —
-              vegetarian boards, charcuterie sharers, and dip selections.
+            <p className="whitespace-pre-line text-sm leading-relaxed text-cream/85 sm:text-base">
+              {catering}
             </p>
           </FactPanel>
 
-          {/* Licences */}
           <FactPanel title="Licences">
-            <p className="text-sm leading-relaxed text-cream/85 sm:text-base">
-              Alcohol licence until <strong className="text-cream">20:00</strong>.
-              Temporary Events Notice for later licence may be available on
-              request.
+            <p className="whitespace-pre-line text-sm leading-relaxed text-cream/85 sm:text-base">
+              {licences}
             </p>
           </FactPanel>
 
-          {/* Venue welcomes */}
           <FactPanel title="Venue welcomes">
             <ul className="grid gap-x-6 gap-y-3 sm:grid-cols-2">
-              {WELCOMES.map((w) => (
+              {welcomes.map((w) => (
                 <li key={w} className="flex items-center gap-3 text-sm text-cream/90">
                   <Check />
                   {w}
@@ -147,24 +177,19 @@ export default function BoroughPrivateHirePage() {
             </ul>
           </FactPanel>
 
-          {/* Rules */}
           <FactPanel title="House rules">
-            <p className="text-sm leading-relaxed text-cream/85 sm:text-base">
-              No outside catering. Background music only.
+            <p className="whitespace-pre-line text-sm leading-relaxed text-cream/85 sm:text-base">
+              {houseRules}
             </p>
           </FactPanel>
 
-          {/* Testimonial */}
-          <FactPanel title="Testimonial">
-            <blockquote className="text-base leading-relaxed text-cream/90 sm:text-lg">
-              "Thank you for hosting our 2019 Summer Intern event — the
-              feedback from the group has been great, they really enjoyed
-              themselves."
-            </blockquote>
-            <p className="mt-4 text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              — Brad
-            </p>
-          </FactPanel>
+          {testimonial && (
+            <FactPanel title="Testimonial">
+              <blockquote className="whitespace-pre-line text-base leading-relaxed text-cream/90 sm:text-lg">
+                {testimonial}
+              </blockquote>
+            </FactPanel>
+          )}
 
           <Reveal>
             <Link
@@ -182,19 +207,11 @@ export default function BoroughPrivateHirePage() {
   );
 }
 
-function FactPanel({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+function FactPanel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <Reveal>
       <div className="rounded-3xl border border-emberLine/60 bg-emberRaised p-7 sm:p-9">
-        <h3 className="font-display text-2xl text-plonkYellow sm:text-3xl">
-          {title}
-        </h3>
+        <h3 className="font-display text-2xl text-plonkYellow sm:text-3xl">{title}</h3>
         <div className="mt-6">{children}</div>
       </div>
     </Reveal>

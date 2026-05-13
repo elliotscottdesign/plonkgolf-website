@@ -5,7 +5,7 @@ import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
 import BigEmailCta from "@/components/BigEmailCta";
-import { useContent } from "@/lib/content";
+import { useContent, useImage } from "@/lib/content";
 
 const VENUES = [
   {
@@ -34,7 +34,7 @@ const VENUES = [
   },
 ];
 
-const REASONS = [
+const REASONS_FALLBACK = [
   {
     title: "Bring your people",
     body: "Birthdays, hen dos, work socials, Christmas parties, weddings — we'll host them all and they'll remember it for the right reasons.",
@@ -50,18 +50,51 @@ const REASONS = [
 ];
 
 export default function PrivateHirePage() {
+  const heroImage = useImage("privatehire.hero_image", "/borough/course/Course_3.jpg");
+  const eyebrow = useContent(
+    "privatehire.eyebrow",
+    "Parties · Corporate · Christmas · Weddings",
+  );
   const title = useContent("privatehire.title", "Take Over Plonk");
   const intro = useContent(
     "privatehire.intro",
     "Two London venues, one unforgettable party. Take over a course, an arch, or the whole place.",
   );
+
+  const reasonsEyebrow = useContent("privatehire.reasons.eyebrow", "Why hire Plonk");
+  const reasonsHeading = useContent(
+    "privatehire.reasons.heading",
+    "The kind of party people actually remember.",
+  );
+  const r1Title = useContent("privatehire.reason1.title", REASONS_FALLBACK[0].title);
+  const r1Body = useContent("privatehire.reason1.body", REASONS_FALLBACK[0].body);
+  const r2Title = useContent("privatehire.reason2.title", REASONS_FALLBACK[1].title);
+  const r2Body = useContent("privatehire.reason2.body", REASONS_FALLBACK[1].body);
+  const r3Title = useContent("privatehire.reason3.title", REASONS_FALLBACK[2].title);
+  const r3Body = useContent("privatehire.reason3.body", REASONS_FALLBACK[2].body);
+  const reasons = [
+    { title: r1Title, body: r1Body },
+    { title: r2Title, body: r2Body },
+    { title: r3Title, body: r3Body },
+  ];
+
+  const venuesEyebrow = useContent("privatehire.venues.eyebrow", "Pick a venue");
+  const venuesHeading = useContent(
+    "privatehire.venues.heading",
+    "Two takeover-ready venues.",
+  );
+  const venuesIntro = useContent(
+    "privatehire.venues.intro",
+    "Tap a venue for the full fact sheet — capacities, catering, licences, room features, the lot.",
+  );
+
   return (
     <main>
       <PageHero
-        eyebrow="Parties · Corporate · Christmas · Weddings"
+        eyebrow={eyebrow}
         title={title}
         intro={intro}
-        image="/borough/course/Course_3.jpg"
+        image={heroImage}
       />
 
       {/* Reasons (forest → ember) */}
@@ -69,21 +102,21 @@ export default function PrivateHirePage() {
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              Why hire Plonk
+              {reasonsEyebrow}
             </p>
             <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
-              The kind of party people actually remember.
+              {reasonsHeading}
             </h2>
           </Reveal>
           <div className="mt-14 grid gap-6 md:grid-cols-3">
-            {REASONS.map((r, i) => (
-              <Reveal key={r.title} delay={i * 100}>
+            {reasons.map((r, i) => (
+              <Reveal key={i} delay={i * 100}>
                 <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
                   <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                     0{i + 1}
                   </p>
                   <h3 className="mt-3 font-display text-2xl">{r.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-cream/75">
+                  <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/75">
                     {r.body}
                   </p>
                 </div>
@@ -98,14 +131,13 @@ export default function PrivateHirePage() {
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              Pick a venue
+              {venuesEyebrow}
             </p>
             <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
-              Two takeover-ready venues.
+              {venuesHeading}
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-center text-base leading-relaxed text-cream/75">
-              Tap a venue for the full fact sheet — capacities, catering,
-              licences, room features, the lot.
+            <p className="mx-auto mt-6 whitespace-pre-line max-w-2xl text-center text-base leading-relaxed text-cream/75">
+              {venuesIntro}
             </p>
           </Reveal>
 

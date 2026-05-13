@@ -131,6 +131,15 @@ const EXPLICIT_SPECS: Record<string, ImageSpec> = {
   "events.hero_image": HERO_SPEC,
   "deals.hero_image": HERO_SPEC,
   "vouchers.hero_image": HERO_SPEC,
+  "privatehire.hero_image": HERO_SPEC,
+  "privatehire.hackney.hero_image": HERO_SPEC,
+  "privatehire.borough.hero_image": HERO_SPEC,
+  "venue.borough.feature1.image": LANDSCAPE_53_SPEC,
+  "venue.borough.feature2.image": LANDSCAPE_53_SPEC,
+  "venue.borough.feature3.image": LANDSCAPE_53_SPEC,
+  "venue.borough.feature4.image": LANDSCAPE_53_SPEC,
+  "venue.borough.feature5.image": LANDSCAPE_53_SPEC,
+  "venue.borough.feature6.image": LANDSCAPE_53_SPEC,
 
   // ----- Galleries (gallery_images.gallery_key) -----
   "home.features": LANDSCAPE_53_SPEC,
