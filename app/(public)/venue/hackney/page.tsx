@@ -3,8 +3,21 @@
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Reveal from "@/components/Reveal";
-import { useContent, useImage } from "@/lib/content";
+import { useContent, useImage, useGallery } from "@/lib/content";
 import { Editable, DisplayImage } from "@/components/Editable";
+
+// Default event posters used when the hackney.events gallery is empty.
+const EVENT_POSTERS_FALLBACK = [
+  { src: "/hackney/events/Happy_Hour.jpg", alt: "Happy Hour at No Dice" },
+  { src: "/hackney/events/No_Dice_Mondays.jpg", alt: "No Dice Mondays" },
+  { src: "/hackney/events/Burger_Deal.jpg", alt: "Burger deal at Snack Bar" },
+  { src: "/hackney/events/Fun_of_the_Fair.jpg", alt: "Fun of the Fair" },
+  { src: "/hackney/events/Cue.jpg", alt: "Cue — pool night" },
+  { src: "/hackney/events/Martini_Fries.jpg", alt: "Martini & Fries" },
+  { src: "/hackney/events/Rolling_Bones.jpg", alt: "Rolling Bones" },
+  { src: "/hackney/events/Fun_Club.jpg", alt: "Fun Club" },
+  { src: "/hackney/events/Pingers.jpg", alt: "Pingers — ping pong night" },
+];
 
 export default function HackneyPage() {
   // ---------- Hero ----------
@@ -82,11 +95,14 @@ export default function HackneyPage() {
     "venue.hackney.events.intro",
     "DJs, pool tournaments, parties, pop-ups — what's on at the games bar.",
   );
-  // (Events scroller removed pending a full rebuild — see git log.)
-  // The eventsHeading + eventsIntro fields stay registered so the new
-  // section can wire straight back into them.
-  void eventsHeading;
-  void eventsIntro;
+  // Events posters — read from hackney.events gallery, fall back to
+  // the bundled JPGs. Plain <img> tags below (not next/image) to keep
+  // this lean and avoid any next-image runtime weirdness this section
+  // hit on first launch.
+  const eventsPosters = useGallery(
+    "hackney.events",
+    EVENT_POSTERS_FALLBACK,
+  );
 
   // ---------- Find us ----------
   const findusHeading = useContent("venue.hackney.findus.heading", "Find us");
@@ -191,9 +207,40 @@ export default function HackneyPage() {
         </div>
       </section>
 
-      {/* Events section removed — see commit log. Will be rebuilt as a
-          fully-editable section once the audit-and-convert pass below
-          reaches it. */}
+      {/* Events at No Dice — gallery-driven, manage at /admin/content/galleries (key: hackney.events) */}
+      {eventsPosters.length > 0 && (
+        <section className="tint-plum-island-ember">
+          <div className="mx-auto max-w-6xl px-6 py-16">
+            <h2 className="text-center font-display text-3xl sm:text-4xl">
+              {eventsHeading}
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-center text-sm text-cream/75">
+              {eventsIntro}
+            </p>
+
+            {/* Plain <img> grid — no Next/image loader, no aspect-[5/7]
+                arbitrary class, no horizontal scroll quirks. Wraps onto
+                multiple rows on every viewport so every poster is always
+                visible without scrolling. */}
+            <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+              {eventsPosters.map((p, i) => (
+                <article
+                  key={`${p.src}-${i}`}
+                  className="overflow-hidden rounded-2xl border border-cream/10 bg-black/20"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={p.src}
+                    alt={p.alt ?? ""}
+                    className="block aspect-[5/7] w-full object-cover"
+                    loading="lazy"
+                  />
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Find us */}
       <section className="px-6 py-24">

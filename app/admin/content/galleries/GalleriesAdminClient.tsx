@@ -38,6 +38,16 @@ const KNOWN_GALLERIES: { key: string; label: string; description: string }[] = [
     label: "Borough page gallery",
     description: "Photo strip on /venue/borough-market.",
   },
+  {
+    key: "home.press",
+    label: "Homepage — Press logos",
+    description: 'The "As featured in" marquee strip on the homepage.',
+  },
+  {
+    key: "hackney.events",
+    label: "Hackney — Events posters",
+    description: '"Events at No Dice" poster grid on /venue/hackney.',
+  },
 ];
 
 function describe(err: unknown, fallback: string) {

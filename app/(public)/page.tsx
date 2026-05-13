@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import HeroBookingWidget from "@/components/HeroBookingWidget";
-import { useContent, useImage } from "@/lib/content";
+import { useContent, useImage, useGallery } from "@/lib/content";
 
 const PRESS = [
   { name: "Evening Standard", src: "/images/London-Evening-Standard-logo.jpg" },
@@ -195,29 +195,8 @@ export default function HomePage() {
       </section>
 
       {/* ───────────── PRESS MARQUEE (ember) ───────────── */}
-      <section className="tint-ember overflow-hidden py-12">
-        <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-cream/40">
-          As featured in
-        </p>
-        <div className="no-scrollbar mt-8 flex w-full overflow-x-hidden">
-          <div className="marquee flex shrink-0 items-center gap-16 px-8">
-            {[...PRESS, ...PRESS].map((p, i) => (
-              <div
-                key={`${p.name}-${i}`}
-                className="relative h-10 w-28 shrink-0 opacity-60 grayscale"
-              >
-                <Image
-                  src={p.src}
-                  alt={p.name}
-                  fill
-                  className="object-contain"
-                  sizes="112px"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <PressMarquee fallback={PRESS} />
+
 
       {/* ───────────── PRIVATE HIRE + VOUCHERS (ember → forest) ───────────── */}
       <section className="px-6 py-28">
@@ -279,6 +258,50 @@ export default function HomePage() {
 }
 
 /* ───────────── components ───────────── */
+
+// Press logo marquee — reads the strip from the home.press gallery in
+// Supabase when populated, otherwise falls back to the hardcoded
+// PRESS list at the top of this file. The eyebrow line above the
+// logos is editable via the home.press.eyebrow page_content key.
+function PressMarquee({
+  fallback,
+}: {
+  fallback: { name: string; src: string }[];
+}) {
+  const eyebrow = useContent("home.press.eyebrow", "As featured in");
+  const gallery = useGallery(
+    "home.press",
+    fallback.map((p) => ({ src: p.src, alt: p.name })),
+  );
+  // Duplicate the array so the CSS marquee animation loops seamlessly.
+  const looped = [...gallery, ...gallery];
+  return (
+    <section className="tint-ember overflow-hidden py-12">
+      <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-cream/40">
+        {eyebrow}
+      </p>
+      <div className="no-scrollbar mt-8 flex w-full overflow-x-hidden">
+        <div className="marquee flex shrink-0 items-center gap-16 px-8">
+          {looped.map((p, i) => (
+            <div
+              key={`${p.src}-${i}`}
+              className="relative h-10 w-28 shrink-0 opacity-60 grayscale"
+            >
+              <Image
+                src={p.src}
+                alt={p.alt ?? ""}
+                fill
+                className="object-contain"
+                sizes="112px"
+                unoptimized={p.src.startsWith("http")}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function VenueSpotlight({
   name,

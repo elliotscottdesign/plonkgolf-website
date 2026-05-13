@@ -140,6 +140,30 @@ const EXPLICIT_SPECS: Record<string, ImageSpec> = {
   "venue.borough.feature4.image": LANDSCAPE_53_SPEC,
   "venue.borough.feature5.image": LANDSCAPE_53_SPEC,
   "venue.borough.feature6.image": LANDSCAPE_53_SPEC,
+  "about.hero_image": HERO_SPEC,
+  "about.body_image1": LANDSCAPE_43_SPEC,
+  "about.body_image2": LANDSCAPE_43_SPEC,
+  "header.logo_image": {
+    label: "Logo",
+    orientation: "landscape",
+    aspectLabel: "≈2.5:1",
+    aspectClass: "aspect-[5/2]",
+    width: 560,
+    height: 224,
+    maxKb: 60,
+    notes: "Transparent PNG works best (the header sits on black).",
+  },
+  "home.press": {
+    label: "Press logo",
+    orientation: "landscape",
+    aspectLabel: "≈2:1",
+    aspectClass: "aspect-[2/1]",
+    width: 600,
+    height: 300,
+    maxKb: 40,
+    notes:
+      "Logos render at 112×40px and are auto-greyscaled. PNG with transparency is ideal; otherwise white-on-transparent or grey-on-transparent gives the best result.",
+  },
 
   // ----- Galleries (gallery_images.gallery_key) -----
   "home.features": LANDSCAPE_53_SPEC,

@@ -100,11 +100,24 @@ const PAGES: { label: string; href: string; description: string; group: string }
     group: "Media",
     label: "Galleries",
     href: "/admin/content/galleries",
-    description: "Photo grids on the homepage, about page and venue pages. Upload, reorder, replace.",
+    description: "Photo grids across the site — homepage features + press logos, about, venue galleries, Hackney events posters.",
+  },
+
+  {
+    group: "Site-wide",
+    label: "Header",
+    href: "/admin/content/global/header",
+    description: "Logo, nav links and the Book Now button — everything in the sticky top bar.",
+  },
+  {
+    group: "Site-wide",
+    label: "Footer",
+    href: "/admin/content/global/footer",
+    description: "Brand block, venue addresses, social links, copyright.",
   },
 ];
 
-const GROUPS = ["Marketing", "Private hire", "Info pages", "Media"];
+const GROUPS = ["Marketing", "Private hire", "Info pages", "Media", "Site-wide"];
 
 export default function ContentLandingPage() {
   return (

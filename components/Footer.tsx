@@ -1,55 +1,128 @@
 "use client";
 
 import Link from "next/link";
+import { useContent } from "@/lib/content";
 
-const SOCIALS: { label: string; href: string }[] = [
-  { label: "Instagram", href: "https://www.instagram.com/plonkgolf/" },
-  { label: "Facebook", href: "https://www.facebook.com/pages/PLONK-Golf/749762088452016" },
-  { label: "Twitter", href: "https://twitter.com/plonkgolf" },
-  { label: "YouTube", href: "https://www.youtube.com/channel/UCrMFq-Wzdk1ry81KTp0HPyw" },
-];
+const FALLBACK_SOCIALS = [
+  "Instagram | https://www.instagram.com/plonkgolf/",
+  "Facebook | https://www.facebook.com/pages/PLONK-Golf/749762088452016",
+  "Twitter | https://twitter.com/plonkgolf",
+  "YouTube | https://www.youtube.com/channel/UCrMFq-Wzdk1ry81KTp0HPyw",
+].join("\n");
+
+function parseLinks(s: string): { label: string; href: string }[] {
+  return s
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const idx = line.indexOf("|");
+      if (idx < 0) return null;
+      const label = line.slice(0, idx).trim();
+      const href = line.slice(idx + 1).trim();
+      if (!label || !href) return null;
+      return { label, href };
+    })
+    .filter((x): x is { label: string; href: string } => x !== null);
+}
+
+// Address lines starting with — render as muted subtext.
+function addressLines(s: string): { text: string; muted: boolean }[] {
+  return s
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+    .map((line) =>
+      line.startsWith("—")
+        ? { text: line.replace(/^—\s*/, ""), muted: true }
+        : { text: line, muted: false },
+    );
+}
 
 export default function Footer() {
+  const brandTitle = useContent("footer.brand_title", "Plonk Golf");
+  const brandTagline = useContent(
+    "footer.brand_tagline",
+    "London's Original Crazy Golf and Games Bars. Accept no imitators.",
+  );
+  const brandEmail = useContent("footer.brand_email", "info@plonkgolf.co.uk");
+
+  const hackneyHeading = useContent("footer.hackney_heading", "Hackney");
+  const hackneyAddress = useContent(
+    "footer.hackney_address",
+    "Arch 407, Mentmore Terrace\nLondon E8 3PP\n— Main entrance on Parkside",
+  );
+  const boroughHeading = useContent("footer.borough_heading", "Borough Market");
+  const boroughAddress = useContent(
+    "footer.borough_address",
+    "Arches B, C, D & E Montague Close\nOff Green Dragon Court\nLondon SE1 9DA",
+  );
+
+  const socialsHeading = useContent("footer.socials_heading", "Follow");
+  const socialsRaw = useContent("footer.socials", FALLBACK_SOCIALS);
+  const SOCIALS = parseLinks(socialsRaw);
+
+  const copyrightTemplate = useContent(
+    "footer.copyright",
+    "© {{year}} Plonk Golf Ltd. All rights reserved.",
+  );
+  const copyright = copyrightTemplate.replace(
+    /\{\{\s*year\s*\}\}/gi,
+    String(new Date().getFullYear()),
+  );
+
+  const hackneyRows = addressLines(hackneyAddress);
+  const boroughRows = addressLines(boroughAddress);
+
   return (
     <footer className="bg-forestDeep">
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-4">
         <div>
-          <h3 className="font-display text-2xl">Plonk Golf</h3>
-          <p className="mt-3 text-sm leading-relaxed text-cream/70">
-            London's Original Crazy Golf and Games Bars. Accept no imitators.
+          <h3 className="font-display text-2xl">{brandTitle}</h3>
+          <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/70">
+            {brandTagline}
           </p>
-          <p className="mt-4 text-sm text-cream/70">
-            <a href="mailto:info@plonkgolf.co.uk" className="underline-offset-4 hover:text-cream hover:underline">
-              info@plonkgolf.co.uk
-            </a>
-          </p>
+          {brandEmail && (
+            <p className="mt-4 text-sm text-cream/70">
+              <a
+                href={`mailto:${brandEmail}`}
+                className="underline-offset-4 hover:text-cream hover:underline"
+              >
+                {brandEmail}
+              </a>
+            </p>
+          )}
         </div>
 
         <div>
           <h4 className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-            Hackney
+            {hackneyHeading}
           </h4>
           <address className="mt-3 not-italic text-sm leading-relaxed text-cream/65">
-            Arch 407, Mentmore Terrace<br />
-            London E8 3PP<br />
-            <span className="text-cream/45">Main entrance on Parkside</span>
+            {hackneyRows.map((r, i) => (
+              <span key={i} className={r.muted ? "block text-cream/45" : "block"}>
+                {r.text}
+              </span>
+            ))}
           </address>
         </div>
 
         <div>
           <h4 className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-            Borough Market
+            {boroughHeading}
           </h4>
           <address className="mt-3 not-italic text-sm leading-relaxed text-cream/65">
-            Arches B, C, D & E Montague Close<br />
-            Off Green Dragon Court<br />
-            London SE1 9DA
+            {boroughRows.map((r, i) => (
+              <span key={i} className={r.muted ? "block text-cream/45" : "block"}>
+                {r.text}
+              </span>
+            ))}
           </address>
         </div>
 
         <div>
           <h4 className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-            Follow
+            {socialsHeading}
           </h4>
           <ul className="mt-3 space-y-2 text-sm">
             {SOCIALS.map((s) => (
@@ -70,7 +143,7 @@ export default function Footer() {
 
       <div className="border-t border-forestLine/40">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-5 text-xs text-cream/50 md:flex-row md:items-center md:justify-between">
-          <span>© {new Date().getFullYear()} Plonk Golf Ltd. All rights reserved.</span>
+          <span>{copyright}</span>
           <div className="flex flex-wrap gap-5">
             <Link href="/privacy" className="hover:text-cream">Privacy</Link>
             <Link href="/terms" className="hover:text-cream">Terms</Link>
