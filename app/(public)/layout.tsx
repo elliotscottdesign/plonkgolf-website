@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AdminBar from "@/components/AdminBar";
 import { ContentProvider } from "@/lib/content";
 
 export default function PublicLayout({
@@ -14,6 +15,7 @@ export default function PublicLayout({
         <div className="flex-1">{children}</div>
         <Footer />
       </div>
+      <AdminBar />
     </ContentProvider>
   );
 }
