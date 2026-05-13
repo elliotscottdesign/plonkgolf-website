@@ -393,7 +393,13 @@ function BlockCard({
             />
             {pickerOpen && (
               <MediaPicker
-                onPick={(path) => {
+                onPick={(picked) => {
+                  // MediaPicker now returns either a plain path or
+                  // the full positioned ImageDisplay record. Block
+                  // images store just the URL — extract .src when we
+                  // get the structured form.
+                  const path =
+                    typeof picked === "string" ? picked : picked.src;
                   onUpdate({ value: path });
                   setPickerOpen(false);
                 }}
