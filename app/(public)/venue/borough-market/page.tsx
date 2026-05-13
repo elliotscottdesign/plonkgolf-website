@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import Gallery from "@/components/Gallery";
 import Reveal from "@/components/Reveal";
 import { useContent, useImage, useGallery } from "@/lib/content";
+import { Editable, DisplayImage } from "@/components/Editable";
 
 const BOROUGH_GALLERY_FALLBACK = [
   { src: "/borough/course/Course_2.jpg", alt: "Plonk Borough course" },
@@ -199,30 +199,30 @@ export default function BoroughMarketPage() {
         image={heroImage || sliderImages}
       />
 
-      {/* London course intro (forest → ember) */}
+      {/* London course intro */}
       <section className="tint-forest-to-plum relative overflow-hidden px-6 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16">
           <Reveal>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl md:order-2">
-              <Image
-                src="/borough/course/Course_2.jpg"
+            <div className="md:order-2">
+              <DisplayImage
+                k="venue.borough.body_image"
+                fallback="/borough/course/Course_2.jpg"
+                aspect="4/5"
                 alt="Borough London-themed course"
-                fill
-                sizes="(min-width: 768px) 50vw, 100vw"
-                className="object-contain"
+                rounded
               />
             </div>
           </Reveal>
           <Reveal delay={120}>
             <div className="md:order-1">
               <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                {bodyEyebrow}
+                <Editable k="venue.borough.body_eyebrow">{bodyEyebrow}</Editable>
               </p>
               <h2 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
-                {bodyHeading}
+                <Editable k="venue.borough.body_heading">{bodyHeading}</Editable>
               </h2>
               <p className="mt-6 whitespace-pre-line text-base leading-relaxed text-cream/80 sm:text-lg">
-                {bodyIntro}
+                <Editable k="venue.borough.body_intro" multiline>{bodyIntro}</Editable>
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
@@ -248,10 +248,10 @@ export default function BoroughMarketPage() {
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-              {featuresEyebrow}
+              <Editable k="venue.borough.features.eyebrow">{featuresEyebrow}</Editable>
             </p>
             <h2 className="mt-6 text-center font-display text-4xl sm:text-5xl">
-              {featuresHeading}
+              <Editable k="venue.borough.features.heading">{featuresHeading}</Editable>
             </h2>
           </Reveal>
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -259,6 +259,8 @@ export default function BoroughMarketPage() {
               <FeatureCard
                 key={i}
                 kImage={f.keyPrefix + ".image"}
+                kTitle={f.keyPrefix + ".title"}
+                kBody={f.keyPrefix + ".body"}
                 fallbackImage={f.fallback.image}
                 title={f.title}
                 body={f.body}
@@ -279,13 +281,15 @@ export default function BoroughMarketPage() {
       <section className="px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
-            <h2 className="font-display text-4xl sm:text-5xl">{findusHeading}</h2>
+            <h2 className="font-display text-4xl sm:text-5xl">
+              <Editable k="venue.borough.findus.heading">{findusHeading}</Editable>
+            </h2>
           </Reveal>
 
           {findusCallout && (
             <Reveal delay={100}>
               <div className="mt-6 whitespace-pre-line rounded-2xl border border-plonkYellow/40 bg-plonkYellow/10 p-5 text-sm leading-relaxed text-plonkYellow">
-                {findusCallout}
+                <Editable k="venue.borough.findus.callout" multiline>{findusCallout}</Editable>
               </div>
             </Reveal>
           )}
@@ -297,11 +301,11 @@ export default function BoroughMarketPage() {
                   Address
                 </p>
                 <address className="mt-3 whitespace-pre-line not-italic text-base leading-relaxed text-cream/90">
-                  {findusAddress}
+                  <Editable k="venue.borough.findus.address" multiline>{findusAddress}</Editable>
                 </address>
                 {findusEntrance && (
                   <p className="mt-3 whitespace-pre-line text-sm text-cream/65">
-                    {findusEntrance}
+                    <Editable k="venue.borough.findus.entrance" multiline>{findusEntrance}</Editable>
                   </p>
                 )}
               </div>
@@ -309,10 +313,10 @@ export default function BoroughMarketPage() {
             <Reveal delay={100}>
               <div className="h-full rounded-2xl border border-plumLine/60 p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-                  {findusAccessHeading}
+                  <Editable k="venue.borough.findus.access_heading">{findusAccessHeading}</Editable>
                 </p>
                 <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/80">
-                  {findusAccessBody}
+                  <Editable k="venue.borough.findus.access_body" multiline>{findusAccessBody}</Editable>
                 </p>
               </div>
             </Reveal>
@@ -325,36 +329,33 @@ export default function BoroughMarketPage() {
 
 function FeatureCard({
   kImage,
+  kTitle,
+  kBody,
   fallbackImage,
   title,
   body,
 }: {
   kImage: string;
+  kTitle: string;
+  kBody: string;
   fallbackImage: string;
   title: string;
   body: string;
 }) {
-  const image = useImage(kImage, fallbackImage);
   return (
     <Reveal>
-      <article className="group h-full overflow-hidden rounded-2xl border border-plumLine/50 transition hover:border-plonkYellow/40">
-        <div className="relative aspect-[5/3] overflow-hidden">
-          <Image
-            src={image}
-            alt=""
-            fill
-            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-            className="object-contain transition duration-700 group-hover:scale-105"
-            unoptimized={image.startsWith("http")}
-          />
-        </div>
-        <div className="p-6">
-          <h3 className="font-display text-2xl">{title}</h3>
+      <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 transition hover:border-plonkYellow/40">
+        <DisplayImage k={kImage} fallback={fallbackImage} aspect="5/3" />
+        <div className="flex flex-1 flex-col p-6">
+          <h3 className="font-display text-2xl">
+            <Editable k={kTitle}>{title}</Editable>
+          </h3>
           <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/75">
-            {body}
+            <Editable k={kBody} multiline>{body}</Editable>
           </p>
         </div>
       </article>
     </Reveal>
   );
 }
+
