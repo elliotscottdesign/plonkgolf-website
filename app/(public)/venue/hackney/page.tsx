@@ -176,7 +176,7 @@ export default function HackneyPage() {
           </Reveal>
           <Reveal delay={120}>
             <EditableImage k="venue.hackney.body_image">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumDeep">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
                 <Image
                   src={bodyImage}
                   alt="Polynesian course detail"
@@ -284,7 +284,7 @@ function FeatureCard({
     <Reveal>
       <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-plumLine/50 bg-plumRaised transition hover:border-plonkYellow/40">
         <EditableImage k={kImage}>
-          <div className="relative aspect-[5/3] overflow-hidden bg-plumDeep">
+          <div className="relative aspect-[5/3] overflow-hidden">
             <Image
               src={image}
               alt=""
