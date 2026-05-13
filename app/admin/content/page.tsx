@@ -77,6 +77,24 @@ const PAGES: { label: string; href: string; description: string; group: string }
     href: "/admin/content/info/privacy",
     description: "Copy on /privacy.",
   },
+  {
+    group: "Info pages",
+    label: "Events",
+    href: "/admin/content/info/events",
+    description: "Event listings shown on /events. Add, edit, delete by venue.",
+  },
+  {
+    group: "Info pages",
+    label: "Deals",
+    href: "/admin/content/info/deals",
+    description: "Off-peak deals shown on /deals.",
+  },
+  {
+    group: "Info pages",
+    label: "Vouchers",
+    href: "/admin/content/info/vouchers",
+    description: "Copy + perk blurbs on /vouchers.",
+  },
 
   {
     group: "Media",

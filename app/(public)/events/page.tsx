@@ -1,103 +1,113 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useEffect, useState } from "react";
 import PageHero from "@/components/PageHero";
+import { useContent, useImage } from "@/lib/content";
+import {
+  loadEvents,
+  groupEvents,
+  type DbSiteEvent,
+} from "@/lib/db/events";
 
-export const metadata: Metadata = {
-  title: "Events — Plonk Golf",
-  description:
-    "Recurring nights run by our partner venues — Plonk Hackney at No Dice Bar, and Plonk Borough. Boozy brunches, pool tournaments, chess & jazz, ping pong nights.",
-};
-
-type Event = {
-  day: string;
-  title: string;
-  body: string;
-  featured?: boolean;
-};
-
-const HACKNEY_EVENTS: Event[] = [
+// Fallback events used when site_events table is empty (e.g. before
+// the admin has added anything). Once the admin uploads, those win.
+const FALLBACK_EVENTS: DbSiteEvent[] = [
   {
+    id: "fb-h-1",
+    venue: "Plonk Hackney at No Dice Bar",
     day: "Every Saturday",
     title: "Boozy Ballzy Brunch",
-    body:
-      "Join us for the ultimate bottomless brunch experience. Epic games, unlimited drinks, delicious food, and endless fun.",
+    body: "Join us for the ultimate bottomless brunch experience. Epic games, unlimited drinks, delicious food, and endless fun.",
     featured: true,
+    venue_order: 1,
+    event_order: 1,
+    active: true,
   },
   {
+    id: "fb-h-2",
+    venue: "Plonk Hackney at No Dice Bar",
     day: "1st Tuesday of the month",
     title: "Queer Pool Social",
-    body:
-      "Ladies and Queer Pool Social — pool games, prizes, more pool, more prizes. Free entry, just come along.",
+    body: "Ladies and Queer Pool Social — pool games, prizes, more pool, more prizes. Free entry, just come along.",
+    featured: false,
+    venue_order: 1,
+    event_order: 2,
+    active: true,
   },
   {
-    day: "1st & 3rd Wednesdays",
-    title: "Singles Pool Tournament",
-    body:
-      "16 players go head-to-head across rounds then a knockout. £5 per player. Always sells out.",
-  },
-  {
-    day: "2nd & 4th Wednesdays",
-    title: "Doubles Pool Tournament",
-    body:
-      "8 teams battle across rounds of pool then a knockout. £10 team entry. Over £200 in bar tabs, medals, beer cases and Tees up for grabs.",
-  },
-  {
-    day: "First Sunday of the month",
-    title: "Chess & Jazz",
-    body:
-      "From 7pm — chess and jazz. Bring your own board or use ours. DJ spinning records, social tournament with prizes depending on numbers.",
-  },
-  {
-    day: "Last Sunday of the month",
-    title: "Ping Pong Tournament",
-    body:
-      "Heart-racing, ball-chasing evening of ping pong. Teams of two, one player up at a time, first to 11. Rounds then nail-biting knockouts. Bar tab prizes.",
-  },
-];
-
-const BOROUGH_EVENTS: Event[] = [
-  {
+    id: "fb-b-1",
+    venue: "Plonk Borough",
     day: "3rd Wednesday of the month",
     title: "Shoreditch Doubles Pool Tournament",
-    body:
-      "Riotous doubles night under London Bridge. Over £200 in prizes — only 8 slots, always sells out.",
+    body: "Riotous doubles night under London Bridge. Over £200 in prizes — only 8 slots, always sells out.",
+    featured: false,
+    venue_order: 2,
+    event_order: 1,
+    active: true,
   },
 ];
 
 export default function EventsPage() {
+  const eyebrow = useContent("events.eyebrow", "What's on");
+  const title = useContent("events.title", "Plonk Events");
+  const intro = useContent(
+    "events.intro",
+    "Events run by our partner venues — Plonk Hackney at No Dice Bar, and Plonk Borough.",
+  );
+  const heroImage = useImage("events.hero_image", "/hackney/games/Games_4.jpg");
+  const footerNote = useContent(
+    "events.footer_note",
+    "Bookable events will appear in the new booking system as it rolls out. Meanwhile, email info@plonkgolf.co.uk to reserve a slot.",
+  );
+
+  const [rows, setRows] = useState<DbSiteEvent[] | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    loadEvents()
+      .then((data) => {
+        if (!cancelled) setRows(data);
+      })
+      .catch(() => {
+        if (!cancelled) setRows([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const events = rows && rows.length > 0 ? rows : FALLBACK_EVENTS;
+  const grouped = groupEvents(events);
+
   return (
     <main>
-      <PageHero
-        eyebrow="What's on"
-        title="Plonk Events"
-        intro="Events run by our partner venues — Plonk Hackney at No Dice Bar, and Plonk Borough."
-        image="/hackney/games/Games_4.jpg"
-      />
+      <PageHero eyebrow={eyebrow} title={title} intro={intro} image={heroImage} />
 
       <section>
-      <div className="mx-auto max-w-6xl px-6 py-20">
-        <div className="grid gap-10 md:grid-cols-2">
-          <VenueColumn
-            name="Plonk Hackney at No Dice Bar"
-            events={HACKNEY_EVENTS}
-          />
-          <VenueColumn name="Plonk Borough" events={BOROUGH_EVENTS} />
-        </div>
+        <div className="mx-auto max-w-6xl px-6 py-20">
+          <div className="grid gap-10 md:grid-cols-2">
+            {grouped.map((g) => (
+              <VenueColumn key={g.venue} name={g.venue} events={g.items} />
+            ))}
+          </div>
 
-        <p className="mt-16 text-center text-sm text-cream/60">
-          Bookable events will appear in the new booking system as it rolls
-          out. Meanwhile,{" "}
-          <a href="mailto:info@plonkgolf.co.uk" className="underline text-cream">
-            email the team
-          </a>{" "}
-          to reserve a slot.
-        </p>
-      </div>
+          {footerNote && (
+            <p className="mt-16 whitespace-pre-line text-center text-sm text-cream/60">
+              {footerNote}
+            </p>
+          )}
+        </div>
       </section>
     </main>
   );
 }
 
-function VenueColumn({ name, events }: { name: string; events: Event[] }) {
+function VenueColumn({
+  name,
+  events,
+}: {
+  name: string;
+  events: DbSiteEvent[];
+}) {
   return (
     <div>
       <div className="border-b border-forestLine/60 pb-3">
@@ -110,7 +120,7 @@ function VenueColumn({ name, events }: { name: string; events: Event[] }) {
       <div className="mt-6 space-y-4">
         {events.map((e) => (
           <article
-            key={e.title}
+            key={e.id}
             className={`rounded-2xl p-6 ${
               e.featured
                 ? "border border-plonkPink/40 bg-gradient-to-br from-plonkPink/15 to-forestDeep"
@@ -128,7 +138,7 @@ function VenueColumn({ name, events }: { name: string; events: Event[] }) {
             <p className="mt-1 text-sm uppercase tracking-wider text-cream/60">
               {e.day}
             </p>
-            <p className="mt-3 text-sm leading-relaxed text-cream/80">
+            <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/80">
               {e.body}
             </p>
           </article>
