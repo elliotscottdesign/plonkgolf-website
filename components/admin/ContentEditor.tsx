@@ -177,6 +177,28 @@ function FieldEditor({
   );
 }
 
+// Pick the typography that mirrors how this field actually renders on
+// the live site, based on the content key. Keeps the admin editor
+// reading like a stripped-down version of the page — headlines look
+// like headlines, eyebrows like eyebrows, body copy like body copy.
+function liveTypography(contentKey: string, kind: FieldKind): string {
+  const k = contentKey.toLowerCase();
+  if (k.includes("eyebrow")) {
+    return "font-bold uppercase tracking-widest text-xs text-plonkYellow";
+  }
+  if (k.includes("headline") || k.includes("title")) {
+    return "font-display text-3xl leading-tight text-cream sm:text-4xl";
+  }
+  if (k.includes("heading")) {
+    return "font-display text-2xl leading-tight text-cream sm:text-3xl";
+  }
+  if (k.includes("tagline") || k.includes("subcopy") || k.includes("intro")) {
+    return "text-base leading-relaxed text-cream";
+  }
+  if (kind === "textarea") return "text-sm leading-relaxed text-cream";
+  return "text-sm text-cream";
+}
+
 function KindInput({
   kind,
   contentKey,
@@ -191,6 +213,7 @@ function KindInput({
   fallback?: string;
 }) {
   const placeholder = fallback ? `Default: ${fallback.slice(0, 60)}${fallback.length > 60 ? "…" : ""}` : "";
+  const typoClass = liveTypography(contentKey, kind);
 
   if (kind === "image") {
     return (
@@ -216,7 +239,7 @@ function KindInput({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         rows={5}
-        className="w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-3 text-sm text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none"
+        className={`w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-3 placeholder:text-cream/30 focus:border-plonkPink focus:outline-none ${typoClass}`}
       />
     );
   }
@@ -226,7 +249,7 @@ function KindInput({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-2.5 text-sm text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none"
+      className={`w-full rounded-lg border border-cream/15 bg-ink/40 px-4 py-2.5 placeholder:text-cream/30 focus:border-plonkPink focus:outline-none ${typoClass}`}
     />
   );
 }

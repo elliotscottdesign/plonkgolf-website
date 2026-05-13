@@ -344,10 +344,10 @@ function BlockCard({
             placeholder={
               block.kind === "h2" ? "Section heading" : "Sub-heading"
             }
-            className={`w-full rounded-lg border border-cream/15 bg-ink/40 px-3 py-2 text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none ${
+            className={`w-full rounded-lg border border-cream/15 bg-ink/40 px-3 py-2 leading-tight text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none ${
               block.kind === "h2"
-                ? "font-display text-xl"
-                : "font-display text-base"
+                ? "font-display text-3xl sm:text-4xl"
+                : "font-display text-xl sm:text-2xl"
             }`}
           />
         ) : block.kind === "p" ? (
@@ -356,7 +356,7 @@ function BlockCard({
             onChange={(e) => onUpdate({ value: e.target.value })}
             placeholder="Paragraph text. Basic inline HTML allowed (links, em, strong)."
             rows={3}
-            className="w-full rounded-lg border border-cream/15 bg-ink/40 px-3 py-2 text-sm leading-relaxed text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none"
+            className="w-full rounded-lg border border-cream/15 bg-ink/40 px-3 py-2 text-base leading-relaxed text-cream placeholder:text-cream/30 focus:border-plonkPink focus:outline-none"
           />
         ) : block.kind === "img" ? (
           <div className="space-y-2">
