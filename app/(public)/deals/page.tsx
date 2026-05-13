@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import PageHero from "@/components/PageHero";
 import { useContent, useImage } from "@/lib/content";
+import { Editable } from "@/components/Editable";
 import { loadDeals, type DbSiteDeal } from "@/lib/db/deals";
 
 // Fallback used when the site_deals table is empty.
@@ -94,14 +95,16 @@ export default function DealsPage() {
           {(ctaHeading || ctaLabel) && (
             <div className="mt-16 rounded-2xl border border-plumLine/60 p-8 text-center">
               {ctaHeading && (
-                <p className="text-base text-cream/80">{ctaHeading}</p>
+                <p className="text-base text-cream/80">
+                  <Editable k="deals.cta_heading">{ctaHeading}</Editable>
+                </p>
               )}
               {ctaLabel && ctaHref && (
                 <a
                   href={ctaHref}
                   className="mt-3 inline-block text-sm font-semibold uppercase tracking-wider text-plonkYellow hover:underline"
                 >
-                  {ctaLabel}
+                  <Editable k="deals.cta_link_label">{ctaLabel}</Editable>
                 </a>
               )}
             </div>

@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import PageHero from "@/components/PageHero";
 import Gallery from "@/components/Gallery";
 import { useContent, useImage, useGallery } from "@/lib/content";
+import { Editable, DisplayImage } from "@/components/Editable";
 
 const ABOUT_GALLERY_FALLBACK = [
   { src: "/hackney/course/Course_1.jpg", alt: "Hackney Polynesian course" },
@@ -81,48 +81,28 @@ export default function AboutPage() {
 
       <section>
         <article className="mx-auto max-w-3xl px-6 py-20 text-base leading-relaxed text-cream/85">
-          <div className="space-y-5 whitespace-pre-line">
-            {para1.split(/\n\n+/).map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
-          </div>
+          <p className="whitespace-pre-line">
+            <Editable k="about.body_para1" multiline>{para1}</Editable>
+          </p>
 
           <div className="my-12 grid gap-6 sm:grid-cols-2">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-              <Image
-                src={bodyImage1}
-                alt=""
-                fill
-                sizes="(min-width:640px) 50vw, 100vw"
-                className="object-cover"
-                unoptimized={bodyImage1.startsWith("http")}
-              />
-            </div>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl">
-              <Image
-                src={bodyImage2}
-                alt=""
-                fill
-                sizes="(min-width:640px) 50vw, 100vw"
-                className="object-cover"
-                unoptimized={bodyImage2.startsWith("http")}
-              />
-            </div>
+            <DisplayImage k="about.body_image1" fallback={bodyImage1} aspect="4/3" rounded />
+            <DisplayImage k="about.body_image2" fallback={bodyImage2} aspect="4/3" rounded />
           </div>
 
-          <h2 className="font-display text-2xl">{heading2}</h2>
-          <div className="mt-4 space-y-4 whitespace-pre-line">
-            {para2.split(/\n\n+/).map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
-          </div>
+          <h2 className="font-display text-2xl">
+            <Editable k="about.body_heading2">{heading2}</Editable>
+          </h2>
+          <p className="mt-4 whitespace-pre-line">
+            <Editable k="about.body_para2" multiline>{para2}</Editable>
+          </p>
 
-          <h2 className="mt-10 font-display text-2xl">{heading3}</h2>
-          <div className="mt-4 space-y-5 whitespace-pre-line">
-            {para3.split(/\n\n+/).map((p, i) => (
-              <p key={i}>{p}</p>
-            ))}
-          </div>
+          <h2 className="mt-10 font-display text-2xl">
+            <Editable k="about.body_heading3">{heading3}</Editable>
+          </h2>
+          <p className="mt-4 whitespace-pre-line">
+            <Editable k="about.body_para3" multiline>{para3}</Editable>
+          </p>
         </article>
       </section>
 

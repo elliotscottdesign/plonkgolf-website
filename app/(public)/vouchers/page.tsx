@@ -3,6 +3,7 @@
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import { useContent, useImage } from "@/lib/content";
+import { Editable } from "@/components/Editable";
 
 export default function VouchersPage() {
   const eyebrow = useContent("vouchers.eyebrow", "Gifts & vouchers");
@@ -56,18 +57,18 @@ export default function VouchersPage() {
       <section className="mx-auto max-w-none px-6 py-20 text-center">
         <div className="mx-auto max-w-3xl">
           <p className="whitespace-pre-line text-base leading-relaxed text-cream/80 sm:text-lg">
-            {body}
+            <Editable k="vouchers.body" multiline>{body}</Editable>
           </p>
 
           <Link
             href="/#venues"
             className="mt-8 inline-block rounded-full bg-plonkPink px-10 py-4 text-base font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
           >
-            {ctaLabel}
+            <Editable k="vouchers.cta_label">{ctaLabel}</Editable>
           </Link>
           {ctaNote && (
             <p className="mt-3 whitespace-pre-line text-xs text-cream/50">
-              {ctaNote}
+              <Editable k="vouchers.cta_note" multiline>{ctaNote}</Editable>
             </p>
           )}
         </div>
@@ -81,9 +82,11 @@ export default function VouchersPage() {
                 key={i}
                 className="rounded-2xl border border-plumLine/60 p-6"
               >
-                <h3 className="font-display text-xl">{p.title}</h3>
+                <h3 className="font-display text-xl">
+                  <Editable k={`vouchers.perk${i + 1}.title`}>{p.title}</Editable>
+                </h3>
                 <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/75">
-                  {p.body}
+                  <Editable k={`vouchers.perk${i + 1}.body`} multiline>{p.body}</Editable>
                 </p>
               </div>
             ))}

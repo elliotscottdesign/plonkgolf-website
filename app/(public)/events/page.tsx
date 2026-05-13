@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import PageHero from "@/components/PageHero";
 import { useContent, useImage } from "@/lib/content";
+import { Editable } from "@/components/Editable";
 import {
   loadEvents,
   groupEvents,
@@ -92,7 +93,7 @@ export default function EventsPage() {
 
           {footerNote && (
             <p className="mt-16 whitespace-pre-line text-center text-sm text-cream/60">
-              {footerNote}
+              <Editable k="events.footer_note" multiline>{footerNote}</Editable>
             </p>
           )}
         </div>
