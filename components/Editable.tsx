@@ -20,7 +20,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { supabase } from "@/lib/supabase";
 import { useEditMode } from "@/lib/editMode";
 import {
   useApplyContentEdit,
@@ -30,6 +29,7 @@ import {
   parseImageValue,
   type ImageDisplay,
 } from "@/lib/content";
+import { saveContentValue } from "@/lib/db/content";
 
 export function Editable({
   k,
@@ -73,10 +73,11 @@ export function Editable({
     if (next === initialRef.current.trim()) return;
     setSaving(true);
     try {
-      await supabase()
-        .from("page_content")
-        .update({ value: next })
-        .eq("key", k);
+      // saveContentValue is upsert-shaped: it inserts a row with
+      // sensible defaults if no migration has pre-seeded this key.
+      // That stops the silent-no-op behaviour where update().eq()
+      // would match 0 rows and lose the user's edit forever.
+      await saveContentValue(k, next, multiline ? "textarea" : "text");
       // Patch the in-memory content map so the page re-renders with
       // the new value immediately, without waiting for a reload.
       applyEdit(k, next);
@@ -191,10 +192,7 @@ export function EditableImage({
       // Accept either a plain path (legacy callers) or the full
       // positioned ImageDisplay record from the positioner.
       const stored = typeof value === "string" ? value : serialiseImageValue(value);
-      await supabase()
-        .from("page_content")
-        .update({ value: stored })
-        .eq("key", k);
+      await saveContentValue(k, stored, "image");
       applyEdit(k, stored);
       try {
         window.dispatchEvent(new CustomEvent("plonk:content-changed"));
