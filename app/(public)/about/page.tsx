@@ -65,6 +65,11 @@ export default function AboutPage() {
         title={title}
         intro={intro}
         image={heroImage}
+        eyebrowKey="about.eyebrow"
+        titleKey="about.title"
+        introKey="about.intro"
+        imageKey="about.hero_image"
+        sliderKey="hero.about"
       />
 
       {/* Optional admin HTML body — sits ABOVE the structured article

@@ -111,6 +111,11 @@ export default function HackneyPrivateHirePage() {
         title={title}
         intro={intro}
         image={heroImage}
+        eyebrowKey="privatehire.hackney.eyebrow"
+        titleKey="privatehire.hackney.title"
+        introKey="privatehire.hackney.intro"
+        imageKey="privatehire.hackney.hero_image"
+        sliderKey="hero.privatehire.hackney"
       />
 
       {/* Popular for + about */}

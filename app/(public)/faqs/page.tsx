@@ -297,6 +297,11 @@ export default function FAQsPage() {
         title={title}
         intro={intro}
         image="/hackney/games/Games_2.jpg"
+        eyebrowKey="faqs.eyebrow"
+        titleKey="faqs.title"
+        introKey="faqs.intro"
+        imageKey="faqs.hero_image"
+        sliderKey="hero.faqs"
       />
 
       <section className="bed-hackney">

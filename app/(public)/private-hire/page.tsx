@@ -96,6 +96,11 @@ export default function PrivateHirePage() {
         title={title}
         intro={intro}
         image={heroImage}
+        eyebrowKey="privatehire.eyebrow"
+        titleKey="privatehire.title"
+        introKey="privatehire.intro"
+        imageKey="privatehire.hero_image"
+        sliderKey="hero.privatehire"
       />
 
       {/* Reasons (forest → ember) */}

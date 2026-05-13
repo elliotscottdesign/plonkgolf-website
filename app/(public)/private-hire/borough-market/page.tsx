@@ -95,6 +95,11 @@ export default function BoroughPrivateHirePage() {
         title={title}
         intro={intro}
         image={heroImage}
+        eyebrowKey="privatehire.borough.eyebrow"
+        titleKey="privatehire.borough.title"
+        introKey="privatehire.borough.intro"
+        imageKey="privatehire.borough.hero_image"
+        sliderKey="hero.privatehire.borough"
       />
 
       <section className="tint-forest-to-plumDeep px-6 py-24">

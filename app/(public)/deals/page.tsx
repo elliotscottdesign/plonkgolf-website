@@ -70,7 +70,17 @@ export default function DealsPage() {
 
   return (
     <main>
-      <PageHero eyebrow={eyebrow} title={title} intro={intro} image={heroImage} />
+      <PageHero
+        eyebrow={eyebrow}
+        title={title}
+        intro={intro}
+        image={heroImage}
+        eyebrowKey="deals.eyebrow"
+        titleKey="deals.title"
+        introKey="deals.intro"
+        imageKey="deals.hero_image"
+        sliderKey="hero.deals"
+      />
 
       <section>
         <div className="mx-auto max-w-5xl px-6 py-20">

@@ -197,6 +197,11 @@ export default function BoroughMarketPage() {
         title={title}
         intro={intro}
         image={heroImage || sliderImages}
+        eyebrowKey="venue.borough.eyebrow"
+        titleKey="venue.borough.title"
+        introKey="venue.borough.intro"
+        imageKey="venue.borough.hero_image"
+        sliderKey="hero.venue.borough"
       />
 
       {/* London course intro */}

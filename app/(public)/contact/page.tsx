@@ -8,7 +8,15 @@ export default function ContactPage() {
   const body = useContent("contact.body", "");
   return (
     <main>
-      <PageHero eyebrow="Get in touch" title={title} image="/hackney/venue/Interior_2.jpg" />
+      <PageHero
+        eyebrow="Get in touch"
+        title={title}
+        image="/hackney/venue/Interior_2.jpg"
+        eyebrowKey="contact.eyebrow"
+        titleKey="contact.title"
+        imageKey="contact.hero_image"
+        sliderKey="hero.contact"
+      />
       {body && (
         <section>
           <article

@@ -141,6 +141,11 @@ export default function HackneyPage() {
         title={title}
         intro={intro}
         image={heroImage || sliderImages}
+        eyebrowKey="venue.hackney.eyebrow"
+        titleKey="venue.hackney.title"
+        introKey="venue.hackney.intro"
+        imageKey="venue.hackney.hero_image"
+        sliderKey="hero.venue.hackney"
       />
 
       {/* Polynesian intro */}

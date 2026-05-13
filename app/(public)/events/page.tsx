@@ -81,7 +81,17 @@ export default function EventsPage() {
 
   return (
     <main>
-      <PageHero eyebrow={eyebrow} title={title} intro={intro} image={heroImage} />
+      <PageHero
+        eyebrow={eyebrow}
+        title={title}
+        intro={intro}
+        image={heroImage}
+        eyebrowKey="events.eyebrow"
+        titleKey="events.title"
+        introKey="events.intro"
+        imageKey="events.hero_image"
+        sliderKey="hero.events"
+      />
 
       <section>
         <div className="mx-auto max-w-6xl px-6 py-20">

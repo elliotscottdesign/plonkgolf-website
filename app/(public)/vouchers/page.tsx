@@ -52,7 +52,17 @@ export default function VouchersPage() {
 
   return (
     <main>
-      <PageHero eyebrow={eyebrow} title={title} intro={intro} image={heroImage} />
+      <PageHero
+        eyebrow={eyebrow}
+        title={title}
+        intro={intro}
+        image={heroImage}
+        eyebrowKey="vouchers.eyebrow"
+        titleKey="vouchers.title"
+        introKey="vouchers.intro"
+        imageKey="vouchers.hero_image"
+        sliderKey="hero.vouchers"
+      />
 
       <section className="mx-auto max-w-none px-6 py-20 text-center">
         <div className="mx-auto max-w-3xl">

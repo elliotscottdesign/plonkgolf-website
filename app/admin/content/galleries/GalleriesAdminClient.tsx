@@ -18,10 +18,91 @@ import { SpecCaption } from "@/components/admin/ContentEditor";
 // here (and consumed by the page that needs them); the admin will then
 // list them automatically.
 const KNOWN_GALLERIES: { key: string; label: string; description: string }[] = [
+  // ----- Hero sliders (one per page) -----
+  // Upload 2+ images to any of these and that page's hero turns into
+  // an auto-cycling slider. With 0 images, page falls back to its
+  // hardcoded fallback image / slider array.
+  {
+    key: "hero.home",
+    label: "HERO slider — Home",
+    description: "Top-of-page slider on plonkgolf.co.uk/.",
+  },
+  {
+    key: "hero.venue.hackney",
+    label: "HERO slider — Hackney",
+    description: "Top-of-page slider on /venue/hackney.",
+  },
+  {
+    key: "hero.venue.borough",
+    label: "HERO slider — Borough Market",
+    description: "Top-of-page slider on /venue/borough-market.",
+  },
+  {
+    key: "hero.about",
+    label: "HERO slider — About",
+    description: "Top-of-page slider on /about.",
+  },
+  {
+    key: "hero.contact",
+    label: "HERO slider — Contact",
+    description: "Top-of-page slider on /contact.",
+  },
+  {
+    key: "hero.events",
+    label: "HERO slider — Events",
+    description: "Top-of-page slider on /events.",
+  },
+  {
+    key: "hero.deals",
+    label: "HERO slider — Deals",
+    description: "Top-of-page slider on /deals.",
+  },
+  {
+    key: "hero.vouchers",
+    label: "HERO slider — Vouchers",
+    description: "Top-of-page slider on /vouchers.",
+  },
+  {
+    key: "hero.faqs",
+    label: "HERO slider — FAQs",
+    description: "Top-of-page slider on /faqs.",
+  },
+  {
+    key: "hero.terms",
+    label: "HERO slider — Terms",
+    description: "Top-of-page slider on /terms.",
+  },
+  {
+    key: "hero.privacy",
+    label: "HERO slider — Privacy",
+    description: "Top-of-page slider on /privacy.",
+  },
+  {
+    key: "hero.privatehire",
+    label: "HERO slider — Private hire overview",
+    description: "Top-of-page slider on /private-hire.",
+  },
+  {
+    key: "hero.privatehire.hackney",
+    label: "HERO slider — Private hire (Hackney)",
+    description: "Top-of-page slider on /private-hire/hackney.",
+  },
+  {
+    key: "hero.privatehire.borough",
+    label: "HERO slider — Private hire (Borough)",
+    description: "Top-of-page slider on /private-hire/borough-market.",
+  },
+
+  // ----- Inline content galleries -----
   {
     key: "home.features",
     label: "Homepage — More than mini-golf",
     description: "Four cards under the homepage hero (Bar, Pool, Boards, Arcade).",
+  },
+  {
+    key: "home.press",
+    label: "Homepage — Press logos",
+    description: 'The "As featured in" marquee strip on the homepage.',
   },
   {
     key: "about.gallery",
@@ -37,11 +118,6 @@ const KNOWN_GALLERIES: { key: string; label: string; description: string }[] = [
     key: "venue.borough.gallery",
     label: "Borough page gallery",
     description: "Photo strip on /venue/borough-market.",
-  },
-  {
-    key: "home.press",
-    label: "Homepage — Press logos",
-    description: 'The "As featured in" marquee strip on the homepage.',
   },
   {
     key: "hackney.events",
