@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useContent } from "@/lib/content";
+import { Editable } from "./Editable";
 
 const FALLBACK_SOCIALS = [
   "Instagram | https://www.instagram.com/plonkgolf/",
@@ -78,9 +79,11 @@ export default function Footer() {
     <footer className="bg-forestDeep">
       <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-4">
         <div>
-          <h3 className="font-display text-2xl">{brandTitle}</h3>
+          <h3 className="font-display text-2xl">
+            <Editable k="footer.brand_title">{brandTitle}</Editable>
+          </h3>
           <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/70">
-            {brandTagline}
+            <Editable k="footer.brand_tagline" multiline>{brandTagline}</Editable>
           </p>
           {brandEmail && (
             <p className="mt-4 text-sm text-cream/70">
@@ -88,7 +91,7 @@ export default function Footer() {
                 href={`mailto:${brandEmail}`}
                 className="underline-offset-4 hover:text-cream hover:underline"
               >
-                {brandEmail}
+                <Editable k="footer.brand_email">{brandEmail}</Editable>
               </a>
             </p>
           )}
@@ -96,33 +99,29 @@ export default function Footer() {
 
         <div>
           <h4 className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-            {hackneyHeading}
+            <Editable k="footer.hackney_heading">{hackneyHeading}</Editable>
           </h4>
           <address className="mt-3 not-italic text-sm leading-relaxed text-cream/65">
-            {hackneyRows.map((r, i) => (
-              <span key={i} className={r.muted ? "block text-cream/45" : "block"}>
-                {r.text}
-              </span>
-            ))}
+            <Editable k="footer.hackney_address" multiline>
+              {hackneyRows.map((r) => r.text).join("\n")}
+            </Editable>
           </address>
         </div>
 
         <div>
           <h4 className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-            {boroughHeading}
+            <Editable k="footer.borough_heading">{boroughHeading}</Editable>
           </h4>
           <address className="mt-3 not-italic text-sm leading-relaxed text-cream/65">
-            {boroughRows.map((r, i) => (
-              <span key={i} className={r.muted ? "block text-cream/45" : "block"}>
-                {r.text}
-              </span>
-            ))}
+            <Editable k="footer.borough_address" multiline>
+              {boroughRows.map((r) => r.text).join("\n")}
+            </Editable>
           </address>
         </div>
 
         <div>
           <h4 className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-            {socialsHeading}
+            <Editable k="footer.socials_heading">{socialsHeading}</Editable>
           </h4>
           <ul className="mt-3 space-y-2 text-sm">
             {SOCIALS.map((s) => (
@@ -143,7 +142,9 @@ export default function Footer() {
 
       <div className="border-t border-plumLine/40">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-5 text-xs text-cream/50 md:flex-row md:items-center md:justify-between">
-          <span>{copyright}</span>
+          <span>
+            <Editable k="footer.copyright">{copyright}</Editable>
+          </span>
           <div className="flex flex-wrap gap-5">
             <Link href="/privacy" className="hover:text-cream">Privacy</Link>
             <Link href="/terms" className="hover:text-cream">Terms</Link>

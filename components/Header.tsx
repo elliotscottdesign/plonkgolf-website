@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useContent, useImage } from "@/lib/content";
+import { Editable } from "./Editable";
 
 const FALLBACK_NAV = [
   "Hackney | /venue/hackney",
@@ -74,7 +75,7 @@ export default function Header() {
             href={ctaHref}
             className="rounded-full bg-plonkPink px-5 py-2 text-xs font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
           >
-            {ctaLabel}
+            <Editable k="header.cta_label">{ctaLabel}</Editable>
           </Link>
         </nav>
 
@@ -83,7 +84,7 @@ export default function Header() {
             href={ctaHref}
             className="rounded-full bg-plonkPink px-4 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition hover:bg-plonkPink/90"
           >
-            {ctaLabel}
+            <Editable k="header.cta_label">{ctaLabel}</Editable>
           </Link>
           <button
             type="button"
