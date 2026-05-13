@@ -98,7 +98,7 @@ export default function PrivateHirePage() {
       />
 
       {/* Reasons (forest → ember) */}
-      <section className="tint-forest-to-emberDeep px-6 py-24">
+      <section className="tint-forest-to-plumDeep px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -111,7 +111,7 @@ export default function PrivateHirePage() {
           <div className="mt-14 grid gap-6 md:grid-cols-3">
             {reasons.map((r, i) => (
               <Reveal key={i} delay={i * 100}>
-                <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
+                <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
                   <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                     0{i + 1}
                   </p>
@@ -127,7 +127,7 @@ export default function PrivateHirePage() {
       </section>
 
       {/* Choose a venue (ember) */}
-      <section className="tint-emberDeep-to-ember px-6 py-24">
+      <section className="tint-plumDeep-to-plum px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -146,7 +146,7 @@ export default function PrivateHirePage() {
               <Reveal key={v.slug} delay={i * 100}>
                 <Link
                   href={v.href}
-                  className="group block h-full overflow-hidden rounded-3xl border border-emberLine/60 bg-emberRaised transition hover:border-plonkYellow/60"
+                  className="group block h-full overflow-hidden rounded-3xl border border-plumLine/60 bg-plumRaised transition hover:border-plonkYellow/60"
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <Image
@@ -156,7 +156,7 @@ export default function PrivateHirePage() {
                       sizes="(min-width: 768px) 50vw, 100vw"
                       className="object-cover transition duration-700 group-hover:scale-105"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-emberDeep via-emberDeep/30 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-plumDeep via-plumDeep/30 to-transparent" />
                   </div>
                   <div className="p-7 sm:p-8">
                     <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -186,7 +186,7 @@ export default function PrivateHirePage() {
                       {v.tags.map((t) => (
                         <span
                           key={t}
-                          className="rounded-full border border-emberLine/80 bg-emberDeep/60 px-3 py-1 text-xs text-cream/80"
+                          className="rounded-full border border-plumLine/80 bg-plumDeep/60 px-3 py-1 text-xs text-cream/80"
                         >
                           {t}
                         </span>

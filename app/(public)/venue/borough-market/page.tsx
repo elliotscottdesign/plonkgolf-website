@@ -200,10 +200,10 @@ export default function BoroughMarketPage() {
       />
 
       {/* London course intro (forest → ember) */}
-      <section className="tint-forest-to-ember relative overflow-hidden px-6 py-20 md:py-28">
+      <section className="tint-forest-to-plum relative overflow-hidden px-6 py-20 md:py-28">
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2 md:gap-16">
           <Reveal>
-            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-emberDeep md:order-2">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-plumDeep md:order-2">
               <Image
                 src="/borough/course/Course_2.jpg"
                 alt="Borough London-themed course"
@@ -244,7 +244,7 @@ export default function BoroughMarketPage() {
       </section>
 
       {/* What's under the arches */}
-      <section className="tint-ember relative overflow-hidden px-6 py-24">
+      <section className="tint-plum relative overflow-hidden px-6 py-24">
         <div className="mx-auto max-w-6xl">
           <Reveal>
             <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -272,7 +272,7 @@ export default function BoroughMarketPage() {
         heading={galleryHeading}
         intro={galleryIntro}
         images={galleryImages}
-        tint="tint-ember-island-plum"
+        tint="tint-plum-island-ember"
       />
 
       {/* Find us */}
@@ -292,7 +292,7 @@ export default function BoroughMarketPage() {
 
           <div className="mt-6 grid gap-6 md:grid-cols-2">
             <Reveal>
-              <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
+              <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   Address
                 </p>
@@ -307,7 +307,7 @@ export default function BoroughMarketPage() {
               </div>
             </Reveal>
             <Reveal delay={100}>
-              <div className="h-full rounded-2xl border border-emberLine/60 bg-emberRaised p-7">
+              <div className="h-full rounded-2xl border border-plumLine/60 bg-plumRaised p-7">
                 <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                   {findusAccessHeading}
                 </p>
@@ -337,8 +337,8 @@ function FeatureCard({
   const image = useImage(kImage, fallbackImage);
   return (
     <Reveal>
-      <article className="group h-full overflow-hidden rounded-2xl border border-emberLine/50 bg-ember transition hover:border-plonkYellow/40">
-        <div className="relative aspect-[5/3] overflow-hidden bg-emberDeep">
+      <article className="group h-full overflow-hidden rounded-2xl border border-plumLine/50 bg-plumRaised transition hover:border-plonkYellow/40">
+        <div className="relative aspect-[5/3] overflow-hidden bg-plumDeep">
           <Image
             src={image}
             alt=""

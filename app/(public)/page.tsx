@@ -276,7 +276,7 @@ function PressMarquee({
   // Duplicate the array so the CSS marquee animation loops seamlessly.
   const looped = [...gallery, ...gallery];
   return (
-    <section className="tint-ember overflow-hidden py-12">
+    <section className="tint-plum overflow-hidden py-12">
       <p className="text-center text-xs font-bold uppercase tracking-eyebrow text-cream/40">
         {eyebrow}
       </p>
@@ -402,9 +402,9 @@ function CtaCard({
   return (
     <Link
       href={href}
-      className="group relative overflow-hidden rounded-2xl border border-emberLine/60 bg-emberRaised transition hover:border-plonkYellow/60"
+      className="group relative overflow-hidden rounded-2xl border border-plumLine/60 bg-plumRaised transition hover:border-plonkYellow/60"
     >
-      <div className="relative aspect-[16/10] bg-emberDeep">
+      <div className="relative aspect-[16/10] bg-plumDeep">
         <Image
           src={image}
           alt=""
@@ -412,7 +412,7 @@ function CtaCard({
           sizes="(min-width: 768px) 50vw, 100vw"
           className="object-contain transition duration-700 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-emberDeep via-emberDeep/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-plumDeep via-plumDeep/40 to-transparent" />
       </div>
       <div className="p-8">
         <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">

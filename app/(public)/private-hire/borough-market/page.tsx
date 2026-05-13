@@ -96,7 +96,7 @@ export default function BoroughPrivateHirePage() {
         image={heroImage}
       />
 
-      <section className="tint-forest-to-emberDeep px-6 py-24">
+      <section className="tint-forest-to-plumDeep px-6 py-24">
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -106,7 +106,7 @@ export default function BoroughPrivateHirePage() {
               {popularList.map((t) => (
                 <span
                   key={t}
-                  className="rounded-full border border-emberLine/80 bg-emberDeep/60 px-4 py-1.5 text-sm text-cream/90"
+                  className="rounded-full border border-plumLine/80 bg-plumDeep/60 px-4 py-1.5 text-sm text-cream/90"
                 >
                   {t}
                 </span>
@@ -129,10 +129,10 @@ export default function BoroughPrivateHirePage() {
         </div>
       </section>
 
-      <section className="tint-emberDeep-to-ember px-6 py-24">
+      <section className="tint-plumDeep-to-plum px-6 py-24">
         <div className="mx-auto max-w-6xl space-y-12">
           <FactPanel title="Capacity">
-            <div className="rounded-2xl border border-emberLine/80 bg-emberDeep/60 p-8 text-center">
+            <div className="rounded-2xl border border-plumLine/80 bg-plumDeep/60 p-8 text-center">
               <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                 {capacityLabel}
               </p>
@@ -210,7 +210,7 @@ export default function BoroughPrivateHirePage() {
 function FactPanel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <Reveal>
-      <div className="rounded-3xl border border-emberLine/60 bg-emberRaised p-7 sm:p-9">
+      <div className="rounded-3xl border border-plumLine/60 bg-plumRaised p-7 sm:p-9">
         <h3 className="font-display text-2xl text-plonkYellow sm:text-3xl">{title}</h3>
         <div className="mt-6">{children}</div>
       </div>

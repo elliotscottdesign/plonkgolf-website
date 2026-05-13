@@ -110,7 +110,7 @@ function VenueColumn({
 }) {
   return (
     <div>
-      <div className="border-b border-forestLine/60 pb-3">
+      <div className="border-b border-plumLine/60 pb-3">
         <p className="text-xs font-bold uppercase tracking-[0.25em] text-plonkYellow">
           Venue
         </p>
@@ -124,7 +124,7 @@ function VenueColumn({
             className={`rounded-2xl p-6 ${
               e.featured
                 ? "border border-plonkPink/40 bg-gradient-to-br from-plonkPink/15 to-forestDeep"
-                : "border border-forestLine/60 bg-forestRaised"
+                : "border border-plumLine/60 bg-plumRaised"
             }`}
           >
             {e.featured && (

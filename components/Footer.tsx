@@ -141,7 +141,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-forestLine/40">
+      <div className="border-t border-plumLine/40">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-5 text-xs text-cream/50 md:flex-row md:items-center md:justify-between">
           <span>{copyright}</span>
           <div className="flex flex-wrap gap-5">

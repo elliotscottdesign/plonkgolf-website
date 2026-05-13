@@ -113,7 +113,7 @@ export default function HackneyPrivateHirePage() {
       />
 
       {/* Popular for + about */}
-      <section className="tint-forest-to-emberDeep px-6 py-24">
+      <section className="tint-forest-to-plumDeep px-6 py-24">
         <div className="mx-auto max-w-4xl">
           <Reveal>
             <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
@@ -123,7 +123,7 @@ export default function HackneyPrivateHirePage() {
               {popularList.map((t) => (
                 <span
                   key={t}
-                  className="rounded-full border border-emberLine/80 bg-emberDeep/60 px-4 py-1.5 text-sm text-cream/90"
+                  className="rounded-full border border-plumLine/80 bg-plumDeep/60 px-4 py-1.5 text-sm text-cream/90"
                 >
                   {t}
                 </span>
@@ -147,14 +147,14 @@ export default function HackneyPrivateHirePage() {
       </section>
 
       {/* Fact sheet */}
-      <section className="tint-emberDeep-to-ember px-6 py-24">
+      <section className="tint-plumDeep-to-plum px-6 py-24">
         <div className="mx-auto max-w-6xl space-y-12">
           <FactPanel title="Capacity">
             <div className="grid gap-4 sm:grid-cols-3">
               {capacities.map((c) => (
                 <div
                   key={c.label}
-                  className="rounded-2xl border border-emberLine/80 bg-emberDeep/60 p-6 text-center"
+                  className="rounded-2xl border border-plumLine/80 bg-plumDeep/60 p-6 text-center"
                 >
                   <p className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
                     {c.label}
@@ -239,7 +239,7 @@ export default function HackneyPrivateHirePage() {
 function FactPanel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <Reveal>
-      <div className="rounded-3xl border border-emberLine/60 bg-emberRaised p-7 sm:p-9">
+      <div className="rounded-3xl border border-plumLine/60 bg-plumRaised p-7 sm:p-9">
         <h3 className="font-display text-2xl text-plonkYellow sm:text-3xl">{title}</h3>
         <div className="mt-6">{children}</div>
       </div>

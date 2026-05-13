@@ -79,7 +79,7 @@ export default function VouchersPage() {
             {perks.map((p, i) => (
               <div
                 key={i}
-                className="rounded-2xl border border-forestLine/60 bg-forestRaised p-6"
+                className="rounded-2xl border border-plumLine/60 bg-plumRaised p-6"
               >
                 <h3 className="font-display text-xl">{p.title}</h3>
                 <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-cream/75">

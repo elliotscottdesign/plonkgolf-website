@@ -106,7 +106,7 @@ export default function SnackBarMenuPage() {
       : FALLBACK;
 
   return (
-    <main className="bed-info">
+    <main className="bed-hackney">
       {/* HEADER */}
       <header className="relative isolate flex min-h-[40vh] flex-col items-center justify-center px-6 pt-24 pb-16 text-center">
         <div className="absolute inset-0 -z-10">
@@ -139,7 +139,7 @@ export default function SnackBarMenuPage() {
               {/* Extras-style flat rows for sections whose items have no
                   body copy; full cards otherwise. */}
               {row.items.every((i) => !i.body) ? (
-                <ul className="divide-y divide-forestLine/40 rounded-2xl border border-forestLine/60 bg-forestRaised">
+                <ul className="divide-y divide-plumLine/40 rounded-2xl border border-plumLine/60 bg-plumRaised">
                   {row.items.map((e) => (
                     <li
                       key={e.title}
@@ -213,7 +213,7 @@ function MenuRow({
   body: string;
 }) {
   return (
-    <article className="rounded-2xl border border-forestLine/60 bg-forestRaised p-5">
+    <article className="rounded-2xl border border-plumLine/60 bg-plumRaised p-5">
       <div className="flex items-baseline justify-between gap-4">
         <h3 className="font-display text-xl sm:text-2xl">{title}</h3>
         <span className="font-display text-xl text-plonkYellow sm:text-2xl">

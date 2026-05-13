@@ -299,7 +299,7 @@ export default function FAQsPage() {
         image="/hackney/games/Games_2.jpg"
       />
 
-      <section className="bed-info">
+      <section className="bed-hackney">
       <div className="mx-auto max-w-3xl px-6 py-20">
         {showDb
           ? grouped.map((section) => (

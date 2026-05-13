@@ -25,7 +25,7 @@ export default function ContactPage() {
           a line — we read every message.
         </p>
 
-        <div className="mt-10 rounded-2xl border border-forestLine/60 bg-forestRaised p-8">
+        <div className="mt-10 rounded-2xl border border-plumLine/60 bg-plumRaised p-8">
           <p className="text-xs font-bold uppercase tracking-widest text-plonkYellow">
             Email
           </p>
