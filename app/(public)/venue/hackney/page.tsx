@@ -4,7 +4,7 @@ import Link from "next/link";
 import PageHero from "@/components/PageHero";
 import EventsScroller from "@/components/EventsScroller";
 import Reveal from "@/components/Reveal";
-import { useContent, useImage } from "@/lib/content";
+import { useContent, useImage, useGallery } from "@/lib/content";
 import { Editable, DisplayImage } from "@/components/Editable";
 
 const EVENT_POSTERS = [
@@ -95,6 +95,15 @@ export default function HackneyPage() {
     "venue.hackney.events.intro",
     "DJs, pool tournaments, parties, pop-ups — what's on at the games bar.",
   );
+  // Events posters live in the `hackney.events` gallery — manage them at
+  // /admin/content/galleries/. If the admin hasn't added any yet, fall
+  // back to the hardcoded EVENT_POSTERS so the section is never empty.
+  // When admin uploads come in, they serve from Supabase Storage (different
+  // host) which sidesteps any browser-cache trouble on this domain.
+  const eventsPosters = useGallery("hackney.events", EVENT_POSTERS).map((p) => ({
+    src: p.src,
+    alt: p.alt ?? "",
+  }));
 
   // ---------- Find us ----------
   const findusHeading = useContent("venue.hackney.findus.heading", "Find us");
@@ -202,7 +211,7 @@ export default function HackneyPage() {
       <EventsScroller
         heading={eventsHeading}
         intro={eventsIntro}
-        posters={EVENT_POSTERS}
+        posters={eventsPosters}
         tint=""
       />
 
