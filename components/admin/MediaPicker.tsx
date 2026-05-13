@@ -175,6 +175,24 @@ export default function MediaPicker({
     if (f) handleUpload(f);
   }
 
+  // Escape key closes the whole picker, in case the Close button
+  // gets covered by something or a click handler misfires.
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        if (staged) setStaged(null);
+        else onClose();
+      }
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [staged, onClose]);
+
+  function handleCloseClick() {
+    setStaged(null);
+    onClose();
+  }
+
   // Portal to document.body so the modal always anchors to the
   // viewport, not whichever Reveal/transform/filter ancestor we
   // happen to be nested inside. Without this, parent transforms
@@ -188,7 +206,7 @@ export default function MediaPicker({
       // The click-outside-closes target — only on the backdrop, not
       // bubbled through the panel itself.
       onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
+        if (e.target === e.currentTarget) handleCloseClick();
       }}
     >
       <div
@@ -218,7 +236,7 @@ export default function MediaPicker({
           </div>
           <button
             type="button"
-            onClick={onClose}
+            onClick={handleCloseClick}
             className="rounded-full border border-cream/20 px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream/85 hover:bg-cream/5"
           >
             Close
