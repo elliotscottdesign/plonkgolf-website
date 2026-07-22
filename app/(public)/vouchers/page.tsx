@@ -14,11 +14,11 @@ export default function VouchersPage() {
   );
   const heroImage = useImage(
     "vouchers.hero_image",
-    "/borough/drinks/Cocktail_1.jpg",
+    "/hackney/drinks/Drinks_3.jpg",
   );
   const body = useContent(
     "vouchers.body",
-    "All of our vouchers are valid for twelve months from the date of purchase, and redeemable against any ticket at any of our venues. They're also redeemable up to their full value, so no need to spend them all at once.",
+    "All of our vouchers are valid for twelve months from the date of purchase, and redeemable against any ticket in venue. They're also redeemable up to their full value, so no need to spend them all at once.",
   );
   const ctaLabel = useContent("vouchers.cta_label", "Buy a Voucher");
   const ctaNote = useContent(
@@ -35,10 +35,10 @@ export default function VouchersPage() {
       ),
     },
     {
-      title: useContent("vouchers.perk2.title", "Use across all venues"),
+      title: useContent("vouchers.perk2.title", "Redeem in venue"),
       body: useContent(
         "vouchers.perk2.body",
-        "Redeemable against any ticket at any of our venues — Hackney and Borough Market.",
+        "Redeemable against any ticket at Plonk Hackney — golf, food, drinks, arcade tokens.",
       ),
     },
     {

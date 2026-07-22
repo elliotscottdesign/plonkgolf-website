@@ -129,7 +129,7 @@ const SECTIONS: Section[] = [
       },
       {
         q: "Are pool tables age-restricted?",
-        a: "Yes — under-16s aren't permitted to play on the pool tables at either venue.",
+        a: "Yes — under-16s aren't permitted to play on the pool tables.",
       },
     ],
   },
@@ -175,8 +175,8 @@ const SECTIONS: Section[] = [
               Vouchers page
             </Link>{" "}
             and the recipient gets a unique code by email. They're valid for
-            12 months, redeemable at either venue, and can be spent in parts —
-            no need to use the full balance in one go.
+            12 months and can be spent in parts — no need to use the full
+            balance in one go.
           </>
         ),
       },
@@ -216,11 +216,11 @@ const SECTIONS: Section[] = [
       },
       {
         q: "Can I bring my own food or drink?",
-        a: "No — but with cocktails, draught beers, tacos at Hackney and a full menu at Borough you won't go hungry or thirsty.",
+        a: "No — but with cocktails, draught beers and tacos on the menu, you won't go hungry or thirsty.",
       },
       {
         q: "Can I bring my dog?",
-        a: "Well-behaved dogs are welcome in the beer garden at Plonk Hackney. Borough is indoors so dogs aren't allowed inside.",
+        a: "Well-behaved dogs are welcome in the beer garden.",
       },
     ],
   },
@@ -228,20 +228,7 @@ const SECTIONS: Section[] = [
     heading: "Accessibility",
     faqs: [
       {
-        q: "Is Plonk Borough accessible?",
-        a: (
-          <>
-            Yes. There are step-free routes down to our courtyard. If you'd
-            like the easiest route mapped out before you arrive, email{" "}
-            <a href="mailto:info@plonkgolf.co.uk" className="underline-offset-4 hover:underline">
-              info@plonkgolf.co.uk
-            </a>{" "}
-            and we'll help.
-          </>
-        ),
-      },
-      {
-        q: "Is Plonk Hackney accessible?",
+        q: "Is Plonk accessible?",
         a: "The bar, beer garden and most of the course is on one level. Drop us a line at info@plonkgolf.co.uk ahead of your visit and we'll make sure everything's set up for you.",
       },
     ],
@@ -250,12 +237,8 @@ const SECTIONS: Section[] = [
     heading: "Find us",
     faqs: [
       {
-        q: "Where is Plonk Hackney?",
+        q: "Where is Plonk?",
         a: "Arch 407, Mentmore Terrace, London E8 3PP. Main entrance on Parkside. 2 mins from London Fields Overground, 5 mins from Broadway Market.",
-      },
-      {
-        q: "Where is Plonk Borough Market?",
-        a: "Arches B, C, D & E Montague Close, off Green Dragon Court, London SE1 9DA. Don't follow the postcode — search 'Plonk Borough' on Google Maps. The entrance is in a courtyard just below street level, next door to Boro Bistro.",
       },
     ],
   },

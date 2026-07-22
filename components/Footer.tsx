@@ -53,11 +53,6 @@ export default function Footer() {
     "footer.hackney_address",
     "Arch 407, Mentmore Terrace\nLondon E8 3PP\n— Main entrance on Parkside",
   );
-  const boroughHeading = useContent("footer.borough_heading", "Borough Market");
-  const boroughAddress = useContent(
-    "footer.borough_address",
-    "Arches B, C, D & E Montague Close\nOff Green Dragon Court\nLondon SE1 9DA",
-  );
 
   const socialsHeading = useContent("footer.socials_heading", "Follow");
   const socialsRaw = useContent("footer.socials", FALLBACK_SOCIALS);
@@ -73,11 +68,10 @@ export default function Footer() {
   );
 
   const hackneyRows = addressLines(hackneyAddress);
-  const boroughRows = addressLines(boroughAddress);
 
   return (
     <footer className="bg-forestDeep">
-      <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-3">
         <div>
           <h3 className="font-display text-2xl">
             <Editable k="footer.brand_title">{brandTitle}</Editable>
@@ -104,17 +98,6 @@ export default function Footer() {
           <address className="mt-3 not-italic text-sm leading-relaxed text-cream/65">
             <Editable k="footer.hackney_address" multiline>
               {hackneyRows.map((r) => r.text).join("\n")}
-            </Editable>
-          </address>
-        </div>
-
-        <div>
-          <h4 className="text-xs font-bold uppercase tracking-eyebrow text-plonkYellow">
-            <Editable k="footer.borough_heading">{boroughHeading}</Editable>
-          </h4>
-          <address className="mt-3 not-italic text-sm leading-relaxed text-cream/65">
-            <Editable k="footer.borough_address" multiline>
-              {boroughRows.map((r) => r.text).join("\n")}
             </Editable>
           </address>
         </div>

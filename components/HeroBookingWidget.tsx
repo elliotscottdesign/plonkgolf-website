@@ -6,11 +6,6 @@ import { useRouter } from "next/navigation";
 import CalendarPopup from "./CalendarPopup";
 import { localIso } from "@/lib/dateIso";
 
-const VENUES = [
-  { id: "hackney", label: "Plonk Hackney" },
-  { id: "borough", label: "Plonk Borough Market" },
-] as const;
-
 function todayIso(): string {
   return localIso(new Date());
 }
@@ -36,66 +31,27 @@ function prettyDate(iso: string): string {
 
 export default function HeroBookingWidget() {
   const router = useRouter();
-  const [venue, setVenue] = useState<"" | "hackney" | "borough">("");
   const [date, setDate] = useState<string>("");
   const [size, setSize] = useState<number>(0);
 
-  const [openField, setOpenField] = useState<null | "venue" | "size">(null);
+  const [openField, setOpenField] = useState<null | "size">(null);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
-  // Refs to the trigger buttons so the portaled dropdown can position
-  // itself flush under whichever one was clicked.
-  const venueBtnRef = useRef<HTMLButtonElement | null>(null);
+  // Ref to the size trigger button so the portaled dropdown can position
+  // itself flush under it.
   const sizeBtnRef = useRef<HTMLButtonElement | null>(null);
 
   function search() {
-    const v = venue || "hackney";
     const params = new URLSearchParams();
     if (date) params.set("date", date);
     if (size > 0) params.set("size", String(size));
     const qs = params.toString();
-    router.push(`/book/${v}${qs ? `?${qs}` : ""}`);
+    router.push(`/book/hackney${qs ? `?${qs}` : ""}`);
   }
 
   return (
     <>
       <div className="relative mx-auto hidden w-full max-w-3xl rounded-full bg-cream/95 p-1.5 shadow-2xl md:flex">
-        {/* Where */}
-        <Field
-          ref={venueBtnRef}
-          label="Where"
-          value={
-            venue
-              ? VENUES.find((v) => v.id === venue)?.label.replace("Plonk ", "")
-              : "Choose venue"
-          }
-          placeholder={!venue}
-          active={openField === "venue"}
-          onClick={() => setOpenField(openField === "venue" ? null : "venue")}
-        />
-        {openField === "venue" && (
-          <DropdownPanel
-            anchorRef={venueBtnRef}
-            align="left"
-            onClose={() => setOpenField(null)}
-          >
-            {VENUES.map((v) => (
-              <button
-                key={v.id}
-                onClick={() => {
-                  setVenue(v.id);
-                  setOpenField(null);
-                }}
-                className="block w-full rounded-md px-3 py-2.5 text-left text-sm text-ink hover:bg-ink/5"
-              >
-                {v.label}
-              </button>
-            ))}
-          </DropdownPanel>
-        )}
-
-        <Divider />
-
         {/* When */}
         <Field
           label="When"
@@ -146,7 +102,7 @@ export default function HeroBookingWidget() {
             <circle cx="11" cy="11" r="7" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
-          Search
+          Book a tee time
         </button>
       </div>
 

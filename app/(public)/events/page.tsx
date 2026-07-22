@@ -15,7 +15,7 @@ import {
 const FALLBACK_EVENTS: DbSiteEvent[] = [
   {
     id: "fb-h-1",
-    venue: "Plonk Hackney at No Dice Bar",
+    venue: "Plonk Hackney",
     day: "Every Saturday",
     title: "Boozy Ballzy Brunch",
     body: "Join us for the ultimate bottomless brunch experience. Epic games, unlimited drinks, delicious food, and endless fun.",
@@ -26,24 +26,13 @@ const FALLBACK_EVENTS: DbSiteEvent[] = [
   },
   {
     id: "fb-h-2",
-    venue: "Plonk Hackney at No Dice Bar",
+    venue: "Plonk Hackney",
     day: "1st Tuesday of the month",
     title: "Queer Pool Social",
     body: "Ladies and Queer Pool Social — pool games, prizes, more pool, more prizes. Free entry, just come along.",
     featured: false,
     venue_order: 1,
     event_order: 2,
-    active: true,
-  },
-  {
-    id: "fb-b-1",
-    venue: "Plonk Borough",
-    day: "3rd Wednesday of the month",
-    title: "Shoreditch Doubles Pool Tournament",
-    body: "Riotous doubles night under London Bridge. Over £200 in prizes — only 8 slots, always sells out.",
-    featured: false,
-    venue_order: 2,
-    event_order: 1,
     active: true,
   },
 ];
@@ -53,7 +42,7 @@ export default function EventsPage() {
   const title = useContent("events.title", "Plonk Events");
   const intro = useContent(
     "events.intro",
-    "Events run by our partner venues — Plonk Hackney at No Dice Bar, and Plonk Borough.",
+    "What's on at Plonk Hackney — recurring nights, one-offs and everything in between.",
   );
   const heroImage = useImage("events.hero_image", "/hackney/games/Games_4.jpg");
   const footerNote = useContent(

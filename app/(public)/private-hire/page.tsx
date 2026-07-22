@@ -21,18 +21,6 @@ const VENUES = [
     href: "/private-hire/hackney",
     tags: ["Birthday", "Christmas party", "Corporate event", "Outdoor space"],
   },
-  {
-    slug: "borough-market",
-    name: "Plonk Borough Market",
-    location: "London Bridge · Indoor",
-    capacity: "Up to 100 standing",
-    minSpend: "From £1,000 minimum spend per hour",
-    blurb:
-      "Four railway arches under London Bridge. London-themed 9-hole course, full-service cocktail bar, packed arcade, and 360° street-art murals.",
-    image: "/borough/course/Course_1.jpg",
-    href: "/private-hire/borough-market",
-    tags: ["Birthday", "Christmas party", "Corporate event", "Unusual space"],
-  },
 ];
 
 const REASONS_FALLBACK = [
@@ -46,12 +34,12 @@ const REASONS_FALLBACK = [
   },
   {
     title: "Full bar & kitchen",
-    body: "Signature cocktails, craft on draught, wine, mocktails. Snack Bar burgers at Hackney, sharing platters at Borough.",
+    body: "Signature cocktails, craft on draught, wine, mocktails, and a proper taco kitchen slinging plates till late.",
   },
 ];
 
 export default function PrivateHirePage() {
-  const heroImage = useImage("privatehire.hero_image", "/borough/course/Course_3.jpg");
+  const heroImage = useImage("privatehire.hero_image", "/hackney/venue/Interior_5.jpg");
   const eyebrow = useContent(
     "privatehire.eyebrow",
     "Parties · Corporate · Christmas · Weddings",
@@ -59,7 +47,7 @@ export default function PrivateHirePage() {
   const title = useContent("privatehire.title", "Take Over Plonk");
   const intro = useContent(
     "privatehire.intro",
-    "Two London venues, one unforgettable party. Take over a course, an arch, or the whole place.",
+    "One unforgettable party under a London Fields arch. Take over a course, a corner, or the whole place.",
   );
 
   const reasonsEyebrow = useContent("privatehire.reasons.eyebrow", "Why hire Plonk");
@@ -79,14 +67,14 @@ export default function PrivateHirePage() {
     { title: r3Title, body: r3Body },
   ];
 
-  const venuesEyebrow = useContent("privatehire.venues.eyebrow", "Pick a venue");
+  const venuesEyebrow = useContent("privatehire.venues.eyebrow", "The venue");
   const venuesHeading = useContent(
     "privatehire.venues.heading",
-    "Two takeover-ready venues.",
+    "Takeover-ready in Hackney.",
   );
   const venuesIntro = useContent(
     "privatehire.venues.intro",
-    "Tap a venue for the full fact sheet — capacities, catering, licences, room features, the lot.",
+    "Tap through for the full fact sheet — capacities, catering, licences, room features, the lot.",
   );
 
   return (
