@@ -1,13 +1,15 @@
 import { Suspense } from "react";
 import CatalogueLoader from "./CatalogueLoader";
 
+// Single-venue relaunch (2026-07-22). Plonk Borough closed — /book/borough
+// no longer statically generated. When Borough reopens, add `{ venue: "borough" }`
+// to the array below and restore the "borough" entry in VENUE_NAMES.
 export function generateStaticParams() {
-  return [{ venue: "hackney" }, { venue: "borough" }];
+  return [{ venue: "hackney" }];
 }
 
 const VENUE_NAMES: Record<string, string> = {
   hackney: "Plonk Hackney",
-  borough: "Plonk Borough Market",
 };
 
 export function generateMetadata({ params }: { params: { venue: string } }) {

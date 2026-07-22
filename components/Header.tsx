@@ -6,9 +6,12 @@ import { useState } from "react";
 import { useContent, useImage } from "@/lib/content";
 import { Editable } from "./Editable";
 
+// Single-venue nav (2026-07-22 relaunch). Plonk Borough is closed —
+// removed from the header until it reopens. When it comes back, add
+// the line `"Borough | /venue/borough-market",` between Hackney and
+// Private hire, and restore the deleted /venue/borough-market page.
 const FALLBACK_NAV = [
   "Hackney | /venue/hackney",
-  "Borough | /venue/borough-market",
   "Private hire | /private-hire",
   "Vouchers | /vouchers",
   "FAQs | /faqs",
